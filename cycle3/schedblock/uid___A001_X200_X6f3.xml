@@ -1,0 +1,1775 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbl:SchedBlock xmlns:ent="Alma/CommonEntity"
+    xmlns:val="Alma/ValueTypes" xmlns:prp="Alma/ObsPrep/ObsProposal"
+    xmlns:orv="Alma/ObsPrep/ObsReview"
+    xmlns:ps="Alma/ObsPrep/ProjectStatus"
+    xmlns:oat="Alma/ObsPrep/ObsAttachment"
+    xmlns:prj="Alma/ObsPrep/ObsProject"
+    xmlns:sbl="Alma/ObsPrep/SchedBlock"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    status="NewPhase2" schemaVersion="13" revision="13"
+    almatype="APDM::SchedBlock" modeType="User" xsi:type="sbl:SchedBlock">
+    <prj:name>Serpens1_1_03_12</prj:name>
+    <prj:note>12m extended configuration</prj:note>
+    <prj:ObsUnitControl arrayRequested="TWELVE-M">
+        <prj:maximumTime unit="h">2.0</prj:maximumTime>
+        <prj:userPriority>0</prj:userPriority>
+        <prj:estimatedExecutionTime unit="h">2.0</prj:estimatedExecutionTime>
+        <prj:tacPriority>0</prj:tacPriority>
+        <prj:aggregatedExecutionCount>1</prj:aggregatedExecutionCount>
+        <prj:CalibrationRequirements>
+            <prj:pointingAccuracy unit="arcsec">1.0</prj:pointingAccuracy>
+            <prj:bandpassAccuracy>0.1</prj:bandpassAccuracy>
+            <prj:polarizationAccuracy>0.1</prj:polarizationAccuracy>
+        </prj:CalibrationRequirements>
+    </prj:ObsUnitControl>
+    <prj:ObsProjectRef entityId="uid://A001/X1ee/X847"
+        entityTypeName="ObsProject" documentVersion="1"/>
+    <sbl:SchedBlockEntity entityId="uid://A001/X200/X6f3"
+        entityIdEncrypted="-- id encryption not implemented --"
+        entityTypeName="SchedBlock" schemaVersion="13" documentVersion="1"/>
+    <sbl:standardMode>true</sbl:standardMode>
+    <sbl:modeName>Standard Interferometry</sbl:modeName>
+    <sbl:pIName>Unknown</sbl:pIName>
+    <sbl:expertParameter>
+        <val:Keyword>NumPhaseCal</val:Keyword>
+        <val:Value>1</val:Value>
+    </sbl:expertParameter>
+    <sbl:expertParameter>
+        <val:Keyword>NumAmplitudeCal</val:Keyword>
+        <val:Value>1</val:Value>
+    </sbl:expertParameter>
+    <sbl:expertParameter>
+        <val:Keyword>NumBandpassCal</val:Keyword>
+        <val:Value>1</val:Value>
+    </sbl:expertParameter>
+    <sbl:expertParameter>
+        <val:Keyword>NumFocusCal</val:Keyword>
+        <val:Value>1</val:Value>
+    </sbl:expertParameter>
+    <sbl:expertParameter>
+        <val:Keyword>NumPointingCal</val:Keyword>
+        <val:Value>1</val:Value>
+    </sbl:expertParameter>
+    <sbl:expertParameter>
+        <val:Keyword>ElLimit</val:Keyword>
+        <val:Value>20.0</val:Value>
+    </sbl:expertParameter>
+    <sbl:expertParameter>
+        <val:Keyword>MaxPointingSeparation</val:Keyword>
+        <val:Value>25.0</val:Value>
+    </sbl:expertParameter>
+    <sbl:expertParameter>
+        <val:Keyword>SourceCycleTime</val:Keyword>
+        <val:Value>0</val:Value>
+    </sbl:expertParameter>
+    <sbl:SpectralSpec entityPartId="X19145816"
+        almatype="APDM::AbstractInstrumentSpec"
+        switchingType="NO_SWITCHING" receiverType="TSB">
+        <sbl:name>B3 Pointing Setup</sbl:name>
+        <sbl:BLCorrelatorConfiguration aPCDataSets="AP_UNCORRECTED"
+            cAM="NORMAL" lOOffsettingMode="NONE">
+            <sbl:integrationDuration unit="s">2.016</sbl:integrationDuration>
+            <sbl:channelAverageDuration unit="s">1.008</sbl:channelAverageDuration>
+            <sbl:enable180DegreeWalshFunction>true</sbl:enable180DegreeWalshFunction>
+            <sbl:enable90DegreeWalshFunction>false</sbl:enable90DegreeWalshFunction>
+            <sbl:dumpDuration unit="s">1.008</sbl:dumpDuration>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X21274610"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="LSB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>6</sbl:startChannel>
+                        <sbl:numberChannels>115</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X7952974"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="LSB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>6</sbl:startChannel>
+                        <sbl:numberChannels>115</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X29950671"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="USB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>6</sbl:startChannel>
+                        <sbl:numberChannels>115</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X25010535"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="USB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>6</sbl:startChannel>
+                        <sbl:numberChannels>115</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+        </sbl:BLCorrelatorConfiguration>
+        <sbl:FrequencySetup receiverBand="ALMA_RB_03" dopplerReference="topo">
+            <sbl:restFrequency unit="GHz">103.0</sbl:restFrequency>
+            <sbl:transitionName>Pointing</sbl:transitionName>
+            <sbl:lO1Frequency unit="GHz">102.953075</sbl:lO1Frequency>
+            <sbl:isUserSpecifiedLO1>false</sbl:isUserSpecifiedLO1>
+            <sbl:hasHardwareSetup>false</sbl:hasHardwareSetup>
+            <sbl:floog unit="GHz">0.0</sbl:floog>
+            <sbl:tuneHigh>false</sbl:tuneHigh>
+            <sbl:BaseBandSpecification entityPartId="X21274610"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_1" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">96.0000000001</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">9.9585</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+            <sbl:BaseBandSpecification entityPartId="X7952974"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_2" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">97.9999999999</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">8.021</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+            <sbl:BaseBandSpecification entityPartId="X29950671"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_3" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">108.0000000001</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">8.0415</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+            <sbl:BaseBandSpecification entityPartId="X25010535"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_4" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">109.9999999999</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">10.0415</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+        </sbl:FrequencySetup>
+    </sbl:SpectralSpec>
+    <sbl:SpectralSpec entityPartId="X3936762"
+        almatype="APDM::AbstractInstrumentSpec"
+        switchingType="NO_SWITCHING" receiverType="TSB">
+        <sbl:name>CS v=0 J=2-1 Science setup</sbl:name>
+        <sbl:BLCorrelatorConfiguration aPCDataSets="AP_UNCORRECTED"
+            cAM="NORMAL" lOOffsettingMode="TWO_LOS">
+            <sbl:integrationDuration unit="s">6.048</sbl:integrationDuration>
+            <sbl:channelAverageDuration unit="s">6.048</sbl:channelAverageDuration>
+            <sbl:enable180DegreeWalshFunction>true</sbl:enable180DegreeWalshFunction>
+            <sbl:enable90DegreeWalshFunction>false</sbl:enable90DegreeWalshFunction>
+            <sbl:dumpDuration unit="s">6.048</sbl:dumpDuration>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X6588380"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="LSB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="MHz">3002.0751953125</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">0.05859375</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>1920</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:desiredCenterFrequency unit="MHz">2999.9919429474603</sbl:desiredCenterFrequency>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">97.98095</sbl:restFrequency>
+                        <sbl:transition>CS_v_0_J_2_1</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>0</sbl:startChannel>
+                        <sbl:numberChannels>1920</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X1289716"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="LSB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">99.0</sbl:restFrequency>
+                        <sbl:transition>Continuum_99</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>6</sbl:startChannel>
+                        <sbl:numberChannels>115</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X107405"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="USB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="MHz">2790.4052734375</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">0.05859375</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>1920</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:desiredCenterFrequency unit="MHz">2790.4052735375017</sbl:desiredCenterFrequency>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">109.78218</sbl:restFrequency>
+                        <sbl:transition>C18O_v_0_J_1_0</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>0</sbl:startChannel>
+                        <sbl:numberChannels>1920</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+                <sbl:BLSpectralWindow sideBand="USB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="MHz">3209.5947265625</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-2</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">0.05859375</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>1920</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:desiredCenterFrequency unit="MHz">3209.5947266625017</sbl:desiredCenterFrequency>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">110.20135</sbl:restFrequency>
+                        <sbl:transition>13CO_v_0_J_1_0</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>0</sbl:startChannel>
+                        <sbl:numberChannels>1920</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X26784070"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="USB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">111.0</sbl:restFrequency>
+                        <sbl:transition>Continuum_111</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>6</sbl:startChannel>
+                        <sbl:numberChannels>115</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+        </sbl:BLCorrelatorConfiguration>
+        <sbl:FrequencySetup receiverBand="ALMA_RB_03" dopplerReference="rest">
+            <sbl:restFrequency unit="GHz">111.0</sbl:restFrequency>
+            <sbl:transitionName>CS_v_0_J_2_1</sbl:transitionName>
+            <sbl:lO1Frequency unit="GHz">104.46511013076925</sbl:lO1Frequency>
+            <sbl:isUserSpecifiedLO1>false</sbl:isUserSpecifiedLO1>
+            <sbl:hasHardwareSetup>false</sbl:hasHardwareSetup>
+            <sbl:floog unit="GHz">0.0</sbl:floog>
+            <sbl:tuneHigh>false</sbl:tuneHigh>
+            <sbl:BaseBandSpecification entityPartId="X6588380"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_1" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">97.98095</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">9.479</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+            <sbl:BaseBandSpecification entityPartId="X1289716"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_2" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">99.0</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">8.462001251418528</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+            <sbl:BaseBandSpecification entityPartId="X107405"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_3" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">109.991765</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">8.530108921229303</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+            <sbl:BaseBandSpecification entityPartId="X26784070"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_4" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">111.0</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">9.538375582654275</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+        </sbl:FrequencySetup>
+    </sbl:SpectralSpec>
+    <sbl:SpectralSpec entityPartId="X30601823"
+        almatype="APDM::AbstractInstrumentSpec"
+        switchingType="NO_SWITCHING" receiverType="TSB">
+        <sbl:name>CS v=0 J=2-1 Science setup_1</sbl:name>
+        <sbl:BLCorrelatorConfiguration aPCDataSets="AP_UNCORRECTED"
+            cAM="NORMAL" lOOffsettingMode="TWO_LOS">
+            <sbl:integrationDuration unit="s">6.048</sbl:integrationDuration>
+            <sbl:channelAverageDuration unit="s">6.048</sbl:channelAverageDuration>
+            <sbl:enable180DegreeWalshFunction>true</sbl:enable180DegreeWalshFunction>
+            <sbl:enable90DegreeWalshFunction>false</sbl:enable90DegreeWalshFunction>
+            <sbl:dumpDuration unit="s">6.048</sbl:dumpDuration>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X19293542"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="LSB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="MHz">3002.0751953125</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">0.05859375</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>1920</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:desiredCenterFrequency unit="MHz">2994.3004303885914</sbl:desiredCenterFrequency>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">97.98095</sbl:restFrequency>
+                        <sbl:transition>CS_v_0_J_2_1</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>0</sbl:startChannel>
+                        <sbl:numberChannels>1920</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X30091482"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="LSB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">99.0</sbl:restFrequency>
+                        <sbl:transition>Continuum_99</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>6</sbl:startChannel>
+                        <sbl:numberChannels>115</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X15139893"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="USB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="MHz">2790.4052734375</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">0.05859375</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>1920</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:desiredCenterFrequency unit="MHz">2796.7944697217604</sbl:desiredCenterFrequency>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">109.78218</sbl:restFrequency>
+                        <sbl:transition>C18O_v_0_J_1_0</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>0</sbl:startChannel>
+                        <sbl:numberChannels>1920</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+                <sbl:BLSpectralWindow sideBand="USB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="MHz">3209.5947265625</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-2</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">0.05859375</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>1920</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:desiredCenterFrequency unit="MHz">3215.9839228467604</sbl:desiredCenterFrequency>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">110.20135</sbl:restFrequency>
+                        <sbl:transition>13CO_v_0_J_1_0</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>0</sbl:startChannel>
+                        <sbl:numberChannels>1920</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+            <sbl:BLBaseBandConfig dataProducts="CROSS_AND_AUTO">
+                <sbl:BaseBandSpecificationRef
+                    entityId="uid://A001/X200/X6f3" partId="X12929428"
+                    entityTypeName="SchedBlock" documentVersion="1"/>
+                <sbl:BLSpectralWindow sideBand="USB"
+                    windowFunction="HANNING" polnProducts="XX,YY" correlationBits="BITS_2x2">
+                    <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+                    <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+                    <sbl:name>SW-1</sbl:name>
+                    <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+                    <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+                    <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+                    <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+                    <sbl:SpectralLine>
+                        <sbl:restFrequency unit="GHz">111.0</sbl:restFrequency>
+                        <sbl:transition>Continuum_111</sbl:transition>
+                        <sbl:spatalogId>0</sbl:spatalogId>
+                    </sbl:SpectralLine>
+                    <sbl:correlationNyquistOversampling>false</sbl:correlationNyquistOversampling>
+                    <sbl:quantizationCorrection>true</sbl:quantizationCorrection>
+                    <sbl:ChannelAverageRegion>
+                        <sbl:startChannel>6</sbl:startChannel>
+                        <sbl:numberChannels>115</sbl:numberChannels>
+                    </sbl:ChannelAverageRegion>
+                </sbl:BLSpectralWindow>
+            </sbl:BLBaseBandConfig>
+        </sbl:BLCorrelatorConfiguration>
+        <sbl:FrequencySetup receiverBand="ALMA_RB_03" dopplerReference="rest">
+            <sbl:restFrequency unit="GHz">111.0</sbl:restFrequency>
+            <sbl:transitionName>CS_v_0_J_2_1</sbl:transitionName>
+            <sbl:lO1Frequency unit="GHz">104.46511013076925</sbl:lO1Frequency>
+            <sbl:isUserSpecifiedLO1>false</sbl:isUserSpecifiedLO1>
+            <sbl:hasHardwareSetup>false</sbl:hasHardwareSetup>
+            <sbl:floog unit="GHz">0.0</sbl:floog>
+            <sbl:tuneHigh>false</sbl:tuneHigh>
+            <sbl:BaseBandSpecification entityPartId="X19293542"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_1" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">97.98095</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">9.479</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+            <sbl:BaseBandSpecification entityPartId="X30091482"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_2" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">99.0</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">8.462001251418528</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+            <sbl:BaseBandSpecification entityPartId="X15139893"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_3" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">109.991765</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">8.530108921229303</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+            <sbl:BaseBandSpecification entityPartId="X12929428"
+                almatype="APDM::BaseBandSpecification"
+                baseBandName="BB_4" sideBandPreference="NONE">
+                <sbl:centerFrequency unit="GHz">111.0</sbl:centerFrequency>
+                <sbl:frequencySwitching>false</sbl:frequencySwitching>
+                <sbl:lO2Frequency unit="GHz">9.538375582654275</sbl:lO2Frequency>
+                <sbl:weighting>100.0</sbl:weighting>
+                <sbl:useUSB>true</sbl:useUSB>
+                <sbl:use12GHzFilter>false</sbl:use12GHzFilter>
+                <sbl:imageCenterFrequency unit="GHz">0.0</sbl:imageCenterFrequency>
+            </sbl:BaseBandSpecification>
+        </sbl:FrequencySetup>
+    </sbl:SpectralSpec>
+    <sbl:FieldSource entityPartId="X3824231"
+        almatype="APDM::FieldSource" solarSystemObject="Unspecified">
+        <sbl:sourceCoordinates system="J2000" type="ABSOLUTE">
+            <val:longitude unit="deg">0.0</val:longitude>
+            <val:latitude unit="deg">0.0</val:latitude>
+            <val:fieldName>None</val:fieldName>
+        </sbl:sourceCoordinates>
+        <sbl:sourceName>query</sbl:sourceName>
+        <sbl:sourceVelocity referenceSystem="lsrk" dopplerCalcType="RADIO">
+            <val:centerVelocity unit="km/s">0.0</val:centerVelocity>
+        </sbl:sourceVelocity>
+        <sbl:pMRA unit="mas/yr">0.0</sbl:pMRA>
+        <sbl:pMDec unit="mas/yr">0.0</sbl:pMDec>
+        <sbl:nonSiderealMotion>false</sbl:nonSiderealMotion>
+        <sbl:parallax unit="mas">0.0</sbl:parallax>
+        <sbl:name>Pointing Template (Cal Group)</sbl:name>
+        <sbl:isQuery>true</sbl:isQuery>
+        <sbl:PointingPattern type="point">
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcmin">0.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:isMosaic>false</sbl:isMosaic>
+        </sbl:PointingPattern>
+        <sbl:QuerySource intendedUse="Phase">
+            <sbl:queryCenter system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">277.4916666666667</val:longitude>
+                <val:latitude unit="deg">1.2083333333333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:queryCenter>
+            <sbl:searchRadius unit="deg">15.0</sbl:searchRadius>
+            <sbl:use>UNDEFINED</sbl:use>
+            <sbl:maxSources>40</sbl:maxSources>
+        </sbl:QuerySource>
+        <sbl:Reference>
+            <sbl:referenceCoordinates system="horizon" type="RELATIVE">
+                <val:longitude unit="arcmin">2.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:referenceCoordinates>
+            <sbl:integrationTime unit="s">4.0</sbl:integrationTime>
+            <sbl:cycleTime unit="h">100.0</sbl:cycleTime>
+            <sbl:subScanDuration unit="s">2.016</sbl:subScanDuration>
+        </sbl:Reference>
+    </sbl:FieldSource>
+    <sbl:FieldSource entityPartId="X31140340"
+        almatype="APDM::FieldSource" solarSystemObject="Unspecified">
+        <sbl:sourceCoordinates system="J2000" type="ABSOLUTE">
+            <val:longitude unit="deg">0.0</val:longitude>
+            <val:latitude unit="deg">0.0</val:latitude>
+            <val:fieldName>None</val:fieldName>
+        </sbl:sourceCoordinates>
+        <sbl:sourceName>query</sbl:sourceName>
+        <sbl:sourceVelocity referenceSystem="lsrk" dopplerCalcType="RADIO">
+            <val:centerVelocity unit="km/s">0.0</val:centerVelocity>
+        </sbl:sourceVelocity>
+        <sbl:pMRA unit="mas/yr">0.0</sbl:pMRA>
+        <sbl:pMDec unit="mas/yr">0.0</sbl:pMDec>
+        <sbl:nonSiderealMotion>false</sbl:nonSiderealMotion>
+        <sbl:parallax unit="mas">0.0</sbl:parallax>
+        <sbl:name>Pointing Template (Science Group)</sbl:name>
+        <sbl:isQuery>true</sbl:isQuery>
+        <sbl:PointingPattern type="point">
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcmin">0.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:isMosaic>false</sbl:isMosaic>
+        </sbl:PointingPattern>
+        <sbl:QuerySource intendedUse="Phase">
+            <sbl:queryCenter system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">277.4916666666667</val:longitude>
+                <val:latitude unit="deg">1.2083333333333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:queryCenter>
+            <sbl:searchRadius unit="deg">15.0</sbl:searchRadius>
+            <sbl:use>UNDEFINED</sbl:use>
+            <sbl:maxSources>40</sbl:maxSources>
+        </sbl:QuerySource>
+        <sbl:Reference>
+            <sbl:referenceCoordinates system="horizon" type="RELATIVE">
+                <val:longitude unit="arcmin">2.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:referenceCoordinates>
+            <sbl:integrationTime unit="s">4.0</sbl:integrationTime>
+            <sbl:cycleTime unit="h">100.0</sbl:cycleTime>
+            <sbl:subScanDuration unit="s">2.016</sbl:subScanDuration>
+        </sbl:Reference>
+    </sbl:FieldSource>
+    <sbl:FieldSource entityPartId="X12712577"
+        almatype="APDM::FieldSource" solarSystemObject="Unspecified">
+        <sbl:sourceCoordinates system="J2000" type="ABSOLUTE">
+            <val:longitude unit="deg">0.0</val:longitude>
+            <val:latitude unit="deg">0.0</val:latitude>
+            <val:fieldName>None</val:fieldName>
+        </sbl:sourceCoordinates>
+        <sbl:sourceName>query</sbl:sourceName>
+        <sbl:sourceVelocity referenceSystem="lsrk" dopplerCalcType="RADIO">
+            <val:centerVelocity unit="km/s">0.0</val:centerVelocity>
+        </sbl:sourceVelocity>
+        <sbl:pMRA unit="mas/yr">0.0</sbl:pMRA>
+        <sbl:pMDec unit="mas/yr">0.0</sbl:pMDec>
+        <sbl:nonSiderealMotion>false</sbl:nonSiderealMotion>
+        <sbl:parallax unit="mas">0.0</sbl:parallax>
+        <sbl:name>Amplitude</sbl:name>
+        <sbl:isQuery>true</sbl:isQuery>
+        <sbl:PointingPattern type="point">
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcmin">0.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:isMosaic>false</sbl:isMosaic>
+        </sbl:PointingPattern>
+        <sbl:QuerySource intendedUse="Phase">
+            <sbl:queryCenter system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">277.4916666666667</val:longitude>
+                <val:latitude unit="deg">1.2083333333333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:queryCenter>
+            <sbl:searchRadius unit="deg">0.0</sbl:searchRadius>
+            <sbl:use>UNDEFINED</sbl:use>
+            <sbl:maxSources>40</sbl:maxSources>
+        </sbl:QuerySource>
+        <sbl:Reference>
+            <sbl:referenceCoordinates system="horizon" type="RELATIVE">
+                <val:longitude unit="arcmin">2.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:referenceCoordinates>
+            <sbl:integrationTime unit="s">4.0</sbl:integrationTime>
+            <sbl:cycleTime unit="h">100.0</sbl:cycleTime>
+            <sbl:subScanDuration unit="s">6.048</sbl:subScanDuration>
+        </sbl:Reference>
+    </sbl:FieldSource>
+    <sbl:FieldSource entityPartId="X26306735"
+        almatype="APDM::FieldSource" solarSystemObject="Unspecified">
+        <sbl:sourceCoordinates system="J2000" type="ABSOLUTE">
+            <val:longitude unit="deg">0.0</val:longitude>
+            <val:latitude unit="deg">0.0</val:latitude>
+            <val:fieldName>None</val:fieldName>
+        </sbl:sourceCoordinates>
+        <sbl:sourceName>query</sbl:sourceName>
+        <sbl:sourceVelocity referenceSystem="lsrk" dopplerCalcType="RADIO">
+            <val:centerVelocity unit="km/s">0.0</val:centerVelocity>
+        </sbl:sourceVelocity>
+        <sbl:pMRA unit="mas/yr">0.0</sbl:pMRA>
+        <sbl:pMDec unit="mas/yr">0.0</sbl:pMDec>
+        <sbl:nonSiderealMotion>false</sbl:nonSiderealMotion>
+        <sbl:parallax unit="mas">0.0</sbl:parallax>
+        <sbl:name>Phase</sbl:name>
+        <sbl:isQuery>true</sbl:isQuery>
+        <sbl:PointingPattern type="point">
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcmin">0.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:isMosaic>false</sbl:isMosaic>
+        </sbl:PointingPattern>
+        <sbl:QuerySource intendedUse="Phase">
+            <sbl:queryCenter system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">277.4916666666667</val:longitude>
+                <val:latitude unit="deg">1.2083333333333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:queryCenter>
+            <sbl:searchRadius unit="deg">15.0</sbl:searchRadius>
+            <sbl:use>UNDEFINED</sbl:use>
+            <sbl:maxSources>40</sbl:maxSources>
+        </sbl:QuerySource>
+        <sbl:Reference>
+            <sbl:referenceCoordinates system="horizon" type="RELATIVE">
+                <val:longitude unit="arcmin">2.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:referenceCoordinates>
+            <sbl:integrationTime unit="s">4.0</sbl:integrationTime>
+            <sbl:cycleTime unit="h">100.0</sbl:cycleTime>
+            <sbl:subScanDuration unit="s">6.048</sbl:subScanDuration>
+        </sbl:Reference>
+    </sbl:FieldSource>
+    <sbl:FieldSource entityPartId="X18335561"
+        almatype="APDM::FieldSource" solarSystemObject="Unspecified">
+        <sbl:sourceCoordinates system="J2000" type="ABSOLUTE">
+            <val:longitude unit="deg">0.0</val:longitude>
+            <val:latitude unit="deg">0.0</val:latitude>
+            <val:fieldName>None</val:fieldName>
+        </sbl:sourceCoordinates>
+        <sbl:sourceName>query</sbl:sourceName>
+        <sbl:sourceVelocity referenceSystem="lsrk" dopplerCalcType="RADIO">
+            <val:centerVelocity unit="km/s">0.0</val:centerVelocity>
+        </sbl:sourceVelocity>
+        <sbl:pMRA unit="mas/yr">0.0</sbl:pMRA>
+        <sbl:pMDec unit="mas/yr">0.0</sbl:pMDec>
+        <sbl:nonSiderealMotion>false</sbl:nonSiderealMotion>
+        <sbl:parallax unit="mas">0.0</sbl:parallax>
+        <sbl:name>Bandpass</sbl:name>
+        <sbl:isQuery>true</sbl:isQuery>
+        <sbl:PointingPattern type="point">
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcmin">0.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:isMosaic>false</sbl:isMosaic>
+        </sbl:PointingPattern>
+        <sbl:QuerySource intendedUse="Phase">
+            <sbl:queryCenter system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">277.4916666666667</val:longitude>
+                <val:latitude unit="deg">1.2083333333333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:queryCenter>
+            <sbl:searchRadius unit="deg">120.0</sbl:searchRadius>
+            <sbl:use>UNDEFINED</sbl:use>
+            <sbl:maxSources>40</sbl:maxSources>
+        </sbl:QuerySource>
+        <sbl:Reference>
+            <sbl:referenceCoordinates system="horizon" type="RELATIVE">
+                <val:longitude unit="arcmin">2.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:referenceCoordinates>
+            <sbl:integrationTime unit="s">4.0</sbl:integrationTime>
+            <sbl:cycleTime unit="h">100.0</sbl:cycleTime>
+            <sbl:subScanDuration unit="s">6.048</sbl:subScanDuration>
+        </sbl:Reference>
+    </sbl:FieldSource>
+    <sbl:FieldSource entityPartId="X17680280"
+        almatype="APDM::FieldSource" solarSystemObject="Unspecified">
+        <sbl:sourceCoordinates system="J2000" type="ABSOLUTE">
+            <val:longitude unit="deg">277.4916666666667</val:longitude>
+            <val:latitude unit="deg">1.2083333333333333</val:latitude>
+            <val:fieldName>None</val:fieldName>
+        </sbl:sourceCoordinates>
+        <sbl:sourceName>Serpens1</sbl:sourceName>
+        <sbl:sourceVelocity referenceSystem="lsrk" dopplerCalcType="RADIO">
+            <val:centerVelocity unit="km/s">8.0</val:centerVelocity>
+        </sbl:sourceVelocity>
+        <sbl:sourceEphemeris></sbl:sourceEphemeris>
+        <sbl:pMRA unit="mas/yr">0.0</sbl:pMRA>
+        <sbl:pMDec unit="mas/yr">0.0</sbl:pMDec>
+        <sbl:nonSiderealMotion>false</sbl:nonSiderealMotion>
+        <sbl:parallax unit="mas">0.0</sbl:parallax>
+        <sbl:name>Primary:</sbl:name>
+        <sbl:isQuery>false</sbl:isQuery>
+        <sbl:PointingPattern type="point">
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-212.55530375724086</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770633</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-182.19026036360958</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770772</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-151.82521696960234</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-121.46017357554805</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-91.09513018179281</val:longitude>
+                <val:latitude unit="arcsec">-118.3360453477063</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-60.730086787938546</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-30.36504339413653</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770848</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">0.0</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770706</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">30.365043393953336</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770633</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">60.730086787944266</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770706</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">91.09513018161536</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770633</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">121.4601735757427</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">151.82521696960234</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770706</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">182.19026036343786</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770772</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">212.55530375742978</val:longitude>
+                <val:latitude unit="arcsec">-118.33604534770848</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-197.37278206056507</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638154961</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-167.00773866666236</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638155103</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-136.64269527266288</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638155105</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-106.27765187869518</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638155105</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-75.91260848475036</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638155034</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-45.54756509115149</val:longitude>
+                <val:latitude unit="arcsec">-92.0391463815489</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-15.182521696944994</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638154961</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">15.182521696950714</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638155031</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">45.54756509079082</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638154892</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">75.91260848456716</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638154964</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">106.27765187888411</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638155035</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">136.64269527265714</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638155035</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">167.00773866648487</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638155105</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">197.37278206038187</val:longitude>
+                <val:latitude unit="arcsec">-92.03914638155034</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-212.55530375752042</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539211</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-182.1902603638278</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539139</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-151.82521696960504</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539211</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-121.46017357589668</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539284</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-91.09513018176067</val:longitude>
+                <val:latitude unit="arcsec">-65.7422474153907</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-60.73008678791506</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539355</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-30.365043393932964</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539282</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">0.0</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539284</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">30.36504339393869</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539284</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">60.730086787731864</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539355</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">91.09513018158317</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539139</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">121.46017357571347</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539426</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">151.82521696978824</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539426</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">182.19026036364463</val:longitude>
+                <val:latitude unit="arcsec">-65.74224741539355</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">212.55530375752045</val:longitude>
+                <val:latitude unit="arcsec">-65.7422474153907</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-197.37278206032707</val:longitude>
+                <val:latitude unit="arcsec">-39.445348449233855</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-167.00773866651323</val:longitude>
+                <val:latitude unit="arcsec">-39.445348449234565</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-136.64269527297503</val:longitude>
+                <val:latitude unit="arcsec">-39.44534844923528</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-106.2776518787647</val:longitude>
+                <val:latitude unit="arcsec">-39.445348449233855</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-75.91260848494383</val:longitude>
+                <val:latitude unit="arcsec">-39.445348449236</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-45.547565090936615</val:longitude>
+                <val:latitude unit="arcsec">-39.445348449236</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-15.182521696877172</val:longitude>
+                <val:latitude unit="arcsec">-39.445348449234565</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">15.1825216968829</val:longitude>
+                <val:latitude unit="arcsec">-39.445348449234565</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">45.54756509075342</val:longitude>
+                <val:latitude unit="arcsec">-39.4453484492353</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">75.91260848476061</val:longitude>
+                <val:latitude unit="arcsec">-39.44534844923671</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">106.2776518787647</val:longitude>
+                <val:latitude unit="arcsec">-39.445348449233855</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">136.64269527261436</val:longitude>
+                <val:latitude unit="arcsec">-39.44534844923457</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">167.00773866651326</val:longitude>
+                <val:latitude unit="arcsec">-39.44534844923457</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">197.37278206069917</val:longitude>
+                <val:latitude unit="arcsec">-39.445348449234565</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-212.55530375758673</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483078426</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-182.19026036337152</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483077716</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-151.82521696973117</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483076996</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-121.4601735755348</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483077714</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-91.09513018185551</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483077714</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-60.730086787905734</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483075566</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-30.365043394025616</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483077716</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">0.0</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483076996</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">30.365043394025616</val:longitude>
+                <val:latitude unit="arcsec">-13.14844948307843</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">60.73008678791147</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483075566</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">91.09513018167232</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483076996</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">121.46017357590692</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483077714</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">151.82521696955368</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483076996</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">182.19026036374365</val:longitude>
+                <val:latitude unit="arcsec">-13.14844948307843</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">212.55530375740932</val:longitude>
+                <val:latitude unit="arcsec">-13.148449483077714</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-197.37278206068473</val:longitude>
+                <val:latitude unit="arcsec">13.148449483079146</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-167.00773866685893</val:longitude>
+                <val:latitude unit="arcsec">13.148449483081292</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-136.6426952725989</val:longitude>
+                <val:latitude unit="arcsec">13.148449483079862</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-106.27765187878315</val:longitude>
+                <val:latitude unit="arcsec">13.148449483080576</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-75.91260848462983</val:longitude>
+                <val:latitude unit="arcsec">13.148449483081292</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-45.547565091217656</val:longitude>
+                <val:latitude unit="arcsec">13.148449483080576</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-15.182521697037647</val:longitude>
+                <val:latitude unit="arcsec">13.14844948308058</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">15.18252169686017</val:longitude>
+                <val:latitude unit="arcsec">13.14844948308058</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">45.54756509067378</val:longitude>
+                <val:latitude unit="arcsec">13.14844948307986</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">75.91260848499624</val:longitude>
+                <val:latitude unit="arcsec">13.148449483081292</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">106.27765187859993</val:longitude>
+                <val:latitude unit="arcsec">13.148449483080576</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">136.64269527261038</val:longitude>
+                <val:latitude unit="arcsec">13.148449483081293</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">167.00773866668143</val:longitude>
+                <val:latitude unit="arcsec">13.148449483082008</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">197.37278206050155</val:longitude>
+                <val:latitude unit="arcsec">13.148449483081292</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-212.55530375748643</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923743</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-182.19026036339193</val:longitude>
+                <val:latitude unit="arcsec">39.445348449237436</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-151.82521696972918</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923671</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-121.46017357587677</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923671</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-91.09513018181435</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923886</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-60.73008678769322</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923672</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-30.365043394008097</val:longitude>
+                <val:latitude unit="arcsec">39.445348449237436</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">5.724998531319875E-12</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923815</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">30.36504339364169</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923743</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">60.7300867880596</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923671</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">91.09513018164263</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923886</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">121.46017357588254</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923672</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">151.82521696954598</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923672</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">182.1902603634034</val:longitude>
+                <val:latitude unit="arcsec">39.445348449238864</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">212.55530375730322</val:longitude>
+                <val:latitude unit="arcsec">39.44534844923743</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-197.37278206057346</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153964</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-167.0077386666691</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153957</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-136.64269527253649</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153957</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-106.27765187904262</val:longitude>
+                <val:latitude unit="arcsec">65.74224741539498</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-75.91260848486189</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153957</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-45.5475650908783</val:longitude>
+                <val:latitude unit="arcsec">65.74224741539426</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-15.182521697231776</val:longitude>
+                <val:latitude unit="arcsec">65.74224741539426</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">15.182521696865376</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153957</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">45.547565090872574</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153964</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">75.91260848468441</val:longitude>
+                <val:latitude unit="arcsec">65.74224741539571</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">106.27765187868195</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153957</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">136.64269527235902</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153957</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">167.00773866649735</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153957</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">197.37278206039022</val:longitude>
+                <val:latitude unit="arcsec">65.7422474153957</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-212.555303757431</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155321</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-182.19026036359128</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155321</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-151.82521696982232</val:longitude>
+                <val:latitude unit="arcsec">92.0391463815539</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-121.46017357570891</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155393</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-91.09513018177448</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155392</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-60.73008678795869</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155392</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-30.365043393868916</val:longitude>
+                <val:latitude unit="arcsec">92.0391463815532</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">0.0</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155464</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">30.365043393679997</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155321</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">60.730086787786945</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155392</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">91.09513018159701</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155321</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">121.4601735758978</val:longitude>
+                <val:latitude unit="arcsec">92.0391463815532</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">151.82521696963911</val:longitude>
+                <val:latitude unit="arcsec">92.0391463815539</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">182.19026036359696</val:longitude>
+                <val:latitude unit="arcsec">92.0391463815532</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">212.55530375725354</val:longitude>
+                <val:latitude unit="arcsec">92.03914638155392</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-197.3727820605994</val:longitude>
+                <val:latitude unit="arcsec">118.33604534771207</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-167.007738666573</val:longitude>
+                <val:latitude unit="arcsec">118.33604534771132</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-136.64269527269573</val:longitude>
+                <val:latitude unit="arcsec">118.33604534771203</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-106.27765187873555</val:longitude>
+                <val:latitude unit="arcsec">118.3360453477106</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-75.91260848484391</val:longitude>
+                <val:latitude unit="arcsec">118.33604534770993</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-45.54756509097753</val:longitude>
+                <val:latitude unit="arcsec">118.33604534771062</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">-15.182521697075938</val:longitude>
+                <val:latitude unit="arcsec">118.33604534770987</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">15.182521696887015</val:longitude>
+                <val:latitude unit="arcsec">118.33604534770993</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">45.54756509080005</val:longitude>
+                <val:latitude unit="arcsec">118.3360453477106</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">75.91260848466644</val:longitude>
+                <val:latitude unit="arcsec">118.3360453477106</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">106.27765187855809</val:longitude>
+                <val:latitude unit="arcsec">118.33604534771062</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">136.6426952725183</val:longitude>
+                <val:latitude unit="arcsec">118.33604534771135</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">167.00773866657875</val:longitude>
+                <val:latitude unit="arcsec">118.33604534770987</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:phaseCenterCoordinates system="J2000" type="RELATIVE">
+                <val:longitude unit="arcsec">197.37278206042194</val:longitude>
+                <val:latitude unit="arcsec">118.33604534771203</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:phaseCenterCoordinates>
+            <sbl:isMosaic>true</sbl:isMosaic>
+        </sbl:PointingPattern>
+        <sbl:Reference>
+            <sbl:referenceCoordinates system="horizon" type="RELATIVE">
+                <val:longitude unit="arcmin">2.0</val:longitude>
+                <val:latitude unit="arcmin">0.0</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </sbl:referenceCoordinates>
+            <sbl:integrationTime unit="s">4.0</sbl:integrationTime>
+            <sbl:cycleTime unit="h">100.0</sbl:cycleTime>
+            <sbl:subScanDuration unit="s">6.048</sbl:subScanDuration>
+        </sbl:Reference>
+    </sbl:FieldSource>
+    <sbl:ObservingGroup>
+        <sbl:index>1</sbl:index>
+        <sbl:name>Calibrators</sbl:name>
+        <sbl:OrderedTarget>
+            <sbl:index>1</sbl:index>
+            <sbl:TargetRef entityId="uid://A001/X200/X6f3"
+                partId="X17127610" entityTypeName="SchedBlock" documentVersion="1"/>
+        </sbl:OrderedTarget>
+        <sbl:OrderedTarget>
+            <sbl:index>2</sbl:index>
+            <sbl:TargetRef entityId="uid://A001/X200/X6f3"
+                partId="X19225537" entityTypeName="SchedBlock" documentVersion="1"/>
+        </sbl:OrderedTarget>
+        <sbl:OrderedTarget>
+            <sbl:index>3</sbl:index>
+            <sbl:TargetRef entityId="uid://A001/X200/X6f3"
+                partId="X1880886" entityTypeName="SchedBlock" documentVersion="1"/>
+        </sbl:OrderedTarget>
+    </sbl:ObservingGroup>
+    <sbl:ObservingGroup>
+        <sbl:index>2</sbl:index>
+        <sbl:name>Science</sbl:name>
+        <sbl:OrderedTarget>
+            <sbl:index>1</sbl:index>
+            <sbl:TargetRef entityId="uid://A001/X200/X6f3"
+                partId="X27225284" entityTypeName="SchedBlock" documentVersion="1"/>
+        </sbl:OrderedTarget>
+        <sbl:OrderedTarget>
+            <sbl:index>2</sbl:index>
+            <sbl:TargetRef entityId="uid://A001/X200/X6f3"
+                partId="X24109298" entityTypeName="SchedBlock" documentVersion="1"/>
+        </sbl:OrderedTarget>
+        <sbl:OrderedTarget>
+            <sbl:index>3</sbl:index>
+            <sbl:TargetRef entityId="uid://A001/X200/X6f3"
+                partId="X28885884" entityTypeName="SchedBlock" documentVersion="1"/>
+        </sbl:OrderedTarget>
+    </sbl:ObservingGroup>
+    <sbl:PointingCalParameters entityPartId="X30614516"
+        almatype="APDM::ObservingParameters"
+        dataOrigin="CHANNEL_AVERAGE_CROSS" pointingMethod="FIVE_POINT">
+        <sbl:name>PointingCalParameters (Cal Group)</sbl:name>
+        <sbl:cycleTime unit="h">2.0</sbl:cycleTime>
+        <sbl:defaultIntegrationTime unit="s">10.0</sbl:defaultIntegrationTime>
+        <sbl:subScanDuration unit="s">10.08</sbl:subScanDuration>
+        <sbl:forceAtmCal>false</sbl:forceAtmCal>
+        <sbl:forceExecution>false</sbl:forceExecution>
+        <sbl:desiredAccuracy unit="arcsec">28.266745788023126</sbl:desiredAccuracy>
+        <sbl:maximumElapsedTime unit="h">99999.0</sbl:maximumElapsedTime>
+        <sbl:excursion unit="arcsec">28.266745788023126</sbl:excursion>
+    </sbl:PointingCalParameters>
+    <sbl:PointingCalParameters entityPartId="X12706927"
+        almatype="APDM::ObservingParameters"
+        dataOrigin="CHANNEL_AVERAGE_CROSS" pointingMethod="FIVE_POINT">
+        <sbl:name>PointingCalParameters (Science Group)</sbl:name>
+        <sbl:cycleTime unit="h">2.0</sbl:cycleTime>
+        <sbl:defaultIntegrationTime unit="s">10.0</sbl:defaultIntegrationTime>
+        <sbl:subScanDuration unit="s">10.08</sbl:subScanDuration>
+        <sbl:forceAtmCal>false</sbl:forceAtmCal>
+        <sbl:forceExecution>false</sbl:forceExecution>
+        <sbl:desiredAccuracy unit="arcsec">28.266745788023126</sbl:desiredAccuracy>
+        <sbl:maximumElapsedTime unit="h">99999.0</sbl:maximumElapsedTime>
+        <sbl:excursion unit="arcsec">28.266745788023126</sbl:excursion>
+    </sbl:PointingCalParameters>
+    <sbl:AmplitudeCalParameters entityPartId="X27264356"
+        almatype="APDM::ObservingParameters" dataOrigin="CHANNEL_AVERAGE_CROSS">
+        <sbl:name></sbl:name>
+        <sbl:cycleTime unit="h">6.0</sbl:cycleTime>
+        <sbl:defaultIntegrationTime unit="s">150.0</sbl:defaultIntegrationTime>
+        <sbl:subScanDuration unit="s">30.24</sbl:subScanDuration>
+        <sbl:forceAtmCal>false</sbl:forceAtmCal>
+        <sbl:forceExecution>false</sbl:forceExecution>
+    </sbl:AmplitudeCalParameters>
+    <sbl:PhaseCalParameters entityPartId="X7398042"
+        almatype="APDM::ObservingParameters" dataOrigin="CHANNEL_AVERAGE_CROSS">
+        <sbl:name></sbl:name>
+        <sbl:cycleTime unit="min">10.0</sbl:cycleTime>
+        <sbl:defaultIntegrationTime unit="s">30.0</sbl:defaultIntegrationTime>
+        <sbl:subScanDuration unit="s">30.24</sbl:subScanDuration>
+        <sbl:forceAtmCal>false</sbl:forceAtmCal>
+        <sbl:forceExecution>false</sbl:forceExecution>
+    </sbl:PhaseCalParameters>
+    <sbl:BandpassCalParameters entityPartId="X7707410"
+        almatype="APDM::ObservingParameters" dataOrigin="FULL_RESOLUTION_CROSS">
+        <sbl:name>BandpassCalParameters (CS v=0 J=2-1 Science setup)</sbl:name>
+        <sbl:cycleTime unit="h">2.0</sbl:cycleTime>
+        <sbl:defaultIntegrationTime unit="min">5.0</sbl:defaultIntegrationTime>
+        <sbl:subScanDuration unit="s">30.24</sbl:subScanDuration>
+        <sbl:forceAtmCal>false</sbl:forceAtmCal>
+        <sbl:forceExecution>false</sbl:forceExecution>
+        <sbl:desiredAmplitudeAccuracy>5.0</sbl:desiredAmplitudeAccuracy>
+        <sbl:maximumElapsedTime unit="h">99999.0</sbl:maximumElapsedTime>
+        <sbl:desiredPhaseAccuracy unit="arcsec">1.0</sbl:desiredPhaseAccuracy>
+    </sbl:BandpassCalParameters>
+    <sbl:ScienceParameters entityPartId="X6361760" almatype="APDM::ObservingParameters">
+        <sbl:name>Science Params</sbl:name>
+        <sbl:representativeBandwidth unit="MHz">0.06536410957065861</sbl:representativeBandwidth>
+        <sbl:representativeFrequency unit="GHz">97.97833536584534</sbl:representativeFrequency>
+        <sbl:sensitivityGoal unit="mJy">56.52940831737478</sbl:sensitivityGoal>
+        <sbl:integrationTime unit="s">1753.8200000000002</sbl:integrationTime>
+        <sbl:subScanDuration unit="s">12.096</sbl:subScanDuration>
+        <sbl:forceAtmCal>false</sbl:forceAtmCal>
+    </sbl:ScienceParameters>
+    <sbl:ObsProcedure>
+        <sbl:obsProcScript>StandardInterferometry.py</sbl:obsProcScript>
+    </sbl:ObsProcedure>
+    <sbl:Preconditions>
+        <prj:baselineCalValid>false</prj:baselineCalValid>
+        <prj:polarizationCalValid>true</prj:polarizationCalValid>
+        <prj:minAllowedHA unit="deg" userUnit="deg">0.0</prj:minAllowedHA>
+        <prj:maxAllowedHA unit="deg" userUnit="deg">360.0</prj:maxAllowedHA>
+        <prj:WeatherConstraints>
+            <prj:maxPWVC unit="mm">5.099999904632568</prj:maxPWVC>
+            <prj:seeing unit="arcsec">0.0</prj:seeing>
+        </prj:WeatherConstraints>
+    </sbl:Preconditions>
+    <sbl:SchedBlockControl>
+        <sbl:sBMaximumTime unit="h">2.0</sbl:sBMaximumTime>
+        <sbl:indefiniteRepeat>false</sbl:indefiniteRepeat>
+        <sbl:executionCount>1</sbl:executionCount>
+        <sbl:runQuicklook>true</sbl:runQuicklook>
+    </sbl:SchedBlockControl>
+    <sbl:SchedulingConstraints representativeReceiverBand="ALMA_RB_03">
+        <sbl:representativeFrequency unit="GHz">97.97833536584534</sbl:representativeFrequency>
+        <sbl:minAcceptableAngResolution unit="arcsec">3.225100720685975</sbl:minAcceptableAngResolution>
+        <sbl:maxAcceptableAngResolution unit="arcsec">3.941789769727303</sbl:maxAcceptableAngResolution>
+        <sbl:dynamicRange>1.0</sbl:dynamicRange>
+        <sbl:representativeCoordinates system="J2000" type="ABSOLUTE">
+            <val:longitude unit="deg">277.4916666666667</val:longitude>
+            <val:latitude unit="deg">1.2083333333333333</val:latitude>
+            <val:fieldName>None</val:fieldName>
+        </sbl:representativeCoordinates>
+        <sbl:requiredReceiverBands>ALMA_RB_03</sbl:requiredReceiverBands>
+        <sbl:representativeTargetRef entityId="uid://A001/X200/X6f3"
+            partId="X28885884" entityTypeName="SchedBlock" documentVersion="1"/>
+    </sbl:SchedulingConstraints>
+    <sbl:Target entityPartId="X17127610" almatype="APDM::Target">
+        <sbl:AbstractInstrumentSpecRef entityId="uid://A001/X200/X6f3"
+            partId="X19145816" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:FieldSourceRef entityId="uid://A001/X200/X6f3"
+            partId="X3824231" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:ObservingParametersRef entityId="uid://A001/X200/X6f3"
+            partId="X30614516" entityTypeName="SchedBlock" documentVersion="1"/>
+    </sbl:Target>
+    <sbl:Target entityPartId="X27225284" almatype="APDM::Target">
+        <sbl:AbstractInstrumentSpecRef entityId="uid://A001/X200/X6f3"
+            partId="X19145816" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:FieldSourceRef entityId="uid://A001/X200/X6f3"
+            partId="X31140340" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:ObservingParametersRef entityId="uid://A001/X200/X6f3"
+            partId="X12706927" entityTypeName="SchedBlock" documentVersion="1"/>
+    </sbl:Target>
+    <sbl:Target entityPartId="X19225537" almatype="APDM::Target">
+        <sbl:AbstractInstrumentSpecRef entityId="uid://A001/X200/X6f3"
+            partId="X3936762" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:FieldSourceRef entityId="uid://A001/X200/X6f3"
+            partId="X12712577" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:ObservingParametersRef entityId="uid://A001/X200/X6f3"
+            partId="X27264356" entityTypeName="SchedBlock" documentVersion="1"/>
+    </sbl:Target>
+    <sbl:Target entityPartId="X24109298" almatype="APDM::Target">
+        <sbl:AbstractInstrumentSpecRef entityId="uid://A001/X200/X6f3"
+            partId="X3936762" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:FieldSourceRef entityId="uid://A001/X200/X6f3"
+            partId="X26306735" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:ObservingParametersRef entityId="uid://A001/X200/X6f3"
+            partId="X7398042" entityTypeName="SchedBlock" documentVersion="1"/>
+    </sbl:Target>
+    <sbl:Target entityPartId="X1880886" almatype="APDM::Target">
+        <sbl:AbstractInstrumentSpecRef entityId="uid://A001/X200/X6f3"
+            partId="X3936762" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:FieldSourceRef entityId="uid://A001/X200/X6f3"
+            partId="X18335561" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:ObservingParametersRef entityId="uid://A001/X200/X6f3"
+            partId="X7707410" entityTypeName="SchedBlock" documentVersion="1"/>
+    </sbl:Target>
+    <sbl:Target entityPartId="X28885884" almatype="APDM::Target">
+        <sbl:AbstractInstrumentSpecRef entityId="uid://A001/X200/X6f3"
+            partId="X30601823" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:FieldSourceRef entityId="uid://A001/X200/X6f3"
+            partId="X17680280" entityTypeName="SchedBlock" documentVersion="1"/>
+        <sbl:ObservingParametersRef entityId="uid://A001/X200/X6f3"
+            partId="X6361760" entityTypeName="SchedBlock" documentVersion="1"/>
+    </sbl:Target>
+</sbl:SchedBlock>

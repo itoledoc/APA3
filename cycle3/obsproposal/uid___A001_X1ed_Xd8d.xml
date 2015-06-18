@@ -1,0 +1,1959 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prp:ObsProposal xmlns:ent="Alma/CommonEntity"
+    xmlns:val="Alma/ValueTypes" xmlns:prp="Alma/ObsPrep/ObsProposal"
+    xmlns:orv="Alma/ObsPrep/ObsReview"
+    xmlns:ps="Alma/ObsPrep/ProjectStatus"
+    xmlns:oat="Alma/ObsPrep/ObsAttachment"
+    xmlns:prj="Alma/ObsPrep/ObsProject"
+    xmlns:sbl="Alma/ObsPrep/SchedBlock"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    schemaVersion="13" revision="13" almatype="APDM::ObsProposal" xsi:type="prp:ObsProposal">
+    <prj:ScienceGoal mode="Standard">
+        <prj:name>Inner galaxy sample</prj:name>
+        <prj:note>The targets in this science goal all have galactocentric radii &lt; 4 kpc, which is the radius beyond which the ability to detect CO drops precipitously (APEX survey of Faesi et al. 2014). The expected source line fluxes are based on typical values from our ALMA cycle 2 data. We set the velocity to the NGC 300 systemic velocity; the 610 km/s bandwidth is more than sufficient to cover all local velocities within the galaxy, and this saves retuning between the short pointings. These sources were selected from a sample of Herschel 250 micron dust peaks (also having associated Herschel 500 micron emission), and no catalogued HII region from Deharving et al. (1988) within 9". The spectral setup is focused on 12CO(2-1), with C18O(2-1) added in a separate baseband as a dense gas tracer (the latter is not a primary goal of the proposal). We also include a continuum baseband and one baseband containing the 3 formaldehyde lines at 218 GHz, but this is simply a detection experiment and not a goal of the proposal.</prj:note>
+        <prj:estimatedTotalTime unit="min">201.01160000000004</prj:estimatedTotalTime>
+        <prj:userPriority>0</prj:userPriority>
+        <prj:requiredReceiverBands>ALMA_RB_06</prj:requiredReceiverBands>
+        <prj:estimated12mTime unit="min">201.01160000000004</prj:estimated12mTime>
+        <prj:estimated7mTime unit="s">0.0</prj:estimated7mTime>
+        <prj:estimatedTPTime unit="s">0.0</prj:estimatedTPTime>
+        <prj:estimatedACATime unit="s">0.0</prj:estimatedACATime>
+        <prj:CalibrationSetupParameters selection="system"/>
+        <prj:PerformanceParameters desiredSensitivityFrequencyMeasure="User">
+            <prj:desiredAngularResolution unit="arcsec" userUnit="arcsec">0.8</prj:desiredAngularResolution>
+            <prj:desiredLargestScale unit="arcsec">10.0</prj:desiredLargestScale>
+            <prj:desiredSensitivity unit="Jy" userUnit="mK">0.004168893436465201</prj:desiredSensitivity>
+            <prj:desiredDynamicRange>1.0</prj:desiredDynamicRange>
+            <prj:representativeFrequency unit="GHz">230.42726515289456</prj:representativeFrequency>
+            <prj:useACA>false</prj:useACA>
+            <prj:isTimeConstrained>false</prj:isTimeConstrained>
+            <prj:useTP>false</prj:useTP>
+            <prj:desiredSDSensitivity unit="Jy" userUnit="Jy">0.0</prj:desiredSDSensitivity>
+            <prj:isPointSource>false</prj:isPointSource>
+            <prj:desiredSensitivityReferenceFrequencyWidth unit="GHz" userUnit="km/s">0.0019215565552427487</prj:desiredSensitivityReferenceFrequencyWidth>
+            <prj:needsMoreTime>false</prj:needsMoreTime>
+            <prj:desiredACASensitivity unit="mJy" userUnit="Jy">25.91641773420868</prj:desiredACASensitivity>
+            <prj:desiredTPSensitivity unit="mJy" userUnit="Jy">60.413005402533585</prj:desiredTPSensitivity>
+            <prj:isScheduleConstrained>false</prj:isScheduleConstrained>
+            <prj:desiredTime unit="min">0.0</prj:desiredTime>
+        </prj:PerformanceParameters>
+        <prj:SpectralSetupParameters polarisation="DOUBLE" type="full">
+            <prj:representativeFrequency unit="GHz">230.538</prj:representativeFrequency>
+            <prj:userRepresentativeFrequency>false</prj:userRepresentativeFrequency>
+            <prj:singleContinuumFrequency unit="GHz">0.0</prj:singleContinuumFrequency>
+            <prj:ScienceSpectralWindow groupResourceUse="FULL">
+                <prj:index>0</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>1</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>continuum</prj:transitionName>
+                <prj:centerFrequency unit="GHz">233.0</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">2000.0</prj:bandWidth>
+                <prj:spectralResolution unit="MHz" userUnit="GHz">15.625</prj:spectralResolution>
+                <prj:groupIndex>1</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="FULL">
+                <prj:index>0</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>2</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>C18O 2-1</prj:transitionName>
+                <prj:centerFrequency unit="GHz">219.560358</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">500.0</prj:bandWidth>
+                <prj:spectralResolution unit="kHz" userUnit="GHz">122.07031250000001</prj:spectralResolution>
+                <prj:groupIndex>3</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3768339</prj:splatalogId>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="QUARTER">
+                <prj:index>0</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>2</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>H2CO 3(0,3)-2(0,2)</prj:transitionName>
+                <prj:centerFrequency unit="GHz">218.222192</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">250.0</prj:bandWidth>
+                <prj:spectralResolution unit="MHz" userUnit="GHz">0.244140625</prj:spectralResolution>
+                <prj:groupIndex>2</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3974784</prj:splatalogId>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="QUARTER">
+                <prj:index>1</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>2</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>H2CO 3(2,2)-2(2,1)</prj:transitionName>
+                <prj:centerFrequency unit="GHz">218.47563200000002</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">250.0</prj:bandWidth>
+                <prj:spectralResolution unit="MHz" userUnit="GHz">0.244140625</prj:spectralResolution>
+                <prj:groupIndex>2</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3974785</prj:splatalogId>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="QUARTER">
+                <prj:index>2</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>2</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>H2CO 3(2,1)-2(2,0)</prj:transitionName>
+                <prj:centerFrequency unit="GHz">218.760066</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">250.0</prj:bandWidth>
+                <prj:spectralResolution unit="MHz" userUnit="GHz">0.244140625</prj:spectralResolution>
+                <prj:groupIndex>2</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3974786</prj:splatalogId>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="FULL">
+                <prj:index>0</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>1</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>CO v=0 2-1</prj:transitionName>
+                <prj:centerFrequency unit="GHz">230.538</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">500.0</prj:bandWidth>
+                <prj:spectralResolution unit="kHz" userUnit="GHz">122.07031250000001</prj:spectralResolution>
+                <prj:groupIndex>0</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3768101</prj:splatalogId>
+                <prj:representativeWindow>true</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+        </prj:SpectralSetupParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H1</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.604479166666666</val:longitude>
+                <val:latitude unit="deg">-37.71573611111111</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceEphemeris></prj:sourceEphemeris>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>-1</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H1-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H2</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.637054166666667</val:longitude>
+                <val:latitude unit="deg">-37.723847222222226</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H2-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H3</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.642104166666666</val:longitude>
+                <val:latitude unit="deg">-37.67236666666667</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H3-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H4</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.6446125</val:longitude>
+                <val:latitude unit="deg">-37.703966666666666</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H4-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H5</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.6454125</val:longitude>
+                <val:latitude unit="deg">-37.686188888888886</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H5-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H6</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.65195</val:longitude>
+                <val:latitude unit="deg">-37.683483333333335</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H6-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H7</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.653329166666667</val:longitude>
+                <val:latitude unit="deg">-37.65058055555556</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H7-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H8</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.660604166666667</val:longitude>
+                <val:latitude unit="deg">-37.64723055555555</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H8-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>DCL88-53</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.677870833333333</val:longitude>
+                <val:latitude unit="deg">-37.71979722222222</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>DCL88-53-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H9</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.689504166666667</val:longitude>
+                <val:latitude unit="deg">-37.69800277777778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H9-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H10</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.695183333333333</val:longitude>
+                <val:latitude unit="deg">-37.72101388888889</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H10-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H11</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.700079166666667</val:longitude>
+                <val:latitude unit="deg">-37.69018611111111</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H11-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H12</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.702570833333333</val:longitude>
+                <val:latitude unit="deg">-37.70534444444444</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H12-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H13</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.7149125</val:longitude>
+                <val:latitude unit="deg">-37.745244444444445</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H13-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H14</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.715395833333334</val:longitude>
+                <val:latitude unit="deg">-37.60977777777778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H14-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>DCL88-84</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.715525</val:longitude>
+                <val:latitude unit="deg">-37.66086388888889</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>DCL88-84-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H15</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.731629166666666</val:longitude>
+                <val:latitude unit="deg">-37.64678611111111</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H15-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H16</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.73275</val:longitude>
+                <val:latitude unit="deg">-37.695005555555554</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H16-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H17</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.736604166666666</val:longitude>
+                <val:latitude unit="deg">-37.65023055555555</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H17-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>DCL88-106</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.743445833333332</val:longitude>
+                <val:latitude unit="deg">-37.65318333333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>DCL88-106-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H18</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.747491666666667</val:longitude>
+                <val:latitude unit="deg">-37.63896111111111</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H18-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H19</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.749075</val:longitude>
+                <val:latitude unit="deg">-37.65691944444445</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H19-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H20</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.758479166666667</val:longitude>
+                <val:latitude unit="deg">-37.61210833333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H20-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H21</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.760079166666667</val:longitude>
+                <val:latitude unit="deg">-37.66562777777778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H21-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H22</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.760625</val:longitude>
+                <val:latitude unit="deg">-37.69761666666667</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H22-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H23</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.764329166666666</val:longitude>
+                <val:latitude unit="deg">-37.65635833333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H23-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H24</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.775770833333333</val:longitude>
+                <val:latitude unit="deg">-37.640030555555555</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H24-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H25</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.779075</val:longitude>
+                <val:latitude unit="deg">-37.740033333333336</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H25-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H26</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.788333333333334</val:longitude>
+                <val:latitude unit="deg">-37.72105277777778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H26-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>DCL88-137D</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.798375</val:longitude>
+                <val:latitude unit="deg">-37.68738888888889</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>DCL88-137D-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H27</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.806954166666667</val:longitude>
+                <val:latitude unit="deg">-37.64145555555555</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H27-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H28</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.811625</val:longitude>
+                <val:latitude unit="deg">-37.71463888888889</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">150.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H28-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TechnicalJustification>
+            <prj:justificationText>Our goal is to fully resolve multiple components along the line-of-sight in order to accurately separate GMCs that may overlap in velocity space. We will nominally smooth to 1 km/s to improve signal-to-noise for our initial analysis, but in the cases of potential overlaps will also utilize the raw 0.3 km/s resolution data. For weak sources we may also further smooth as high as 5 km/s. The 610 km/s spectral window width is sufficient that we can observe all sources across the galaxy without retuning. CO(2-1) is the primary science objective and the correlator is set up accordingly. We do include C18O(2-1), three H2CO transitions, and a continuum band in the other three basebands, but detecting these lines is not a primary science goal of this proposal.</prj:justificationText>
+            <prj:justificationKey>ED_CORRELATOR</prj:justificationKey>
+        </prj:TechnicalJustification>
+        <prj:TechnicalJustification>
+            <prj:justificationText>We are aiming to resolve Giant Molecular Clouds and characterize their properties with this project. In Cycle 2, we achieved a beam size of ~1" (~10 pc), and we want to match or improve on this for Cycle 3 for comparison purposes amongst the combined sample. The 0.8" synthesized beam corresponds to the C36-2 configuration, which is the most compact configuration (and thus achieves the best surface brightness sensitivity) with resolution better than or equal to what we obtained in cycle 2. Our largest angular scale of 10" corresponds to ~100 pc, the observed maximum size of clouds in the Milky Way and other nearby spirals. Since our goal is GMC properties, we only need to resolve emission from GMCs, and so anything at larger scales is in fact not desired.</prj:justificationText>
+            <prj:justificationKey>ED_ANGULAR_RESOLUTION</prj:justificationKey>
+        </prj:TechnicalJustification>
+        <prj:TechnicalJustification>
+            <prj:justificationText>Our goal is to accurately measure GMC properties, which requires both resolving clouds spatially and spectrally and also detecting emission out to the cloud edges. It is not sufficient to simply detect the cloud peak, hence the high S/N requested here. Molecular clouds are highly stratified in density, and we need sufficient sensitivity to detect even the low column density gas at the very edge. To estimate the needed RMS, we consider a fiducial cloud edge level of 10 solar masses per square parsec, which corresponds to the approximate column density of the atomic-to-molecular transition and reflects the likely boundaries of clouds. We require a 2 sigma detection of this limiting column density, and then convert to surface brightness units using the calibrated CO X-factors from Faesi et al. 2014, arriving at a final 1-sigma RMS of 150 K (4.17 mJy). From our ALMA Cycle 2 data we see linewidths of ~5 km/s, and conservatively estimate sensitivity using half this value. We expect that these targets (which are mostly dust column density peaks unassociated with HII regions) will have similar peak fluxes as our Cycle 2 sample (associated with HII regions, and often similar strength column density peaks as measured by our Herschel data), and so enter a characteristic value from our Cycle 2 data of 150 mJy as the expected flux density.</prj:justificationText>
+            <prj:justificationKey>ED_SENSITIVITY</prj:justificationKey>
+        </prj:TechnicalJustification>
+    </prj:ScienceGoal>
+    <prj:ScienceGoal mode="Standard">
+        <prj:name>Outer galaxy sample</prj:name>
+        <prj:note>The targets in this science goal are primarily in the outer galaxy, with galactocentric radii &gt; 4 kpc. This is the radius beyond which the ability to detect CO drops precipitously (APEX survey of Faesi et al. 2014). The expected source line fluxes are based on typical values from our ALMA cycle 2 data, but reduced by a factor of 2 due to the decreased CO intensity per molecular hydrogen column density (due to the galaxy's decreasing metallicity with radius). We set the velocity to the NGC 300 systemic velocity; the 610 km/s bandwidth is more than sufficient to cover all local velocities within the galaxy, and this saves retuning between the short pointings. Most sources were selected from a sample of Herschel 250 micron dust peaks (also having associated Herschel 500 micron emission), and no catalogued HII region from Deharving et al. (1988) within 9". This science goal also contains two evolved HII regions for deep integrations to detect relic gas. The spectral setup is focused on 12CO(2-1), with C18O(2-1) added in a separate baseband as a dense gas tracer (the latter is not a primary goal of the proposal). We also include a continuum baseband and one baseband containing the 3 formaldehyde lines at 218 GHz, but this is simply a detection experiment and not a goal of the proposal.</prj:note>
+        <prj:estimatedTotalTime unit="min">244.50799999999998</prj:estimatedTotalTime>
+        <prj:userPriority>0</prj:userPriority>
+        <prj:requiredReceiverBands>ALMA_RB_06</prj:requiredReceiverBands>
+        <prj:estimated12mTime unit="min">244.50799999999998</prj:estimated12mTime>
+        <prj:estimated7mTime unit="s">0.0</prj:estimated7mTime>
+        <prj:estimatedTPTime unit="s">0.0</prj:estimatedTPTime>
+        <prj:estimatedACATime unit="s">0.0</prj:estimatedACATime>
+        <prj:CalibrationSetupParameters selection="system"/>
+        <prj:PerformanceParameters desiredSensitivityFrequencyMeasure="User">
+            <prj:desiredAngularResolution unit="arcsec" userUnit="arcsec">0.8</prj:desiredAngularResolution>
+            <prj:desiredLargestScale unit="arcsec">10.0</prj:desiredLargestScale>
+            <prj:desiredSensitivity unit="Jy" userUnit="mK">0.0020844467182326003</prj:desiredSensitivity>
+            <prj:desiredDynamicRange>1.0</prj:desiredDynamicRange>
+            <prj:representativeFrequency unit="GHz">230.42726515289456</prj:representativeFrequency>
+            <prj:useACA>false</prj:useACA>
+            <prj:isTimeConstrained>false</prj:isTimeConstrained>
+            <prj:useTP>false</prj:useTP>
+            <prj:desiredSDSensitivity unit="Jy" userUnit="Jy">0.0</prj:desiredSDSensitivity>
+            <prj:isPointSource>false</prj:isPointSource>
+            <prj:desiredSensitivityReferenceFrequencyWidth unit="GHz" userUnit="km/s">0.0019215565552427487</prj:desiredSensitivityReferenceFrequencyWidth>
+            <prj:needsMoreTime>false</prj:needsMoreTime>
+            <prj:desiredACASensitivity unit="mJy" userUnit="Jy">12.958208829804871</prj:desiredACASensitivity>
+            <prj:desiredTPSensitivity unit="mJy" userUnit="Jy">30.206502701266793</prj:desiredTPSensitivity>
+            <prj:isScheduleConstrained>false</prj:isScheduleConstrained>
+            <prj:desiredTime unit="min">0.0</prj:desiredTime>
+        </prj:PerformanceParameters>
+        <prj:SpectralSetupParameters polarisation="DOUBLE" type="full">
+            <prj:representativeFrequency unit="GHz">230.538</prj:representativeFrequency>
+            <prj:userRepresentativeFrequency>false</prj:userRepresentativeFrequency>
+            <prj:singleContinuumFrequency unit="GHz">0.0</prj:singleContinuumFrequency>
+            <prj:ScienceSpectralWindow groupResourceUse="FULL">
+                <prj:index>0</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>1</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>continuum</prj:transitionName>
+                <prj:centerFrequency unit="GHz">233.0</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">2000.0</prj:bandWidth>
+                <prj:spectralResolution unit="MHz" userUnit="GHz">15.625</prj:spectralResolution>
+                <prj:groupIndex>1</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="FULL">
+                <prj:index>0</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>2</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>C18O 2-1</prj:transitionName>
+                <prj:centerFrequency unit="GHz">219.560358</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">500.0</prj:bandWidth>
+                <prj:spectralResolution unit="kHz" userUnit="GHz">122.07031250000001</prj:spectralResolution>
+                <prj:groupIndex>3</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3768339</prj:splatalogId>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="QUARTER">
+                <prj:index>0</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>2</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>H2CO 3(0,3)-2(0,2)</prj:transitionName>
+                <prj:centerFrequency unit="GHz">218.222192</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">250.0</prj:bandWidth>
+                <prj:spectralResolution unit="MHz" userUnit="GHz">0.244140625</prj:spectralResolution>
+                <prj:groupIndex>2</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3974784</prj:splatalogId>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="QUARTER">
+                <prj:index>1</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>2</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>H2CO 3(2,2)-2(2,1)</prj:transitionName>
+                <prj:centerFrequency unit="GHz">218.47563200000002</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">250.0</prj:bandWidth>
+                <prj:spectralResolution unit="MHz" userUnit="GHz">0.244140625</prj:spectralResolution>
+                <prj:groupIndex>2</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3974785</prj:splatalogId>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="QUARTER">
+                <prj:index>2</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>2</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>H2CO 3(2,1)-2(2,0)</prj:transitionName>
+                <prj:centerFrequency unit="GHz">218.760066</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">250.0</prj:bandWidth>
+                <prj:spectralResolution unit="MHz" userUnit="GHz">0.244140625</prj:spectralResolution>
+                <prj:groupIndex>2</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3974786</prj:splatalogId>
+                <prj:representativeWindow>false</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+            <prj:ScienceSpectralWindow groupResourceUse="FULL">
+                <prj:index>0</prj:index>
+                <prj:AdvancedWindowSetup smoothingFunction="HANNING">
+                    <prj:smoothingFactor>1</prj:smoothingFactor>
+                    <prj:oversampling>false</prj:oversampling>
+                    <prj:addedSensitivity>false</prj:addedSensitivity>
+                    <prj:useImage>false</prj:useImage>
+                    <prj:useThis>true</prj:useThis>
+                </prj:AdvancedWindowSetup>
+                <prj:transitionName>CO v=0 2-1</prj:transitionName>
+                <prj:centerFrequency unit="GHz">230.538</prj:centerFrequency>
+                <prj:bandWidth unit="MHz" userUnit="GHz">500.0</prj:bandWidth>
+                <prj:spectralResolution unit="kHz" userUnit="GHz">122.07031250000001</prj:spectralResolution>
+                <prj:groupIndex>0</prj:groupIndex>
+                <prj:isSkyFrequency>false</prj:isSkyFrequency>
+                <prj:splatalogId>3768101</prj:splatalogId>
+                <prj:representativeWindow>true</prj:representativeWindow>
+            </prj:ScienceSpectralWindow>
+        </prj:SpectralSetupParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>DCL88-7</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.57115</val:longitude>
+                <val:latitude unit="deg">-37.58529444444444</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceEphemeris></prj:sourceEphemeris>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>-1</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>DCL88-7-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H29</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.584558333333334</val:longitude>
+                <val:latitude unit="deg">-37.659908333333334</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H29-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H30</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.598158333333334</val:longitude>
+                <val:latitude unit="deg">-37.63824722222222</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H30-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H31</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.636275</val:longitude>
+                <val:latitude unit="deg">-37.57192777777778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H31-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H32</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.654833333333332</val:longitude>
+                <val:latitude unit="deg">-37.79515277777778</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H32-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>DCL88-48</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.673458333333333</val:longitude>
+                <val:latitude unit="deg">-37.64213888888889</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>DCL88-48-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H33</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.700558333333333</val:longitude>
+                <val:latitude unit="deg">-37.779316666666666</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H33-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>DCL88-72</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.7034</val:longitude>
+                <val:latitude unit="deg">-37.55520833333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>DCL88-72-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H34</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.7788125</val:longitude>
+                <val:latitude unit="deg">-37.573508333333336</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H34-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H35</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.8275375</val:longitude>
+                <val:latitude unit="deg">-37.60075833333333</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H35-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TargetParameters solarSystemObject="Unspecified" type="F_MultiplePoints">
+            <prj:sourceName>N300-H36</prj:sourceName>
+            <prj:sourceCoordinates system="J2000" type="ABSOLUTE">
+                <val:longitude unit="deg">13.880025</val:longitude>
+                <val:latitude unit="deg">-37.667825</val:latitude>
+                <val:fieldName>None</val:fieldName>
+            </prj:sourceCoordinates>
+            <prj:pmRA unit="mas/yr">0.0</prj:pmRA>
+            <prj:pmDec unit="mas/yr">0.0</prj:pmDec>
+            <prj:parallax unit="mas">0.0</prj:parallax>
+            <prj:nonSiderealMotion>false</prj:nonSiderealMotion>
+            <prj:sourceVelocity referenceSystem="lsr" dopplerCalcType="RADIO">
+                <val:centerVelocity unit="km/s">144.0</val:centerVelocity>
+            </prj:sourceVelocity>
+            <prj:index>0</prj:index>
+            <prj:ExpectedProperties>
+                <prj:expectedPeakFluxDensity unit="mJy">0.0</prj:expectedPeakFluxDensity>
+                <prj:desiredPolarizationPercentage>0.0</prj:desiredPolarizationPercentage>
+                <prj:expectedLineWidth unit="GHz" userUnit="km/s">0.0038431131104854975</prj:expectedLineWidth>
+                <prj:referenceFrequency unit="GHz">230.42726515289456</prj:referenceFrequency>
+                <prj:expectedPeakLineFluxDensity unit="mJy">75.0</prj:expectedPeakLineFluxDensity>
+                <prj:expectedSpectralDynamicRange>0.0</prj:expectedSpectralDynamicRange>
+                <prj:expectedImageDynamicRange>0.0</prj:expectedImageDynamicRange>
+                <prj:desiredLinePolarizationPercentage>0.0</prj:desiredLinePolarizationPercentage>
+            </prj:ExpectedProperties>
+            <prj:isMosaic>false</prj:isMosaic>
+            <prj:SinglePoint>
+                <prj:name></prj:name>
+                <prj:centre system="J2000" type="RELATIVE">
+                    <val:longitude unit="arcsec">0.0</val:longitude>
+                    <val:latitude unit="arcsec">0.0</val:latitude>
+                    <val:fieldName>N300-H36-1</val:fieldName>
+                </prj:centre>
+            </prj:SinglePoint>
+        </prj:TargetParameters>
+        <prj:TechnicalJustification>
+            <prj:justificationText>Our goal is to fully resolve multiple CO(2-1) components along the line-of-sight in order to accurately separate GMCs that may overlap in velocity space. We will nominally smooth to 1 km/s to improve signal-to-noise for our initial analysis, but in the cases of potential overlaps will also utilize the raw 0.3 km/s resolution data. For weak sources we may also further smooth as high as 5 km/s. The 610 km/s spectral window width is sufficient that we can observe all sources across the galaxy without retuning. CO(2-1) is the primary science objective and the correlator is set up accordingly. We do include C18O(2-1), three H2CO transitions, and a continuum band in the other three basebands, but detecting these lines is not a primary science goal of this proposal.</prj:justificationText>
+            <prj:justificationKey>ED_CORRELATOR</prj:justificationKey>
+        </prj:TechnicalJustification>
+        <prj:TechnicalJustification>
+            <prj:justificationText>We are aiming to resolve Giant Molecular Clouds and characterize their properties with this project. In Cycle 2, we achieved a beam size of ~1" (~10 pc), and we want to match or improve on this for Cycle 3 for comparison purposes amongst the combined sample. The 0.8" synthesized beam corresponds to the C36-2 configuration, which is the most compact configuration (and thus achieves the best surface brightness sensitivity) with resolution better than or equal to what we obtained in cycle 2. Our largest angular scale of 10" corresponds to ~100 pc, the observed maximum size of clouds in the Milky Way and other nearby spirals. Since our goal is GMC properties, we only need to resolve emission from GMCs, and so anything at larger scales is in fact not desired.</prj:justificationText>
+            <prj:justificationKey>ED_ANGULAR_RESOLUTION</prj:justificationKey>
+        </prj:TechnicalJustification>
+        <prj:TechnicalJustification>
+            <prj:justificationText>Our goal is to accurately measure GMC properties, which requires both resolving clouds spatially and spectrally and also detecting emission out to the cloud edges. It is not sufficient to simply detect the cloud peak, hence the high S/N requested here. Molecular clouds are highly stratified in density, and we need sufficient sensitivity to detect even the low column density gas at the very edge. To estimate the needed RMS, we consider a fiducial cloud edge level of 10 solar masses per square parsec, which corresponds to the approximate column density of the atomic-to-molecular transition and reflects the likely boundaries of clouds. We require a 2 sigma detection of this limiting column density, and then convert to surface brightness units using the calibrated CO X-factors from Faesi et al. 2014. However, compared to the inner galaxy sample in the other science goal, this outer galaxy sample has on average a factor of two higher X-factor, i.e. a lower CO intensity per molecular gas column density, and so a factor of two increased sensitivity is needed. This means we aim for an RMS of 75 K (2.08 mJy). From our ALMA Cycle 2 data we see linewidths of ~5 km/s, and so conservatively estimate sensitivity using half this value. Our goal is to achieve similar dynamic range with this new set of targets that we achieved in the Cycle 2 data. We expect that these targets (which are mostly dust column density peaks unassociated with HII regions) will have similar peak fluxes as our Cycle 2 sample (assocated with HII regions, and often similar strength column density peaks as measured by our Herschel data).</prj:justificationText>
+            <prj:justificationKey>ED_SENSITIVITY</prj:justificationKey>
+        </prj:TechnicalJustification>
+    </prj:ScienceGoal>
+    <prj:ObsPlan status="NewPhase2" entityPartId="X236925489" almatype="APDM::ObsUnitSet">
+        <prj:name>ObsUnitSet</prj:name>
+        <prj:note></prj:note>
+        <prj:ObsUnitControl arrayRequested="TWELVE-M">
+            <prj:maximumTime unit="min">0.0</prj:maximumTime>
+            <prj:userPriority>0</prj:userPriority>
+            <prj:estimatedExecutionTime unit="min">0.0</prj:estimatedExecutionTime>
+            <prj:tacPriority>0</prj:tacPriority>
+            <prj:aggregatedExecutionCount>0</prj:aggregatedExecutionCount>
+            <prj:CalibrationRequirements>
+                <prj:pointingAccuracy unit="arcsec">0.0</prj:pointingAccuracy>
+            </prj:CalibrationRequirements>
+        </prj:ObsUnitControl>
+        <prj:scienceProcessingScript></prj:scienceProcessingScript>
+        <prj:runSciencePipeline>false</prj:runSciencePipeline>
+    </prj:ObsPlan>
+    <prp:ObsProposalEntity entityId="uid://A001/X1ed/Xd8d"
+        entityIdEncrypted="-- id encryption not implemented --"
+        entityTypeName="ObsProposal" schemaVersion="13"
+        documentVersion="1" timestamp="2015-04-23T14:25:15.951"/>
+    <prp:DocumentsRef entityId="uid://A001/X1ed/Xd8e"
+        entityTypeName="ObsAttachment" documentVersion="1"/>
+    <prp:ObsProjectRef entityId="uid://A001/X1ed/Xd8c"
+        entityTypeName="ObsProject" documentVersion="1"/>
+    <prp:abstract>Studying molecular clouds, the birthplaces of stars, provides a window into the physics of star formation. Our successful ALMA Cycle 2 observations have given us an intriguing first look into the resolved cloud population of the nearby (D=2 Mpc) galaxy NGC 300 and demonstrated that we can easily detect analogs of low-mass Milky Way clouds. Having shown the feasibility of measuring cloud physical properties across a wide dynamic range in mass and size, we now propose additional CO(2-1) observations to expand our sample to include the full evolutionary sequence of star-forming regions and a range of galactic environments. This study will lead to a comprehensive compilation of cloud physical properties in NGC 300 and an unparalleled dataset to analyze cloud-scale star formation in a galactic context. By combining with our in-hand ancillary data spanning the electromagnetic spectrum we will be in a position to globally address fundamental questions related to the physics of star formation, including the Larson relations, the formation and evolution of clouds, and the molecular gas-star formation rate relation, bridging the gap between Galactic and extragalactic star formation.</prp:abstract>
+    <prp:relatedProposals>2015.1.00784.S, "Testing the Dense Gas Scaling Relation of Star Formation in Resolved Molecular Clouds in NGC 300 (PI: Forbrich)</prp:relatedProposals>
+    <prp:previousProposals>2012.1.00060.S &amp; 2013.1.00586.S, "Testing Schmidt's Conjecture in NGC 300: Bridging the Gap between Galactic and Extragalactic Star Formation" (PI: Lada)</prp:previousProposals>
+    <prp:dateReceived>2015-04-23T14:25:15.199Z</prp:dateReceived>
+    <prp:cycle>2015.1</prp:cycle>
+    <prp:studentProject>true</prp:studentProject>
+    <prp:scientificCategoryCode>20</prp:scientificCategoryCode>
+    <prp:proposalTypeCode>S</prp:proposalTypeCode>
+    <prp:scientificCategoryString>Galaxies and Galactic Nuclei</prp:scientificCategoryString>
+    <prp:proposalTypeString>Standard</prp:proposalTypeString>
+    <prp:keyword>Spiral galaxies</prp:keyword>
+    <prp:keyword>Giant Molecular Clouds (GMC) properties</prp:keyword>
+    <prp:keywordCode>20c</prp:keywordCode>
+    <prp:keywordCode>20m</prp:keywordCode>
+    <prp:PrincipalInvestigator allowedExec="NA" associatedExec="NA">
+        <prp:fullName>Christopher Faesi</prp:fullName>
+        <prp:organisation>Department of Astronomy, Harvard University</prp:organisation>
+        <prp:eMail>cfaesi@cfa.harvard.edu</prp:eMail>
+        <prp:verfiedUser>true</prp:verfiedUser>
+        <prp:userId>cfaesi</prp:userId>
+        <prp:telephone></prp:telephone>
+        <prp:mobile></prp:mobile>
+        <prp:index>1</prp:index>
+        <prp:organisationId>21864</prp:organisationId>
+    </prp:PrincipalInvestigator>
+    <prp:CoInvestigator allowedExec="NA" associatedExec="NA">
+        <prp:fullName>Charles Lada</prp:fullName>
+        <prp:organisation>Smithsonian Astrophysical Observatory, Harvard-Smithsonian Center for Astrophysics</prp:organisation>
+        <prp:eMail>clada@cfa.harvard.edu</prp:eMail>
+        <prp:verfiedUser>true</prp:verfiedUser>
+        <prp:userId>clada</prp:userId>
+        <prp:telephone></prp:telephone>
+        <prp:mobile></prp:mobile>
+        <prp:index>1</prp:index>
+        <prp:organisationId>21873</prp:organisationId>
+    </prp:CoInvestigator>
+    <prp:CoInvestigator allowedExec="EU" associatedExec="EU">
+        <prp:fullName>Jan Forbrich</prp:fullName>
+        <prp:organisation>Institute of Astronomy, Vienna, University of</prp:organisation>
+        <prp:eMail>jan.forbrich@univie.ac.at</prp:eMail>
+        <prp:verfiedUser>true</prp:verfiedUser>
+        <prp:userId>jforbrich</prp:userId>
+        <prp:telephone></prp:telephone>
+        <prp:mobile></prp:mobile>
+        <prp:index>1</prp:index>
+        <prp:organisationId>21021</prp:organisationId>
+    </prp:CoInvestigator>
+    <prp:ProposalFeedback>
+        <prp:estimatedTotalIntegrationTime unit="s">26731.176</prp:estimatedTotalIntegrationTime>
+        <prp:ArrayTimeBreakdown>
+            <prp:ArrayTime arrayName="ACA">
+                <prp:estimatedTime unit="s">0.0</prp:estimatedTime>
+            </prp:ArrayTime>
+            <prp:ArrayTime arrayName="SEVEN-M">
+                <prp:estimatedTime unit="s">0.0</prp:estimatedTime>
+            </prp:ArrayTime>
+            <prp:ArrayTime arrayName="TP-Array">
+                <prp:estimatedTime unit="s">0.0</prp:estimatedTime>
+            </prp:ArrayTime>
+            <prp:ArrayTime arrayName="TWELVE-M">
+                <prp:estimatedTime unit="s">26731.176</prp:estimatedTime>
+            </prp:ArrayTime>
+            <prp:ArrayTime arrayName="ALMA">
+                <prp:estimatedTime unit="s">26731.176</prp:estimatedTime>
+            </prp:ArrayTime>
+        </prp:ArrayTimeBreakdown>
+        <prp:DataRateBreakdown>
+            <prp:ArrayDataRates arrayName="TWELVE-M">
+                <prp:estimatedAverageDataRate unit="MB/s">11.648772254822747</prp:estimatedAverageDataRate>
+                <prp:estimatedMaximumDataRate unit="MB/s">11.648772254822745</prp:estimatedMaximumDataRate>
+                <prp:estimatedDataVolume unit="GB">169.68310192785833</prp:estimatedDataVolume>
+            </prp:ArrayDataRates>
+            <prp:ArrayDataRates arrayName="SEVEN-M">
+                <prp:estimatedAverageDataRate unit="MB/s">0.0</prp:estimatedAverageDataRate>
+                <prp:estimatedMaximumDataRate unit="GB/s">0.0</prp:estimatedMaximumDataRate>
+                <prp:estimatedDataVolume unit="GB">0.0</prp:estimatedDataVolume>
+            </prp:ArrayDataRates>
+            <prp:ArrayDataRates arrayName="TP-Array">
+                <prp:estimatedAverageDataRate unit="MB/s">0.0</prp:estimatedAverageDataRate>
+                <prp:estimatedMaximumDataRate unit="GB/s">0.0</prp:estimatedMaximumDataRate>
+                <prp:estimatedDataVolume unit="GB">0.0</prp:estimatedDataVolume>
+            </prp:ArrayDataRates>
+        </prp:DataRateBreakdown>
+        <prp:ReceiverTimeBreakdown>
+            <prp:ReceiverTime receiverBand="ALMA_RB_06">
+                <prp:time unit="s">26731.176</prp:time>
+            </prp:ReceiverTime>
+        </prp:ReceiverTimeBreakdown>
+        <prp:TimeAllocationBreakdown>
+            <prp:ExecutiveFraction name="OTHER">
+                <prp:timeFraction>0.0</prp:timeFraction>
+            </prp:ExecutiveFraction>
+            <prp:ExecutiveFraction name="CL">
+                <prp:timeFraction>0.0</prp:timeFraction>
+            </prp:ExecutiveFraction>
+            <prp:ExecutiveFraction name="EA">
+                <prp:timeFraction>0.0</prp:timeFraction>
+            </prp:ExecutiveFraction>
+            <prp:ExecutiveFraction name="EU">
+                <prp:timeFraction>0.0</prp:timeFraction>
+            </prp:ExecutiveFraction>
+            <prp:ExecutiveFraction name="NA">
+                <prp:timeFraction>1.0</prp:timeFraction>
+            </prp:ExecutiveFraction>
+            <prp:ExecutiveFraction name="NA_EA">
+                <prp:timeFraction>0.0</prp:timeFraction>
+            </prp:ExecutiveFraction>
+        </prp:TimeAllocationBreakdown>
+    </prp:ProposalFeedback>
+</prp:ObsProposal>
