@@ -725,10 +725,10 @@ if __name__ == "__main__":
     if len(arg) < 6:
         print "Arguments missing \n"
         print "The correct syntax is:"
-        print("python arrayResolution2p.py RES (arcsec) LAS (arcsec) "
+        print("python arrayResolution2p3.py RES (arcsec) LAS (arcsec) "
               "FREQ (GHz) Y/N (ACA) numberofarray \n")
         print "Example:"
-        print("python arrayResolution2p.py 0.2 2.0  640.  Y  1  "
+        print("python arrayResolution2p3.py 0.2 2.0  640.  Y  1  "
               " ## if LAS = 0. assumes a point source")
 
 

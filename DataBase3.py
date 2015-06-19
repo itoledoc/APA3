@@ -6,12 +6,12 @@ import sys
 import pandas as pd
 import ephem
 import cx_Oracle
-import arrayResolution2p as ARes
+import arrayResolution2p3 as ARes
 
 from collections import namedtuple
 from subprocess import call
-from XmlProjParsers import *
-from converter import *
+from XmlProjParsers3 import *
+from converter3 import *
 
 prj = '{Alma/ObsPrep/ObsProject}'
 val = '{Alma/ValueTypes}'
@@ -77,10 +77,11 @@ class Database(object):
             path += '/'
         self.path = os.environ['HOME'] + path
         self.apa_path = os.environ['APA3']
-        self.phase1_data = os.environ['PHASEONE']
-        self.sbxml = self.path + 'sbxml/'
-        self.obsxml = self.path + 'obsxml/'
-        self.propxml = self.path + 'propxml/'
+        self.phase1_data = os.environ['PHASEONE_C3']
+        self.sbxml = self.path + 'schedblock/'
+        self.obsxml = self.path + 'obsproject/'
+        self.propxml = self.path + 'obsproposal/'
+        self.reviewxml = self.path + 'obsreview/'
         self.preferences = pd.Series(
             ['project.pandas', 'sciencegoals.pandas',
              'scheduling.pandas', 'special.list', 'pwvdata.pandas',
@@ -95,8 +96,9 @@ class Database(object):
         self.status = ["Canceled", "Rejected"]
         self.verbose = verbose
 
-        self.grades = pd.read_table(self.apa_path + 'conf/c2grade.csv', sep=',')
-        self.sb_sg_p1 = pd.read_pickle(self.apa_path + 'conf/sb_sg_p1.pandas')
+        # self.grades = pd.read_table(
+        #     self.apa_path + 'conf/c2grade.csv', sep=',')
+        # self.sb_sg_p1 = pd.read_pickle(self.apa_path + 'conf/sb_sg_p1.pandas')
 
         # Global SQL search expressions
         # Search Project's PT information and match with PT Status
@@ -107,7 +109,7 @@ class Database(object):
             "ARCHIVE_UID as OBSPROPOSAL_UID "
             "FROM ALMA.BMMV_OBSPROJECT obs1, ALMA.OBS_PROJECT_STATUS obs2,"
             " ALMA.BMMV_OBSPROPOSAL obs3 "
-            "WHERE regexp_like (CODE, '^201[235].*\.[AST]') "
+            "WHERE regexp_like (CODE, '^2015\..*\.[AST]') "
             "AND (PRJ_LETTER_GRADE='A' OR PRJ_LETTER_GRADE='B' "
             "OR PRJ_LETTER_GRADE='C') AND PRJ_SCIENTIFIC_RANK < 9999 "
             "AND obs2.OBS_PROJECT_ID = obs1.PRJ_ARCHIVE_UID AND "
@@ -161,7 +163,7 @@ class Database(object):
                 "SELECT CODE,OBSPROJECT_UID as OBSPROJECT_UID,"
                 "VERSION as PRJ_SAOS_VERSION, STATUS as PRJ_SAOS_STATUS "
                 "FROM SCHEDULING_AOS.OBSPROJECT "
-                "WHERE regexp_like (CODE, '^201[23].*\.[AST]')")
+                "WHERE regexp_like (CODE, '^2015\..*\.[AST]')")
             self.cursor.execute(self.sqlsched_proj)
             self.saos_obsproject = pd.DataFrame(
                 self.cursor.fetchall(),
@@ -201,7 +203,7 @@ class Database(object):
                 "SELECT SCHEDBLOCKUID as SB_UID,QA0STATUS,STARTTIME,ENDTIME,"
                 "EXECBLOCKUID,EXECFRACTION "
                 "FROM ALMA.AQUA_EXECBLOCK "
-                "WHERE regexp_like (OBSPROJECTCODE, '^201[23].*\.[AST]')")
+                "WHERE regexp_like (OBSPROJECTCODE, '^2015\..*\.[AST]')")
 
             self.cursor.execute(self.sqlqa0)
             self.aqua_execblock = pd.DataFrame(
@@ -213,7 +215,7 @@ class Database(object):
             sql2 = str(
                 "SELECT PROJECTUID as OBSPROJECT_UID, ASSOCIATEDEXEC "
                 "FROM ALMA.BMMV_OBSPROPOSAL "
-                "WHERE regexp_like (CYCLE, '^201[23].[1A]')")
+                "WHERE regexp_like (CYCLE, '^2015.[1A]')")
             self.cursor.execute(sql2)
             self.executive = pd.DataFrame(
                 self.cursor.fetchall(), columns=['OBSPROJECT_UID', 'EXEC'])
@@ -229,3 +231,77 @@ class Database(object):
             self.cursor.fetchall(),
             columns=[rec[0] for rec in self.cursor.description]
         ).set_index('SB_UID', drop=False)
+
+    def start_wto(self):
+
+        """
+        Initializes the wtoDatabase dataframes.
+
+        The function queries the archive to look for cycle 1 and cycle 2
+        projects, disregarding any projects with status "Approved",
+        "Phase1Submitted", "Broken", "Canceled" or "Rejected".
+
+        The archive tables used are ALMA.BMMV_OBSPROPOSAL,
+        ALMA.OBS_PROJECT_STATUS, ALMA.BMMV_OBSPROJECT and
+        ALMA.XML_OBSPROJECT_ENTITIES.
+
+        :return: None
+        """
+        # noinspection PyUnusedLocal
+        status = self.status
+
+        # Query for Projects, from BMMV.
+        self.cursor.execute(self.sql1)
+        df1 = pd.DataFrame(
+            self.cursor.fetchall(),
+            columns=[rec[0] for rec in self.cursor.description])
+        print(len(df1.query('PRJ_STATUS not in @status')))
+        self.projects = pd.merge(
+            df1.query('PRJ_STATUS not in @status'), self.executive,
+            on='OBSPROJECT_UID'
+        ).set_index('CODE', drop=False)
+
+        timestamp = pd.Series(
+            np.zeros(len(self.projects), dtype=object),
+            index=self.projects.index)
+        self.projects['timestamp'] = timestamp
+        self.projects['xmlfile'] = pd.Series(
+            np.zeros(len(self.projects), dtype=object),
+            index=self.projects.index)
+
+        # # Download and read obsprojects and obsprosal
+        # number = self.projects.__len__()
+        # c = 1
+        # for r in self.projects.iterrows():
+        #     xmlfilename, obsproj = self.get_projectxml(
+        #         r[1].CODE, r[1].PRJ_STATUS, number, c, verbose=self.verbose)
+        #     c += 1
+        #     if obsproj:
+        #         self.read_obsproject(xmlfilename)
+        #     else:
+        #         print(r[1].CODE + " (read obsproposal)")
+        #         self.read_obsproposal(xmlfilename, r[1].CODE)
+        #
+        # self.projects['isCycle2'] = self.projects.apply(
+        #     lambda r1: True if r1['CODE'].startswith('2013') else False,
+        #     axis=1)
+        # self.projects.to_pickle(
+        #     self.path + 'projects.pandas')
+        # self.sb_sg_p2.to_pickle(
+        #     self.path + 'sb_sg_p2.pandas')
+        # self.sciencegoals.to_pickle(
+        #     self.path + 'sciencegoals.pandas')
+        # self.aqua_execblock.to_pickle(
+        #     self.path + 'aqua_execblock.pandas')
+        # self.executive.to_pickle(
+        #     self.path + 'executive.pandas')
+        # self.obsprojects.to_pickle(
+        #     self.path + 'obsprojects.pandas')
+        # self.obsproposals.to_pickle(
+        #     self.path + 'obsproposals.pandas')
+        # self.saos_obsproject.to_pickle(
+        #     self.path + 'saos_obsproject.pands')
+        # self.saos_schedblock.to_pickle(
+        #     self.path + 'saos_schedblock.pandas')
+        # self.sg_targets.to_pickle(
+        #     self.path + 'sg_targets')
