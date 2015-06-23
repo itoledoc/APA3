@@ -110,8 +110,6 @@ class Database(object):
             "FROM ALMA.BMMV_OBSPROJECT obs1, ALMA.OBS_PROJECT_STATUS obs2,"
             " ALMA.BMMV_OBSPROPOSAL obs3 "
             "WHERE regexp_like (CODE, '^2015\..*\.[AST]') "
-            "AND (PRJ_LETTER_GRADE='A' OR PRJ_LETTER_GRADE='B' "
-            "OR PRJ_LETTER_GRADE='C') AND PRJ_SCIENTIFIC_RANK < 9999 "
             "AND obs2.OBS_PROJECT_ID = obs1.PRJ_ARCHIVE_UID AND "
             "obs1.PRJ_ARCHIVE_UID = obs3.PROJECTUID")
 
@@ -265,43 +263,58 @@ class Database(object):
             np.zeros(len(self.projects), dtype=object),
             index=self.projects.index)
         self.projects['timestamp'] = timestamp
-        self.projects['xmlfile'] = pd.Series(
-            np.zeros(len(self.projects), dtype=object),
-            index=self.projects.index)
+        self.projects['xmlfile'] = self.projects.apply(
+            lambda r: r['OBSPROJECT_UID'].replace('://', '___').replace(
+                '/', '_') + '.xml', axis=1
+        )
 
-        # # Download and read obsprojects and obsprosal
-        # number = self.projects.__len__()
-        # c = 1
-        # for r in self.projects.iterrows():
-        #     xmlfilename, obsproj = self.get_projectxml(
-        #         r[1].CODE, r[1].PRJ_STATUS, number, c, verbose=self.verbose)
+        # Download and read obsprojects and obsprosal
+        number = self.projects.__len__()
+
+        projt = []
+        for r in self.projects.iterrows():
+            proj = self.read_obsproject_p1(
+                r[1].xmlfile, self.phase1_data + 'obsproject/')
+            projt.append(proj)
+
+        projt_arr = np.array(projt, dtype=object)
+        self.obsproject = pd.DataFrame(
+            projt_arr,
+            columns=['CODE', 'OBSPROJECT_UID', 'OBSPROPOSAL_UID',
+                     'OBSREVIEW_UID', 'VERSION', 'NOTE', 'IS_CALIBRATION']
+        ).set_index('OBSPROJECT_UID', drop=False)
+
+    def read_obsproject_p1(self, xml, path):
+
+        try:
+            obsparse = ObsProject(xml, path)
+        except KeyError:
+            print("Something went wrong while trying to parse %s" % xml)
+            return 0
+
+        code = obsparse.code.pyval
+        prj_version = obsparse.version.pyval
+        staff_note = obsparse.staffProjectNote.pyval
+        is_calibration = obsparse.isCalibration.pyval
+        obsproject_uid = obsparse.ObsProjectEntity.attrib['entityId']
+        obsproposal_uid = obsparse.ObsProposalRef.attrib['entityId']
+        try:
+            obsreview_uid = obsparse.ObsReviewRef.attrib['entityId']
+        except AttributeError:
+            obsreview_uid = None
+
+        try:
+            is_ddt = obsparse.isDDT.pyval
+        except AttributeError:
+            is_ddt = False
+
+        return [code, obsproject_uid, obsproposal_uid, obsreview_uid,
+                prj_version, staff_note, is_calibration]
+
+
+        # obsprog = obsparse.ObsProgram
+        # sg_list = obsprog.findall(prj + 'ScienceGoal')
+        # c = 0
+        # for sg in sg_list:
+        #     self.read_sciencegoals(sg, obsproject_uid, c + 1, True, obsprog)
         #     c += 1
-        #     if obsproj:
-        #         self.read_obsproject(xmlfilename)
-        #     else:
-        #         print(r[1].CODE + " (read obsproposal)")
-        #         self.read_obsproposal(xmlfilename, r[1].CODE)
-        #
-        # self.projects['isCycle2'] = self.projects.apply(
-        #     lambda r1: True if r1['CODE'].startswith('2013') else False,
-        #     axis=1)
-        # self.projects.to_pickle(
-        #     self.path + 'projects.pandas')
-        # self.sb_sg_p2.to_pickle(
-        #     self.path + 'sb_sg_p2.pandas')
-        # self.sciencegoals.to_pickle(
-        #     self.path + 'sciencegoals.pandas')
-        # self.aqua_execblock.to_pickle(
-        #     self.path + 'aqua_execblock.pandas')
-        # self.executive.to_pickle(
-        #     self.path + 'executive.pandas')
-        # self.obsprojects.to_pickle(
-        #     self.path + 'obsprojects.pandas')
-        # self.obsproposals.to_pickle(
-        #     self.path + 'obsproposals.pandas')
-        # self.saos_obsproject.to_pickle(
-        #     self.path + 'saos_obsproject.pands')
-        # self.saos_schedblock.to_pickle(
-        #     self.path + 'saos_schedblock.pandas')
-        # self.sg_targets.to_pickle(
-        #     self.path + 'sg_targets')
