@@ -47,7 +47,7 @@ for uid in obsproject_uids:
         data = cursor.fetchall()[0]
         xml_content = data[1].read()
         xmlfilename = uid.replace('://', '___').replace('/', '_') + '.xml'
-        filename = 'cycle3/obsproject' + xmlfilename
+        filename = 'cycle3/obsproject/' + xmlfilename
         io_file = open(filename, 'w')
         io_file.write(xml_content)
         io_file.close()
