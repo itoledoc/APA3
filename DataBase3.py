@@ -10,7 +10,7 @@ import arrayResolution2p3 as ARes
 
 from collections import namedtuple
 from subprocess import call
-from XmlProjParsers3 import *
+from XmlParsers3 import *
 from converter3 import *
 
 prj = '{Alma/ObsPrep/ObsProject}'
@@ -218,7 +218,7 @@ class Database(object):
             self.executive = pd.DataFrame(
                 self.cursor.fetchall(), columns=['OBSPROJECT_UID', 'EXEC'])
 
-            self.start_wto()
+            self.start_apa()
 
         self.sqlstates = str(
             "SELECT DOMAIN_ENTITY_STATE as SB_STATE,"
@@ -230,7 +230,7 @@ class Database(object):
             columns=[rec[0] for rec in self.cursor.description]
         ).set_index('SB_UID', drop=False)
 
-    def start_wto(self):
+    def start_apa(self):
 
         """
         Initializes the wtoDatabase dataframes.
@@ -268,53 +268,41 @@ class Database(object):
                 '/', '_') + '.xml', axis=1
         )
 
-        # Download and read obsprojects and obsprosal
         number = self.projects.__len__()
 
+        self.read_obsproject_p1(path=self.phase1_data + 'obsproject/')
+
+
+    def read_obsproject_p1(self, path):
+
         projt = []
+
         for r in self.projects.iterrows():
-            proj = self.read_obsproject_p1(
-                r[1].xmlfile, self.phase1_data + 'obsproject/')
+            xml = r[1].xmlfile
+            try:
+                obsparse = ObsProject(xml, path)
+            except KeyError:
+                print("Something went wrong while trying to parse %s" % xml)
+                return 0
+
+            proj = obsparse.get_ph1_info()
             projt.append(proj)
 
         projt_arr = np.array(projt, dtype=object)
-        self.obsproject = pd.DataFrame(
+        self.obsproject_p1 = pd.DataFrame(
             projt_arr,
-            columns=['CODE', 'OBSPROJECT_UID', 'OBSPROPOSAL_UID',
-                     'OBSREVIEW_UID', 'VERSION', 'NOTE', 'IS_CALIBRATION']
+            columns=['CODE', 'OBSPROJECT_UID', 'OBSPROPOSAL_UID', 'OBSREVIEW_UID', 'VERSION',
+                     'NOTE', 'IS_CALIBRATION', 'IS_DDT']
         ).set_index('OBSPROJECT_UID', drop=False)
 
-    def read_obsproject_p1(self, xml, path):
+    def read_obspropsal_p1(self):
 
-        try:
-            obsparse = ObsProject(xml, path)
-        except KeyError:
-            print("Something went wrong while trying to parse %s" % xml)
-            return 0
+        propt = []
 
-        code = obsparse.code.pyval
-        prj_version = obsparse.version.pyval
-        staff_note = obsparse.staffProjectNote.pyval
-        is_calibration = obsparse.isCalibration.pyval
-        obsproject_uid = obsparse.ObsProjectEntity.attrib['entityId']
-        obsproposal_uid = obsparse.ObsProposalRef.attrib['entityId']
-        try:
-            obsreview_uid = obsparse.ObsReviewRef.attrib['entityId']
-        except AttributeError:
-            obsreview_uid = None
+        pass
 
-        try:
-            is_ddt = obsparse.isDDT.pyval
-        except AttributeError:
-            is_ddt = False
+    def read_scgoal_p1(self):
 
-        return [code, obsproject_uid, obsproposal_uid, obsreview_uid,
-                prj_version, staff_note, is_calibration]
+        scgolt = []
 
-
-        # obsprog = obsparse.ObsProgram
-        # sg_list = obsprog.findall(prj + 'ScienceGoal')
-        # c = 0
-        # for sg in sg_list:
-        #     self.read_sciencegoals(sg, obsproject_uid, c + 1, True, obsprog)
-        #     c += 1
+        pass

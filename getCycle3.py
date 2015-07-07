@@ -3,7 +3,7 @@ __author__ = 'itoledo'
 import os
 import pandas as pd
 import cx_Oracle
-from XmlProjParsers3 import *
+from XmlParsers3 import *
 
 prj = '{Alma/ObsPrep/ObsProject}'
 val = '{Alma/ValueTypes}'

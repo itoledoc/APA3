@@ -54,6 +54,27 @@ class ObsProject(object):
         for key in data.__dict__:
             self.__setattr__(key, data.__dict__[key])
 
+    def get_ph1_info(self):
+
+        code = self.code.pyval
+        prj_version = self.version.pyval
+        staff_note = self.staffProjectNote.pyval
+        is_calibration = self.isCalibration.pyval
+        obsproject_uid = self.ObsProjectEntity.attrib['entityId']
+        obsproposal_uid = self.ObsProposalRef.attrib['entityId']
+        try:
+            obsreview_uid = self.ObsReviewRef.attrib['entityId']
+        except AttributeError:
+            obsreview_uid = None
+
+        try:
+            is_ddt = self.isDDT.pyval
+        except AttributeError:
+            is_ddt = False
+
+        return [code, obsproject_uid, obsproposal_uid, obsreview_uid,
+                prj_version, staff_note, is_calibration, is_ddt]
+
 
 class SchedBlock(object):
 
