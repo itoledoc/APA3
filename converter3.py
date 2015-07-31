@@ -112,12 +112,43 @@ def convert_tsec(time, unit):
     :param unit:
     :return:
     """
-    value = time
+    try:
+        value = float(time)
+    except ValueError:
+        print time, unit
+        value = 0
     if unit == 's':
         return value
     elif unit == 'min':
         return value * 60.
     elif unit == 'h':
         return value * 3600.
+    elif unit == 'd':
+        return value * 24. * 3600.
     else:
-        return None
+        return 0
+
+
+def convert_thour(time, unit):
+
+    """
+
+    :param time:
+    :param unit:
+    :return:
+    """
+    try:
+        value = float(time)
+    except ValueError:
+        print time, unit
+        value = 0
+    if unit == 's':
+        return value / 3660.
+    elif unit == 'min':
+        return value / 60.
+    elif unit == 'h':
+        return value
+    elif unit == 'd':
+        return value * 24.
+    else:
+        return 0

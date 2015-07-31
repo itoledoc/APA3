@@ -6,7 +6,6 @@ import sys
 import pandas as pd
 import ephem
 import cx_Oracle
-import arrayResolution2p3 as ARes
 
 from collections import namedtuple
 from subprocess import call
@@ -34,14 +33,15 @@ confDf.ix['C36-7'] = ('C36-7', 0.1, 0.08, 0.05, 0.34, None, None, None)
 confDf.ix['C36-8'] = ('C36-8', 0.075, 0.05, 0.03, None, None, None, None)
 Range = namedtuple('Range', ['start', 'end'])
 
-conflim = pd.Series({'C36-1': 2.8849999999999998,
-                     'C36-2': 1.72,
-                     'C36-3': 1.2549999999999999,
-                     'C36-4': 0.93000000000000005,
-                     'C36-5': 0.65999999999999992,
-                     'C36-6': 0.48999999999999999,
-                     'C36-7': 0.20499999999999999,
-                     'C36-8': 0.0})
+conflim = pd.Series(
+    {'C36-1': 2.8849999999999998,
+     'C36-2': 1.72,
+     'C36-3': 1.2549999999999999,
+     'C36-4': 0.93000000000000005,
+     'C36-5': 0.65999999999999992,
+     'C36-6': 0.48999999999999999,
+     'C36-7': 0.20499999999999999,
+     'C36-8': 0.0})
 
 
 class Database(object):
@@ -96,6 +96,8 @@ class Database(object):
         self.status = ["Canceled", "Rejected"]
         self.verbose = verbose
 
+        self.obsproject_p1 = pd.DataFrame()
+
         # self.grades = pd.read_table(
         #     self.apa_path + 'conf/c2grade.csv', sep=',')
         # self.sb_sg_p1 = pd.read_pickle(self.apa_path + 'conf/sb_sg_p1.pandas')
@@ -113,8 +115,13 @@ class Database(object):
             "AND obs2.OBS_PROJECT_ID = obs1.PRJ_ARCHIVE_UID AND "
             "obs1.PRJ_ARCHIVE_UID = obs3.PROJECTUID")
 
-        conx_string = os.environ['CON_STR']
-        self.connection = cx_Oracle.connect(conx_string)
+        # conx_string = os.environ['CON_STR']
+        ip = 'orasw.apotest.alma.cl'
+        port = 1521
+        dsn_tns = cx_Oracle.makedsn(ip, port, 'ALMAI2', 'ALMAI2.SCO.CL')
+
+        # self.connection = cx_Oracle.connect(conx_string)
+        self.connection = cx_Oracle.connect('alma', 'almafordev', dsn_tns)
         self.cursor = self.connection.cursor()
 
         # Initialize with saved data and update, Default behavior.
@@ -162,11 +169,11 @@ class Database(object):
                 "VERSION as PRJ_SAOS_VERSION, STATUS as PRJ_SAOS_STATUS "
                 "FROM SCHEDULING_AOS.OBSPROJECT "
                 "WHERE regexp_like (CODE, '^2015\..*\.[AST]')")
-            self.cursor.execute(self.sqlsched_proj)
-            self.saos_obsproject = pd.DataFrame(
-                self.cursor.fetchall(),
-                columns=[rec[0] for rec in self.cursor.description]
-            ).set_index('CODE', drop=False)
+            # self.cursor.execute(self.sqlsched_proj)
+            # self.saos_obsproject = pd.DataFrame(
+            #     self.cursor.fetchall(),
+            #     columns=[rec[0] for rec in self.cursor.description]
+            # ).set_index('CODE', drop=False)
 
             # self.scheduling_sb: SBs at SCHEDULING_AOS
             # Query SBs in the SCHEDULING_AOS tables
@@ -177,11 +184,11 @@ class Database(object):
                 "ou.OBSUNIT_PROJECT_UID as OBSPROJECT_UID "
                 "FROM SCHEDULING_AOS.SCHEDBLOCK sb, SCHEDULING_AOS.OBSUNIT ou "
                 "WHERE sb.SCHEDBLOCKID = ou.OBSUNITID AND sb.CSV = 0")
-            self.cursor.execute(self.sqlsched_sb)
-            self.saos_schedblock = pd.DataFrame(
-                self.cursor.fetchall(),
-                columns=[rec[0] for rec in self.cursor.description]
-            ).set_index('OUS_ID', drop=False)
+            # self.cursor.execute(self.sqlsched_sb)
+            # self.saos_schedblock = pd.DataFrame(
+            #     self.cursor.fetchall(),
+            #     columns=[rec[0] for rec in self.cursor.description]
+            # ).set_index('OUS_ID', drop=False)
 
             # self.sbstates: SBs status (PT?)
             # Query SBs status
@@ -203,11 +210,11 @@ class Database(object):
                 "FROM ALMA.AQUA_EXECBLOCK "
                 "WHERE regexp_like (OBSPROJECTCODE, '^2015\..*\.[AST]')")
 
-            self.cursor.execute(self.sqlqa0)
-            self.aqua_execblock = pd.DataFrame(
-                self.cursor.fetchall(),
-                columns=[rec[0] for rec in self.cursor.description]
-            ).set_index('SB_UID', drop=False)
+            # self.cursor.execute(self.sqlqa0)
+            # self.aqua_execblock = pd.DataFrame(
+            #     self.cursor.fetchall(),
+            #     columns=[rec[0] for rec in self.cursor.description]
+            # ).set_index('SB_UID', drop=False)
 
             # Query for Executives
             sql2 = str(
@@ -272,7 +279,6 @@ class Database(object):
 
         self.read_obsproject_p1(path=self.phase1_data + 'obsproject/')
 
-
     def read_obsproject_p1(self, path):
 
         projt = []
@@ -291,18 +297,231 @@ class Database(object):
         projt_arr = np.array(projt, dtype=object)
         self.obsproject_p1 = pd.DataFrame(
             projt_arr,
-            columns=['CODE', 'OBSPROJECT_UID', 'OBSPROPOSAL_UID', 'OBSREVIEW_UID', 'VERSION',
+            columns=['CODE', 'OBSPROJECT_UID', 'OBSPROPOSAL_UID',
+                     'OBSREVIEW_UID', 'VERSION',
                      'NOTE', 'IS_CALIBRATION', 'IS_DDT']
         ).set_index('OBSPROJECT_UID', drop=False)
 
-    def read_obspropsal_p1(self):
+    def read_obspropsal_p1(self, path):
 
-        propt = []
+        sgt = []
+        tart = []
 
-        pass
+        for r in self.obsproject_p1.iterrows():
+            obsproject_uid = r[1].OBSPROJECT_UID
+            obsproposal_uid = r[1].OBSPROPOSAL_UID
+            if obsproject_uid is None:
+                continue
+            xml = obsproposal_uid.replace('://', '___').replace('/', '_')
+            xml += '.xml'
+            try:
+                obspropparse = ObsProposal(xml, obsproject_uid, path)
+            except IOError:
+                print("Something went wrong while trying to parse %s" % xml)
+                continue
+            obspropparse.get_ph1_sg()
+            sgt.extend(obspropparse.sciencegoals)
+            tart.extend(obspropparse.sg_targets)
 
-    def read_scgoal_p1(self):
+        sgt_arr = np.array(sgt, dtype=object)
+        tart_arr = np.array(tart, dtype=object)
 
-        scgolt = []
+        self.sciencegoals = pd.DataFrame(
+            sgt_arr,
+            columns=['SG_ID', 'OBSPROJECT_UID', 'OUS_ID', 'sg_name', 'band',
+                     'estimatedTime', 'est12Time', 'estACATime',
+                     'est7Time', 'eTPTime',
+                     'AR', 'LAS', 'ARcor', 'LAScor', 'sensitivity',
+                     'useACA', 'useTP', 'isTimeConstrained', 'repFreq',
+                     'isPointSource', 'polarization', 'type', 'hasSB',
+                     'two_12m', 'num_targets', 'mode']
+        ).set_index('SG_ID', drop=False)
 
-        pass
+        self.sg_targets = pd.DataFrame(
+            tart_arr,
+            columns=['TARG_ID', 'OBSPROJECT_UID', 'SG_ID', 'tarType',
+                     'solarSystem', 'sourceName', 'RA', 'DEC', 'isMosaic']
+        ).set_index('TARG_ID', drop=False)
+
+    def obs_review(self, path):
+        sbt = []
+        for r in self.obsproject_p1.iterrows():
+            obsreview_uid = r[1].OBSREVIEW_UID
+            if obsreview_uid is None:
+                continue
+            xml = obsreview_uid.replace('://', '___').replace('/', '_')
+            xml += '.xml'
+            try:
+                obsrevparse = ObsReview(xml, path)
+            except IOError:
+                print("Something went wrong while trying to parse %s" % xml)
+                continue
+            obsrevparse.get_sg_sb()
+            sbt.extend(obsrevparse.sg_sb)
+
+        sbt_arr = np.array(sbt, dtype=object)
+
+        self.sblocks = pd.DataFrame(
+            sbt_arr,
+            columns=['SB_UID', 'OBSPROJECT_UID', 'ous_name', 'GOUS_ID',
+                     'gous_name', 'MOUS_ID', 'mous_name',
+                     'array', 'execount']
+        ).set_index('SB_UID', drop=False)
+
+        self.sblocks['sg_name'] = self.sblocks.ous_name.str.replace(
+            "SG OUS \(", "")
+        self.sblocks['sg_name'] = self.sblocks.sg_name.str.slice(0, -1)
+
+    def read_sb(self, path):
+
+        rst = []
+        rft = []
+        tart = []
+        spwt = []
+        bbt = []
+        spct = []
+        scpart = []
+        acpart = []
+        bcpart = []
+        pcpart = []
+        ordtart = []
+        sys.stdout.write("Processing Phase II SBs ")
+        sys.stdout.flush()
+
+        c = 10
+        i = 0
+        n = len(self.sciencegoals)
+        for sg_sb in self.sblocks.iterrows():
+            i += 1
+            if (100. * i / n) > c:
+                sys.stdout.write('.')
+                sys.stdout.flush()
+                c += 10
+
+            xmlf = sg_sb[1].SB_UID.replace('://', '___')
+            xmlf = xmlf.replace('/', '_') + '.xml'
+
+            sb1 = SchedBlock(
+                xmlf, sg_sb[1].SB_UID, sg_sb[1].OBSPROJECT_UID,
+                sg_sb[1].GOUS_ID, sg_sb[1].sg_name, path)
+
+            rs, rf, tar, spc, bb, spw, scpar, acpar, bcpar, pcpar, ordtar = \
+                sb1.read_schedblocks()
+            rst.append(rs)
+            rft.extend(rf)
+            tart.extend(tar)
+            spct.extend(spc)
+            bbt.extend(bb)
+            spwt.extend(spw)
+            scpart.extend(scpar)
+            acpart.extend(acpar)
+            bcpart.extend(bcpar)
+            pcpart.extend(pcpar)
+            ordtart.extend(ordtar)
+
+        rst_arr = np.array(rst, dtype=object)
+        rft_arr = np.array(rft, dtype=object)
+        tart_arr = np.array(tart, dtype=object)
+        spct_arr = np.array(spct, dtype=object)
+        bbt_arr = np.array(bbt, dtype=object)
+        spwt_arr = np.array(spwt, dtype=object)
+        scpart_arr = np.array(scpart, dtype=object)
+        acpart_arr = np.array(acpart, dtype=object)
+        bcpart_arr = np.array(bcpart, dtype=object)
+        pcpart_arr = np.array(pcpart, dtype=object)
+        ordtart_arr = np.array(ordtart, dtype=object)
+
+        self.schedblocks = pd.DataFrame(
+            rst_arr,
+            columns=['SB_UID', 'OBSPROJECT_UID', 'SG_ID', 'OUS_ID',
+                     'sbName', 'sbNote', 'sbStatusXml', 'repfreq', 'band',
+                     'array',
+                     'RA', 'DEC', 'minAR_ot', 'maxAR_ot', 'execount',
+                     'isPolarization', 'maxPWVC', 'array12mType',
+                     'estimatedTime', 'maximumTime'],
+        ).set_index('SB_UID', drop=False)
+
+        tof = ['repfreq', 'RA', 'DEC', 'minAR_ot', 'maxAR_ot', 'maxPWVC']
+        self.schedblocks[tof] = self.schedblocks[tof].astype(float)
+        self.schedblocks[['execount']] = self.schedblocks[
+            ['execount']].astype(int)
+
+        self.scienceparam = pd.DataFrame(
+            scpart_arr,
+            columns=['paramRef', 'SB_UID', 'parName', 'representative_bw',
+                     'sensitivy', 'sensUnit', 'intTime', 'subScanDur']
+        ).set_index('paramRef', drop=False)
+
+        self.ampcalparam = pd.DataFrame(
+            acpart_arr,
+            columns=['paramRef', 'SB_UID', 'parName', 'intTime',
+                     'subScanDur']
+        ).set_index('paramRef', drop=False)
+
+        self.bbandcalparam = pd.DataFrame(
+            bcpart_arr,
+            columns=['paramRef', 'SB_UID', 'parName', 'intTime',
+                     'subScanDur']
+        ).set_index('paramRef', drop=False)
+
+        self.phasecalparam = pd.DataFrame(
+            pcpart_arr,
+            columns=['paramRef', 'SB_UID', 'parName', 'intTime',
+                     'subScanDur']
+        ).set_index('paramRef', drop=False)
+
+        self.orederedtar = pd.DataFrame(
+            ordtart_arr,
+            columns=['targetId', 'SB_UID', 'indObs', 'name']
+        ).set_index('targetId', drop=False)
+
+        self.fieldsource = pd.DataFrame(
+            rft_arr,
+            columns=['fieldRef', 'SB_UID', 'solarSystem', 'sourcename',
+                     'name', 'RA', 'DEC', 'isQuery', 'intendedUse', 'qRA',
+                     'qDEC', 'use', 'search_radius', 'rad_unit',
+                     'ephemeris', 'pointings', 'isMosaic', 'arraySB']
+        ).set_index('fieldRef', drop=False)
+
+        self.target = pd.DataFrame(
+            tart_arr,
+            columns=['targetId', 'SB_UID', 'specRef', 'fieldRef',
+                     'paramRef']).set_index('targetId', drop=False)
+
+        self.spectralconf = pd.DataFrame(
+            spct_arr,
+            columns=['specRef', 'SB_UID', 'Name', 'BaseBands', 'SPWs']
+        ).set_index('specRef', drop=False)
+
+        self.spectralconf[['BaseBands', 'SPWs']] = self.spectralconf[
+            ['BaseBands', 'SPWs']].astype(int)
+
+        self.baseband = pd.DataFrame(
+            bbt_arr,
+            columns=['basebandRef', 'spectralConf', 'SB_UID', 'Name',
+                     'CenterFreq', 'FreqSwitching', 'l02Freq',
+                     'Weighting', 'useUDB']
+        ).set_index('basebandRef', drop=False)
+
+        tof = ['CenterFreq', 'l02Freq', 'Weighting']
+        tob = ['FreqSwitching', 'useUDB']
+
+        self.baseband[tof] = self.baseband[tof].astype(float)
+        self.baseband[tob] = self.baseband[tob].astype(bool)
+
+        tof = ['CenterFreq', 'EffectiveBandwidth']
+        toi = ['AveragingFactor', 'EffectiveChannels']
+        tob = ['Use']
+
+        self.spectralwindow = pd.DataFrame(
+            spwt_arr,
+            columns=['basebandRef', 'SB_UID', 'Name',
+                     'SideBand', 'WindowsFunction',
+                     'CenterFreq', 'AveragingFactor',
+                     'EffectiveBandwidth', 'EffectiveChannels',
+                     'Use'],
+        ).set_index('basebandRef', drop=False)
+
+        self.spectralwindow[tof] = self.spectralwindow[tof].astype(float)
+        self.spectralwindow[toi] = self.spectralwindow[toi].astype(int)
+        self.spectralwindow[tob] = self.spectralwindow[tob].astype(bool)
