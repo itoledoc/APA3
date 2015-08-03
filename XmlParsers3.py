@@ -83,6 +83,10 @@ class ObsProposal(object):
             performance.representativeFrequency.attrib['unit'])
         polarization = spectral.attrib['polarisation']
         type_pol = spectral.attrib['type']
+        specscan = spectral.findall(prj + 'SpectralScan')
+        is_spec_scan = False
+        if len(specscan) > 0:
+            is_spec_scan = True
 
         # Correct AR and LAS to equivalent resolutions at 100GHz
         ARcor = AR * repFreq / 100.
@@ -118,8 +122,8 @@ class ObsProposal(object):
             sg_id, self.obsproject_uid, ous_id, sg_name, bands, estimatedTime,
             twelveTime, ACATime, sevenTime, TPTime, AR, LAS, ARcor,
             LAScor, sensitivity, useACA, useTP, isTimeConstrained, repFreq,
-            isPointSource, polarization, type_pol, hasSB, two_12m, num_targets,
-            sg_mode]
+            isPointSource, polarization, is_spec_scan, type_pol, hasSB, two_12m,
+            num_targets, sg_mode]
         )
 
     def read_pro_targets(self, target, sgid, obsp_uid, c):

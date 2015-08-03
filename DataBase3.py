@@ -5,6 +5,7 @@ import os
 import sys
 import pandas as pd
 import ephem
+import arrayResolutionCy3 as ARes
 import cx_Oracle
 
 from collections import namedtuple
@@ -97,6 +98,7 @@ class Database(object):
         self.verbose = verbose
 
         self.obsproject_p1 = pd.DataFrame()
+        self.ares = ARes.arrayRes()
 
         # self.grades = pd.read_table(
         #     self.apa_path + 'conf/c2grade.csv', sep=',')
@@ -333,8 +335,8 @@ class Database(object):
                      'est7Time', 'eTPTime',
                      'AR', 'LAS', 'ARcor', 'LAScor', 'sensitivity',
                      'useACA', 'useTP', 'isTimeConstrained', 'repFreq',
-                     'isPointSource', 'polarization', 'type', 'hasSB',
-                     'two_12m', 'num_targets', 'mode']
+                     'isPointSource', 'polarization', 'isSpectralScan', 'type',
+                     'hasSB', 'two_12m', 'num_targets', 'mode']
         ).set_index('SG_ID', drop=False)
 
         self.sg_targets = pd.DataFrame(
@@ -390,7 +392,7 @@ class Database(object):
 
         c = 10
         i = 0
-        n = len(self.sciencegoals)
+        n = len(self.sblocks)
         for sg_sb in self.sblocks.iterrows():
             i += 1
             if (100. * i / n) > c:
@@ -525,3 +527,46 @@ class Database(object):
         self.spectralwindow[tof] = self.spectralwindow[tof].astype(float)
         self.spectralwindow[toi] = self.spectralwindow[toi].astype(int)
         self.spectralwindow[tob] = self.spectralwindow[tob].astype(bool)
+
+    def get_ar_lim(self, sbrow):
+
+        ouid = sbrow['OBSPROJECT_UID']
+        sgn = sbrow['SG_ID']
+        uid = sbrow['SB_UID']
+        sgrow = self.sciencegoals.query('OBSPROJECT_UID == @ouid and '
+                                        'sg_name == @sgn')
+        if len(sgrow) == 0:
+            print "What? %s" % uid
+            return pd.Series([0, 0, 'C'],
+                             index=["minAR", "maxAR", "BestConf"])
+        else:
+            sgrow = sgrow.iloc[0]
+
+        num12 = 1
+        sbs = self.schedblocks.query(
+            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "TWELVE-M"')
+        isExtended = True
+        if len(sbs) > 1:
+            two = sbs[sbs.sbNote.str.contains('compact')]
+            if len(two) > 0:
+                num12 = 2
+                print num12, sbrow['sbName']
+                isExtended = True
+                if sbrow['sbName'].endswith('_TC'):
+                    isExtended = False
+        try:
+            minAR, maxAR, conf1, conf2 = self.ares.run(
+                sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA'],
+                num12, uid)
+        except:
+            print(sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'],
+                  sgrow['useACA'], num12, uid)
+            return pd.Series([0, 0, 'C'],
+                             index=["minAR", "maxAR", "BestConf"])
+
+        if not isExtended:
+            print "Not Extended"
+            return pd.Series([minAR[1], maxAR[1], conf2],
+                             index=["minAR", "maxAR", "BestConf"])
+        return pd.Series([minAR[0], maxAR[0], conf1],
+                         index=["minAR", "maxAR", "BestConf"])
