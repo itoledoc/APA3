@@ -421,6 +421,9 @@ class Database(object):
             pcpart.extend(pcpar)
             ordtart.extend(ordtar)
 
+        sys.stdout.write("\nDone!\n")
+        sys.stdout.flush()
+
         rst_arr = np.array(rst, dtype=object)
         rft_arr = np.array(rft, dtype=object)
         tart_arr = np.array(tart, dtype=object)
@@ -511,7 +514,7 @@ class Database(object):
         self.baseband[tof] = self.baseband[tof].astype(float)
         self.baseband[tob] = self.baseband[tob].astype(bool)
 
-        tof = ['CenterFreq', 'EffectiveBandwidth']
+        tof = ['CenterFreq', 'EffectiveBandwidth', 'lineRestFreq']
         toi = ['AveragingFactor', 'EffectiveChannels']
         tob = ['Use']
 
@@ -520,8 +523,8 @@ class Database(object):
             columns=['basebandRef', 'SB_UID', 'Name',
                      'SideBand', 'WindowsFunction',
                      'CenterFreq', 'AveragingFactor',
-                     'EffectiveBandwidth', 'EffectiveChannels',
-                     'Use'],
+                     'EffectiveBandwidth', 'EffectiveChannels', 'lineRestFreq',
+                     'lineName', 'Use'],
         ).set_index('basebandRef', drop=False)
 
         self.spectralwindow[tof] = self.spectralwindow[tof].astype(float)
@@ -535,6 +538,9 @@ class Database(object):
         uid = sbrow['SB_UID']
         sgrow = self.sciencegoals.query('OBSPROJECT_UID == @ouid and '
                                         'sg_name == @sgn')
+        if sbrow['array'] != "TWELVE-M":
+            return pd.Series([None, None, 'N/A'],
+                             index=["minAR", "maxAR", "BestConf"])
         if len(sgrow) == 0:
             print "What? %s" % uid
             return pd.Series([0, 0, 'C'],
@@ -550,7 +556,7 @@ class Database(object):
             two = sbs[sbs.sbNote.str.contains('compact')]
             if len(two) > 0:
                 num12 = 2
-                print num12, sbrow['sbName']
+                # print num12, sbrow['sbName']
                 isExtended = True
                 if sbrow['sbName'].endswith('_TC'):
                     isExtended = False
@@ -559,13 +565,13 @@ class Database(object):
                 sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA'],
                 num12, uid)
         except:
-            print(sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'],
-                  sgrow['useACA'], num12, uid)
+            # print(sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'],
+            #       sgrow['useACA'], num12, uid)
             return pd.Series([0, 0, 'C'],
                              index=["minAR", "maxAR", "BestConf"])
 
         if not isExtended:
-            print "Not Extended"
+            # print "Not Extended"
             return pd.Series([minAR[1], maxAR[1], conf2],
                              index=["minAR", "maxAR", "BestConf"])
         return pd.Series([minAR[0], maxAR[0], conf1],

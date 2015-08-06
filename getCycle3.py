@@ -47,17 +47,21 @@ for uid in obsproject_uids:
         data = cursor.fetchall()[0]
         xml_content = data[1].read()
         xmlfilename = uid.replace('://', '___').replace('/', '_') + '.xml'
-        filename = 'cycle3/obsproject/' + xmlfilename
+        filename = '/home/itoledo/Documents/cycle3/obsproject/' + xmlfilename
         io_file = open(filename, 'w')
         io_file.write(xml_content)
         io_file.close()
     except IndexError:
         print("Project %s not found on archive?" %
                uid)
+    except IOError:
+        print("Project %s not found on archive?" %
+               uid)
 
-for r in os.listdir('cycle3/obsproject'):
+for r in os.listdir('/home/itoledo/Documents/cycle3/obsproject'):
     if r.startswith('uid'):
-        obsparse = ObsProject('cycle3/obsproject/' + r)
+        obsparse = ObsProject(r,
+                              path='/home/itoledo/Documents/cycle3/obsproject/')
         obspropuid = obsparse.ObsProposalRef.attrib['entityId']
         try:
             obsrevuid = obsparse.ObsReviewRef.attrib['entityId']
@@ -75,7 +79,7 @@ for r in os.listdir('cycle3/obsproject'):
             xml_content = data[1].read()
             xmlfilename = obspropuid.replace('://', '___').replace('/', '_') + \
                           '.xml'
-            filename = 'cycle3/obsproposal/' + xmlfilename
+            filename = '/home/itoledo/Documents/cycle3/obsproposal/' + xmlfilename
             io_file = open(filename, 'w')
             io_file.write(xml_content)
             io_file.close()
@@ -94,7 +98,7 @@ for r in os.listdir('cycle3/obsproject'):
             xml_content = data[1].read()
             xmlfilename = obsrevuid.replace('://', '___').replace('/', '_') + \
                           '.xml'
-            filename = 'cycle3/obsreview/' + xmlfilename
+            filename = '/home/itoledo/Documents/cycle3/obsreview/' + xmlfilename
             io_file = open(filename, 'w')
             io_file.write(xml_content)
             io_file.close()
@@ -104,10 +108,11 @@ for r in os.listdir('cycle3/obsproject'):
             continue
 
 
-for r in os.listdir('cycle3/obsreview/'):
+for r in os.listdir('/home/itoledo/Documents/cycle3/obsreview/'):
     if not r.startswith('uid'):
         continue
-    obsreview = ObsReview('cycle3/obsreview/' + r)
+    obsreview = ObsReview(r,
+                          path='/home/itoledo/Documents/cycle3/obsreview/')
     op = obsreview.data.findall('.//' + prj + 'SchedBlockRef')
     for sbref in op:
         sbuid = sbref.attrib['entityId']
@@ -119,7 +124,7 @@ for r in os.listdir('cycle3/obsreview/'):
             data = cursor.fetchall()[0]
             xml_content = data[1].read()
             xmlfilename = sbuid.replace('://', '___').replace('/', '_') + '.xml'
-            filename = 'cycle3/schedblock/' + xmlfilename
+            filename = '/home/itoledo/Documents/cycle3/schedblock/' + xmlfilename
             io_file = open(filename, 'w')
             io_file.write(xml_content)
             io_file.close()

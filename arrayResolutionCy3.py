@@ -139,6 +139,9 @@ class arrayRes:
 
     def run(self, AR, LAS, declination, useACA, noOf12, uid):
 
+        self.minAR = [0., -99.]
+        self.maxAR = [0, -99.]
+
         notFound = True
         maxTry = 100
         nTry = 1
@@ -157,31 +160,31 @@ class arrayRes:
             return [0, 0], [0, 0], 'E', 'E'
     
         else :
-            # print self.array[matchArr[0]], self.array[matchArr[-1]]
+            # print self.array[min(matchArr)], self.array[max(matchArr)]
             if noOf12 == 1:
-                self.minAR[0] = self.res[matchArr[-1]] * 0.8
-                self.maxAR[0] = self.res[matchArr[0]] * 1.2
+                self.minAR[0] = self.res[max(matchArr)] * 0.8
+                self.maxAR[0] = self.res[min(matchArr)] * 1.2
 
             elif noOf12 == 2:
-                if matchArr[0] > 5:
+                if min(matchArr) > 5:
                     print " LBL array cannot be combined, check OT"
 
                 else:
                     try:
-                        arr2 = self.matchArrayCycle3[matchArr[0]]
+                        arr2 = self.matchArrayCycle3[min(matchArr)]
                     except KeyError:
                         print("Two Configurations required, but only one needed"
                               ", check OT?", uid)
                         return 0
-                    self.minAR[0] = self.res[matchArr[-1]] * 0.8
-                    self.maxAR[0] = self.res[matchArr[0]] * 1.2
+                    self.minAR[0] = self.res[max(matchArr)] * 0.8
+                    self.maxAR[0] = self.res[min(matchArr)] * 1.2
                     
-                    self.minAR[1] = self.res[arr2] * 1.3
-                    self.maxAR[1] = self.res[arr2] * 0.8
+                    self.minAR[1] = self.res[arr2] * 0.8
+                    self.maxAR[1] = self.res[arr2] * 1.3
         if noOf12 == 2:
-            return self.minAR, self.maxAR, self.array[matchArr[-1]], self.array[arr2]
+            return self.minAR, self.maxAR, self.array[max(matchArr)], self.array[arr2]
         else:
-            return self.minAR, self.maxAR, self.array[matchArr[-1]], 'Ca  '
+            return self.minAR, self.maxAR, self.array[max(matchArr)], 'Ca  '
     
 # #######################################################################
 # ### main program######

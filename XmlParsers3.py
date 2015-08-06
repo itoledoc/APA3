@@ -597,11 +597,21 @@ class SchedBlock(object):
                         spw.effectiveBandwidth.pyval, effectiveBandwidth_unit)
                     effectiveChannels = spw.effectiveNumberOfChannels.pyval
                     use = spw.useThisSpectralWindow.pyval
+                    try:
+                        spl = spw.SpectralLine
+                        line_restFreq = convert_ghz(
+                            spl.restFrequency.pyval,
+                            spl.restFrequency.attrib['unit'])
+                        line_name = spl.transition.pyval
+                    except:
+                        line_restFreq = 0
+                        line_name = 'None'
 
                     spwl.append(
                         (bbRef, sbuid, name, sideBand, windowsFunction,
                          centerFreq, averagingFactor, effectiveBandwidth,
-                         effectiveChannels, use))
+                         effectiveChannels, line_restFreq, line_name, use))
+
 
         except AttributeError:
             for baseband in range(len(correconf.ACABaseBandConfig)):
@@ -622,10 +632,19 @@ class SchedBlock(object):
                         spw.effectiveBandwidth.pyval, effectiveBandwidth_unit)
                     effectiveChannels = spw.effectiveNumberOfChannels.pyval
                     use = spw.useThisSpectralWindow.pyval
+                    try:
+                        spl = spw.SpectralLine
+                        line_restFreq = convert_ghz(
+                            spl.restFrequency.pyval,
+                            spl.restFrequency.attrib['unit'])
+                        line_name = spl.transition.pyval
+                    except:
+                        line_restFreq = 0
+                        line_name = 'None'
                     spwl.append(
                         (bbRef, sbuid, name, sideBand, windowsFunction,
                          centerFreq, averagingFactor, effectiveBandwidth,
-                         effectiveChannels, use))
+                         effectiveChannels, line_restFreq, line_name, use))
         return spwl
 
 
