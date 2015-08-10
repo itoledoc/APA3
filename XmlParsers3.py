@@ -155,8 +155,10 @@ class ObsProposal(object):
             dec = pd.np.degrees(eph.to_radec()[1])
         else:
             print "coord type is %s, deal with it" % coord_type
-            ra = 0
-            dec = 0
+            ra = convert_deg(coord.findall(val + 'longitude')[0].pyval,
+                             coord.findall(val + 'longitude')[0].attrib['unit'])
+            dec = convert_deg(coord.findall(val + 'latitude')[0].pyval,
+                              coord.findall(val + 'latitude')[0].attrib['unit'])
         try:
             isMosaic = target.isMosaic.pyval
         except AttributeError:

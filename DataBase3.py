@@ -336,7 +336,7 @@ class Database(object):
                      'AR', 'LAS', 'ARcor', 'LAScor', 'sensitivity',
                      'useACA', 'useTP', 'isTimeConstrained', 'repFreq',
                      'isPointSource', 'polarization', 'isSpectralScan', 'type',
-                     'hasSB', 'two_12m', 'num_targets', 'mode']
+                     'hasSB', 'dummy', 'num_targets', 'mode']
         ).set_index('SG_ID', drop=False)
 
         self.sg_targets = pd.DataFrame(
@@ -538,25 +538,37 @@ class Database(object):
         uid = sbrow['SB_UID']
         sgrow = self.sciencegoals.query('OBSPROJECT_UID == @ouid and '
                                         'sg_name == @sgn')
+
+        sbs = self.schedblocks.query(
+            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "TWELVE-M"')
+        isExtended = True
+        SB_BL_num = len(sbs)
+        SB_7m_num = len(self.schedblocks.query(
+            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "SEVEN-M"'))
+        SB_TP_num = len(self.schedblocks.query(
+            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and '
+            'array == "TP-Array"'))
+
         if sbrow['array'] != "TWELVE-M":
-            return pd.Series([None, None, 'N/A'],
-                             index=["minAR", "maxAR", "BestConf"])
+            return pd.Series(
+                [None, None, 'N/A', 0, SB_BL_num, SB_7m_num, SB_TP_num],
+                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                       "SB_7m_num", "SB_TP_num"])
         if len(sgrow) == 0:
             print "What? %s" % uid
-            return pd.Series([0, 0, 'C'],
-                             index=["minAR", "maxAR", "BestConf"])
+            return pd.Series(
+                [0, 0, 'E', 0, SB_BL_num, SB_7m_num, SB_TP_num],
+                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                       "SB_7m_num", "SB_TP_num"])
         else:
             sgrow = sgrow.iloc[0]
 
         num12 = 1
-        sbs = self.schedblocks.query(
-            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "TWELVE-M"')
-        isExtended = True
+
         if len(sbs) > 1:
             two = sbs[sbs.sbNote.str.contains('compact')]
             if len(two) > 0:
                 num12 = 2
-                # print num12, sbrow['sbName']
                 isExtended = True
                 if sbrow['sbName'].endswith('_TC'):
                     isExtended = False
@@ -565,14 +577,21 @@ class Database(object):
                 sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA'],
                 num12, uid)
         except:
-            # print(sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'],
-            #       sgrow['useACA'], num12, uid)
-            return pd.Series([0, 0, 'C'],
-                             index=["minAR", "maxAR", "BestConf"])
+            print "Exception, %s" % uid
+            print sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA']
+            return pd.Series(
+                [0, 0, 'C', num12, SB_BL_num, SB_7m_num, SB_TP_num],
+                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                       "SB_7m_num", "SB_TP_num"])
 
         if not isExtended:
-            # print "Not Extended"
-            return pd.Series([minAR[1], maxAR[1], conf2],
-                             index=["minAR", "maxAR", "BestConf"])
-        return pd.Series([minAR[0], maxAR[0], conf1],
-                         index=["minAR", "maxAR", "BestConf"])
+
+            return pd.Series(
+                [minAR[1], maxAR[1], conf2, num12, SB_BL_num, SB_7m_num,
+                 SB_TP_num],
+                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                       "SB_7m_num", "SB_TP_num"])
+        return pd.Series(
+            [minAR[0], maxAR[0], conf1, num12, SB_BL_num, SB_7m_num, SB_TP_num],
+            index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                   "SB_7m_num", "SB_TP_num"])

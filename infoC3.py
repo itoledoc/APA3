@@ -5,6 +5,7 @@ datas.read_obspropsal_p1(datas.phase1_data + 'obsproposal/')
 datas.obs_review(datas.phase1_data + 'obsreview/')
 datas.sciencegoals['sg_name'] = datas.sciencegoals.sg_name.astype(str)
 datas.read_sb(datas.phase1_data + 'schedblock/')
+datas.sciencegoals.ix['uid://A001/X1ed/X38e_01', 'sg_name'] = '08477'
 ar = datas.schedblocks.apply(lambda x: datas.get_ar_lim(x), axis=1)
 
 import pandas as pd
@@ -121,7 +122,7 @@ merge2.to_csv('/home/itoledo/Documents/project_info.csv')
 
 
 merge3 = pd.merge(merge2, datas.sciencegoals, on=['OBSPROJECT_UID'])
-merge3.ix[3000, 'sg_name'] = '08477'
+
 merge3.to_csv('/home/itoledo/Documents/proj_sg.csv')
 
 merge4 = pd.merge(
@@ -177,7 +178,7 @@ schedblocks['mixed_corr'] = schedblocks.apply(
 
 ephem_su = sb_fs.query('solarSystem != "Unspecified"').SB_UID.unique()
 schedblocks['ephem'] = schedblocks.apply(
-    lambda x: True if x['SB_UID'] in multi_point_su else False, axis=1)
+    lambda x: True if x['SB_UID'] in ephem_su else False, axis=1)
 
 ephem_int_su = sb_fs.query(
     'solarSystem != "Unspecified"')[

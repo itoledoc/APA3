@@ -47,9 +47,8 @@ class arrayRes:
         self.nof12m = 1
         self.minAR = [0., -99.]
         self.maxAR = [0, -99.]
-        self.data =[]
-        
-                      
+        self.data = []
+
         self.array = {
             0: "C36-1", 1: "C36-2", 2: "C36-3", 3: "C36-4", 4: "C36-5",
             5: "C36-6", 6: "C36-7", 7: "C36-8"}
@@ -159,7 +158,7 @@ class arrayRes:
             print "No matching found ... ", uid, AR, LAS, useACA, noOf12
             return [0, 0], [0, 0], 'E', 'E'
     
-        else :
+        else:
             # print self.array[min(matchArr)], self.array[max(matchArr)]
             if noOf12 == 1:
                 self.minAR[0] = self.res[max(matchArr)] * 0.8
@@ -173,18 +172,24 @@ class arrayRes:
                     try:
                         arr2 = self.matchArrayCycle3[min(matchArr)]
                     except KeyError:
-                        print("Two Configurations required, but only one needed"
-                              ", check OT?", uid)
-                        return 0
+                        try:
+                            arr2 = self.matchArrayCycle3[max(matchArr)]
+                        except KeyError:
+                            print(
+                                "Two Configurations required, but only one "
+                                "needed, check OT?", uid)
+                            print matchArr, AR, LAS, useACA, noOf12
+                            return 0
                     self.minAR[0] = self.res[max(matchArr)] * 0.8
                     self.maxAR[0] = self.res[min(matchArr)] * 1.2
                     
                     self.minAR[1] = self.res[arr2] * 0.8
                     self.maxAR[1] = self.res[arr2] * 1.3
         if noOf12 == 2:
-            return self.minAR, self.maxAR, self.array[max(matchArr)], self.array[arr2]
+            return self.minAR, self.maxAR, self.array[min(matchArr)], \
+                self.array[arr2]
         else:
-            return self.minAR, self.maxAR, self.array[max(matchArr)], 'Ca  '
+            return self.minAR, self.maxAR, self.array[min(matchArr)], 'Ca  '
     
 # #######################################################################
 # ### main program######
