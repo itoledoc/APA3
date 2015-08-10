@@ -17,12 +17,11 @@ es_cycle3 = [
     ['2015-11-10', '2015-11-30', 'block21', [7]],
     ['2015-12-22', '2016-01-18', 'block21', [1]],
     ['2016-01-26', '2016-01-30', 'block21', [1]],
-    ['2016-03-01', '2016-03-28', 'block21', [2]],
-    ['2016-04-05', '2016-04-25', 'block21', [3]],
-    ['2016-05-03', '2016-05-30', 'block21', [3]],
-    ['2016-06-07', '2016-06-20', 'block21', [4]],
-    ['2016-06-28', '2016-07-25', 'block21', [5]],
-    ['2016-08-02', '2016-08-29', 'block21', [6]],
+    ['2016-03-01', '2016-04-04', 'block21', [2]],
+    ['2016-04-12', '2016-05-09', 'block21', [3]],
+    ['2016-05-17', '2016-06-13', 'block21', [4]],
+    ['2016-06-21', '2016-07-11', 'block21', [5]],
+    ['2016-07-19', '2016-08-29', 'block21', [6]],
     ['2016-09-13', '2016-09-26', 'block21', [7]],
 ]
 
@@ -59,14 +58,37 @@ def create_dates(data_arin):
     return data_ar
 
 
-def observable(ra1, dec1, alma, sbuid):
+def observable(ra1, dec1, alma, isephem, minAR, maxAR, array, sbuid):
 
     datet = alma.date
+    conf = [None, None, None, None, None, None, None, None]
+    twelve_good = 0
+
+    if array == "TWELVE-M":
+        for i, a in enumerate(ar_res):
+            if minAR <= a <= maxAR:
+                conf[i] = 'C36-' + str(i + 1)
+                twelve_good += 1
+
+    if isephem:
+        return pd.Series([sbuid, 0., 23.99999, 24., 'ephem', conf[0], conf[1],
+                          conf[2], conf[3], conf[4], conf[5], conf[6], conf[7],
+                          twelve_good],
+                         index=['SB_UID', 'rise', 'set', 'up', 'note', 'C36_1',
+                                'C36_2', 'C36_3', 'C36_4', 'C36_5', 'C36_6',
+                                'C36_7', 'C36_8', 'twelve_good'])
 
     obj = ephem.FixedBody()
     obj._ra = pd.np.deg2rad(ra1)
     obj._dec = pd.np.deg2rad(dec1)
     obj.compute(alma)
+    if obj.circumpolar:
+        return pd.Series([sbuid,  0., 23.99999, 24., 'circumpol', conf[0],
+                          conf[1], conf[2], conf[3], conf[4], conf[5], conf[6],
+                          conf[7], twelve_good],
+                         index=['SB_UID', 'rise', 'set', 'up', 'note', 'C36_1',
+                                'C36_2', 'C36_3', 'C36_4', 'C36_5', 'C36_6',
+                                'C36_7', 'C36_8', 'twelve_good'])
 
     sets = alma.next_setting(obj)
     rise = alma.previous_rising(obj)
@@ -83,8 +105,11 @@ def observable(ra1, dec1, alma, sbuid):
         up = 24. - lstr + lsts
     else:
         up = lsts - lstr
-    return pd.Series([sbuid, lstr, lsts, up],
-                     index=['SB_UID', 'rise', 'set', 'up'])
+    return pd.Series([sbuid, lstr, lsts, up, 'OK', conf[0], conf[1], conf[2],
+                      conf[3], conf[4], conf[5], conf[6], conf[7], twelve_good],
+                     index=['SB_UID', 'rise', 'set', 'up', 'note', 'C36_1',
+                            'C36_2', 'C36_3', 'C36_4', 'C36_5', 'C36_6',
+                            'C36_7', 'C36_8', 'twelve_good'])
 
 
 def day_night(sdate, edate, alma):
@@ -119,13 +144,17 @@ def day_night(sdate, edate, alma):
                      index=['lst_start', 'lst_dusk', 'lst_end', 'lst_dawn'])
 
 
-def avail_calc(orise, oset, conf1, conf2, conf3, conf4, conf5, conf6, conf7, up,
-               band, datedf):
+def avail_calc(orise, oset, conf1, conf2, conf3, conf4, conf5, conf6, conf7,
+               conf8, up, band, datedf):
 
     # First, is observable?
     confnames_df = ['C36_1', 'C36_2', 'C36_3', 'C36_4', 'C36_5', 'C36_6',
                     'C36_7', 'C36_8']
-    cf = np.array([conf1, conf2, conf3, conf4, conf5, conf6, conf7])
+    cf = np.zeros(8)
+    for i, a in enumerate([conf1, conf2, conf3, conf4, conf5, conf6, conf7,
+                           conf8]):
+        if a:
+            cf[1] = 1
     hup = 0.
     safe = 0
     crit = 0
@@ -149,7 +178,8 @@ def avail_calc(orise, oset, conf1, conf2, conf3, conf4, conf5, conf6, conf7, up,
         if 1 not in cf * confs:
             continue
         else:
-            if ((l.start < dt.datetime(2015, 5, 5)) and
+            if ((l.start < dt.datetime(2016, 4, 1)) and
+                    (l.start > dt.datetime(2016, 1, 1)) and
                     band in ['ALMA_RB_08', 'ALMA_RB_09']):
                 continue
 
