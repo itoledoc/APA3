@@ -26,6 +26,8 @@ class ObsProposal(object):
 
         self.sg_targets = []
         self.sciencegoals = []
+        self.visits = []
+        self.temp_param = []
 
     def get_ph1_sg(self):
         sg_list = self.data.findall(prj + 'ScienceGoal')
@@ -75,6 +77,73 @@ class ObsProposal(object):
             isTimeConstrained = performance.isTimeConstrained.pyval
         except AttributeError:
             isTimeConstrained = None
+
+        if isTimeConstrained:
+            try:
+                visit = performance.VisitConstraint
+                for v in visit:
+                    try:
+                        startTime = v.startTime.pyval
+                    except AttributeError:
+                        startTime = None
+                    try:
+                        allowedMargin = v.allowedMargin.pyval
+                        allowedMargin_unit = v.allowedMargin.attrib['unit']
+                    except AttributeError:
+                        allowedMargin = None
+                        allowedMargin_unit = None
+                    try:
+                        note = v.note.pyval
+                    except:
+                        note = None
+                    isAvoidConstraint = v.isAvoidConstraint.pyval
+                    priority = v.priority.pyval
+                    try:
+                        isfixedStart = v.isFixedStart.pyval
+                    except AttributeError:
+                        isfixedStart = None
+
+                    visitId = v.visitId.pyval
+                    prev_visitId = v.previousVisitId.pyval
+                    try:
+                        requiredDelay = v.requiredDelay.pyval
+                        requiredDelay_unit = v.requiredDelay.attrib['unit']
+                    except:
+                        requiredDelay = None
+                        requiredDelay_unit = None
+                    self.visits.append([
+                        sg_id, sg_name, self.obsproject_uid,
+                        startTime, allowedMargin, allowedMargin_unit, note,
+                        isAvoidConstraint, priority, visitId, prev_visitId,
+                        requiredDelay, requiredDelay_unit, isfixedStart])
+            except AttributeError:
+                print sg_name
+                temp = performance.TemporalParameters
+                for t in temp:
+                    startTime = t.startTime.pyval
+                    endTime = t.endTime.pyval
+                    allowedMargin = t.allowedMargin.pyval
+                    allowedMargin_unit = t.allowedMargin.attrib['unit']
+                    repeats = t.repeats.pyval
+                    try:
+                        lSTMin = t.lSTMin.pyval
+                        lSTMax = t.lSTMax.pyval
+                    except:
+                        lSTMin = None
+                        lSTMax = None
+                    try:
+                        note = t.note.pyval
+                    except:
+                        note = None
+                    isAvoidConstraint = t.isAvoidConstraint.pyval
+                    priority = t.priority.pyval
+                    fixedStart = t.isFixedStart.pyval
+                    self.temp_param.append([
+                        sg_id, sg_name, self.obsproject_uid,
+                        startTime, endTime, allowedMargin, allowedMargin_unit,
+                        repeats, lSTMin, lSTMax, note, isAvoidConstraint,
+                        priority, fixedStart
+                    ])
 
         # Get SG representative Frequency, polarization configuration.
         spectral = sg.SpectralSetupParameters

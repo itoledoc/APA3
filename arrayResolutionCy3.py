@@ -123,7 +123,7 @@ class arrayRes:
                     and noOf12 == 1):
 
                 if useACA == 0:
-                    if self.las[arr] * 1.1 > las:
+                    if self.las[arr] * 1.25 > las:
                         match.append(arr)
                         notFound = False
                 else:

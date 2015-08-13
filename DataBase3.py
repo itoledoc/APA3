@@ -308,6 +308,8 @@ class Database(object):
 
         sgt = []
         tart = []
+        visitt = []
+        temp_paramt = []
 
         for r in self.obsproject_p1.iterrows():
             obsproject_uid = r[1].OBSPROJECT_UID
@@ -324,9 +326,16 @@ class Database(object):
             obspropparse.get_ph1_sg()
             sgt.extend(obspropparse.sciencegoals)
             tart.extend(obspropparse.sg_targets)
+            if len(obspropparse.visits) > 0:
+                visitt.extend(obspropparse.visits)
+            if len(obspropparse.temp_param) > 0:
+                temp_paramt.extend(obspropparse.temp_param)
 
         sgt_arr = np.array(sgt, dtype=object)
         tart_arr = np.array(tart, dtype=object)
+        visitt_arr = np.array(visitt, dtype=object)
+        temp_paramt_arr = np.array(temp_paramt, dtype=object)
+
 
         self.sciencegoals = pd.DataFrame(
             sgt_arr,
@@ -344,6 +353,20 @@ class Database(object):
             columns=['TARG_ID', 'OBSPROJECT_UID', 'SG_ID', 'tarType',
                      'solarSystem', 'sourceName', 'RA', 'DEC', 'isMosaic']
         ).set_index('TARG_ID', drop=False)
+
+        self.visits = pd.DataFrame(
+            visitt_arr,
+            columns=['SG_ID', 'sgName', 'OBSPROJECT_UID', 'startTime', 'margin', 'margin_unit',
+                     'note', 'avoidConstraint', 'priority', 'visit_id',
+                     'prev_visit_id', 'requiredDelay', 'requiredDelay_unit', 'fixedStart']
+        )
+
+        self.temp_param = pd.DataFrame(
+            temp_paramt_arr,
+            columns=['SG_ID', 'sgName', 'OBSPROJECT_UID', 'startTime', 'endTime',
+                     'margin', 'margin_unit', 'repeats', 'LSTmin', 'LSTmax',
+                     'note', 'avoidConstraint', 'priority', 'fixedStart']
+        )
 
     def obs_review(self, path):
         sbt = []
