@@ -1,22 +1,70 @@
-import DataBase3 as db
+import DataBase3 as DaB
 import ephem
 import numpy as np
 import pylab as py
+import pandas as pd
 
-# dreload(db)
-
-datas = db.Database()
+datas = DaB.Database()
 datas.read_obspropsal_p1(datas.phase1_data + 'obsproposal/')
 datas.obs_review(datas.phase1_data + 'obsreview/')
 datas.sciencegoals['sg_name'] = datas.sciencegoals.sg_name.astype(str)
 datas.read_sb(datas.phase1_data + 'schedblock/')
 datas.sciencegoals.ix['uid://A001/X1ed/X38e_01', 'sg_name'] = '08477'
-ar = datas.schedblocks.apply(lambda x: datas.get_ar_lim(x), axis=1)
+datas.sciencegoals['aggBandwidth'] = datas.sg_spw.groupby(
+    'SG_ID').bandwidth.sum()
 
-import pandas as pd
-grades = pd.read_excel(
-    '/home/itoledo/Downloads/'
-    'APRC_Meeting_Tool_assessments_list_20150723_UT1901.xlsx')
+datas.sciencegoals['isNarrow'] = datas.sciencegoals.apply(
+    lambda x: True if x['aggBandwidth'] < 1.1 else False,
+    axis=1
+)
+
+datas.schedblocks['assumedconf_ar_ot'] = (
+    datas.schedblocks.minAR_ot / 0.9) * datas.schedblocks.repfreq / 100.
+
+c1 = np.sqrt(datas.ares.data[0][1] * datas.ares.data[0][2])
+c2 = np.sqrt(datas.ares.data[1][1] * datas.ares.data[1][2])
+c3 = np.sqrt(datas.ares.data[2][1] * datas.ares.data[2][2])
+c4 = np.sqrt(datas.ares.data[3][1] * datas.ares.data[3][2])
+c5 = np.sqrt(datas.ares.data[4][1] * datas.ares.data[4][2])
+c6 = np.sqrt(datas.ares.data[5][1] * datas.ares.data[5][2])
+c7 = np.sqrt(datas.ares.data[6][1] * datas.ares.data[6][2])
+c8 = np.sqrt(datas.ares.data[7][1] * datas.ares.data[7][2])
+
+
+def find_nearest(array, value):
+    idx = (np.abs(array - value)).argmin()
+    return array[idx], idx, (np.abs(array - value)).min()
+
+
+def find_array(value):
+    closest = 90000000.
+    n = 0
+    array = -20
+    for c in [c1, c2, c3, c4, c5, c6, c7, c8]:
+        a = find_nearest(c, value)
+        if a[2] < closest:
+            closest = a[2]
+            array = n
+        n += 1
+
+    return datas.ares.array[array]
+
+grades = pd.read_csv(
+    '/home/itoledo/Work/APA3/conf/DC_final modified gradeC.csv')
+
+selproj = grades.query('APRCGrade in ["A", "B", "C"]').CODE.unique()
+sel_obsproj = datas.projects.query('CODE in @selproj').OBSPROJECT_UID.unique()
+
+datas.schedblocks = datas.schedblocks.query('OBSPROJECT_UID in @sel_obsproj')
+datas.sciengoals = datas.sciencegoals.query('OBSPROJECT_UID in @sel_obsproj')
+datas.projects = datas.projects.query('OBSPROJECT_UID in @sel_obsproj')
+
+datas.schedblocks['OT_BestConf'] = datas.schedblocks.apply(
+    lambda x: find_array(x['assumedconf_ar_ot']) if x['array'] == "TWELVE-M"
+    else "N/A",
+    axis=1)
+
+ar = datas.schedblocks.apply(lambda x: datas.get_ar_lim(x), axis=1)
 
 schedblocks = pd.concat([datas.schedblocks, ar], axis=1)
 datas.baseband.columns = pd.Index(
@@ -32,39 +80,13 @@ spectral = pd.merge(
     sp_bb, datas.spectralwindow,
     on=['SB_UID', 'basebandRef'], how='left', suffixes=['_bbconf', '_spwconf'])
 spectral.columns = pd.Index(
-    [u'specRef', u'SB_UID', u'Name_specconf', u'BaseBands', u'SPWs',
-     u'basebandRef', u'Name_bbconf', u'CenterFreq_bbconf', u'FreqSwitching',
-     u'l02Freq', u'Weighting', u'useUDB', u'Name', u'SideBand',
-     u'WindowsFunction', u'CenterFreq_spwconf', u'AveragingFactor',
-     u'EffectiveBandwidth', u'EffectiveChannels', u'lineRestFreq',
-     u'lineName', u'Use'], dtype='object')
-
-spec_group = spectral.groupby(['SB_UID', 'specRef'])
-spectral_agg = spec_group.agg(
-    {'BaseBands': pd.np.max, 'SPWs': pd.np.max, 'CenterFreq_bbconf': pd.np.max,
-     'CenterFreq_spwconf': pd.np.max, 'EffectiveBandwidth': pd.np.sum,
-     'EffectiveChannels': pd.np.sum})
-
-spectral_agg.columns = pd.Index(
-    [u'CenterFreqMax_spwconf', u'BaseBands', u'EffectiveBandwidth_agg',
-     u'EffectiveChannels_agg', u'SPWs', u'CenterFreqMax_bbconf'],
-    dtype='object')
-
-spectral_agg2 = spec_group.agg(
-    {'EffectiveBandwidth': pd.np.min, 'EffectiveChannels': pd.np.min})
-spectral_agg2.columns = pd.Index(
-    ['EffectiveBandwidth_MIN', u'EffectiveChannels_MIN'], dtype='object')
-
-spectral_agg = pd.merge(spectral_agg, spectral_agg2, left_index=True,
-                        right_index=True)
-
-spectral_agg3 = spec_group.agg(
-    {'EffectiveBandwidth': pd.np.max, 'EffectiveChannels': pd.np.max})
-spectral_agg3.columns = pd.Index(
-    ['EffectiveBandwidth_MAX', u'EffectiveChannels_MAX'], dtype='object')
-
-spectral_agg = pd.merge(
-    spectral_agg, spectral_agg3, left_index=True, right_index=True)
+    [u'specRef', u'SB_UID', u'Name_specconf', u'BaseBands_specConf',
+     u'SPWs_specConf', u'basebandRef', u'Name_BB', u'CenterFreq_BB',
+     u'FreqSwitching_BB',
+     u'l02Freq_BB', u'Weighting_BB', u'useUDB_BB', u'Name_SPW', u'SideBand_SPW',
+     u'WindowsFunction_SPW', u'CenterFreq_SPW', u'AveragingFactor_SPW',
+     u'EffectiveBandwidth_SPW', u'EffectiveChannels_SPW', u'lineRestFreq_SPW',
+     u'lineName_SPW', u'Use_SPW'], dtype='object')
 
 scitar = pd.merge(
     datas.orederedtar.query('name != "Calibrators"'),
@@ -72,6 +94,44 @@ scitar = pd.merge(
 scitar2 = pd.merge(
     scitar, datas.scienceparam,
     on=['SB_UID', 'paramRef'])
+
+spectral_sc = pd.merge(
+    scitar2.groupby(['SB_UID', 'specRef']).parName.count().reset_index()[
+        ['SB_UID', 'specRef']],
+    spectral[
+        [u'specRef', u'SB_UID', u'Name_specconf', u'BaseBands_specConf',
+         u'SPWs_specConf', u'Name_BB', u'CenterFreq_BB', u'l02Freq_BB',
+         u'Name_SPW', u'SideBand_SPW', u'CenterFreq_SPW',
+         u'AveragingFactor_SPW', u'EffectiveBandwidth_SPW',
+         u'EffectiveChannels_SPW', u'lineRestFreq_SPW', u'lineName_SPW']])
+
+spec_group = spectral_sc.groupby(['SB_UID', 'specRef', 'Name_BB'])
+
+spectral_agg = spec_group.agg(
+    {'SPWs_specConf': pd.np.count_nonzero, 'CenterFreq_BB': pd.np.max,
+     'EffectiveBandwidth_SPW': pd.np.sum, 'EffectiveChannels_SPW': pd.np.sum})
+
+spectral_agg.columns = pd.Index(
+    [u'EffectiveChannels_BB', u'SPWs_per_BB', u'CenterFreq_BB',
+     u'EffectiveBandwidth_BB'],
+    dtype='object')
+
+spectral_agg2 = spec_group.agg(
+    {'EffectiveBandwidth_SPW': pd.np.min, 'EffectiveChannels_SPW': pd.np.min})
+spectral_agg2.columns = pd.Index(
+    [u'SPW_MinEffBandWidth', u'SPW_MinEffChannels'], dtype='object')
+
+spectral_agg = pd.merge(spectral_agg, spectral_agg2, left_index=True,
+                        right_index=True)
+
+spectral_agg3 = spec_group.agg(
+    {'EffectiveBandwidth_SPW': pd.np.max, 'EffectiveChannels_SPW': pd.np.max})
+spectral_agg3.columns = pd.Index(
+    [u'SPW_MaxEffBandWidth', u'SPW_MaxEffChannels'], dtype='object')
+
+spectral_agg = pd.merge(
+    spectral_agg, spectral_agg3, left_index=True, right_index=True)
+
 scitar2 = pd.merge(
     scitar2,
     datas.fieldsource[
@@ -79,36 +139,49 @@ scitar2 = pd.merge(
          'solarSystem', 'isMosaic', 'pointings', 'ephemeris']
     ], on=['SB_UID', 'fieldRef'],
     suffixes=['_target', '_so'])
+
 scitar3 = pd.merge(
     scitar2, spectral_agg.reset_index(), on=['SB_UID', 'specRef'])
+scitar3.drop_duplicates(['SB_UID', 'specRef', 'Name_BB'], inplace=True)
+
 scitar3_max = scitar3.groupby(['SB_UID', 'specRef']).agg(
-    {'BaseBands': pd.np.max, 'SPWs': pd.np.max, 'CenterFreqMax_bbconf':
-        pd.np.max, 'EffectiveBandwidth_agg': pd.np.median,
-     'EffectiveChannels_agg': pd.np.median, 'EffectiveBandwidth_MIN': pd.np.min,
-     'EffectiveChannels_MIN': pd.np.min, 'EffectiveBandwidth_MAX': pd.np.max,
-     'EffectiveChannels_MAX': pd.np.max})
+    {'Name_BB': pd.np.count_nonzero, 'SPWs_per_BB': pd.np.sum,
+     'CenterFreq_BB': pd.np.max, 'EffectiveBandwidth_BB': pd.np.sum,
+     'EffectiveChannels_BB': pd.np.sum, 'SPW_MinEffBandWidth': pd.np.min,
+     'SPW_MinEffChannels': pd.np.min, 'SPW_MaxEffBandWidth': pd.np.max,
+     'SPW_MaxEffChannels': pd.np.max})
+
+scitar3_max.columns = pd.Index(
+    [u'Agg_EffectiveBandwidth', u'SPW_MinEffChannels', u'SPWs_per_SpecConf',
+     u'Basebands_per_SpecConf', u'SPW_MaxEffChannels',
+     u'Agg_EffectiveChannels', u'SPW_MaxEffBandWidth',
+     u'SPW_MinEffBandWidth', u'CenterFreq_BB'],
+    dtype='object'
+)
 
 scitar3 = scitar3_max[
-    ['BaseBands', 'SPWs', 'EffectiveChannels_agg',
-     'EffectiveBandwidth_agg']].copy()
+    ['Basebands_per_SpecConf', 'SPWs_per_SpecConf', 'Agg_EffectiveChannels',
+     'Agg_EffectiveBandwidth']].copy()
 
 scitar3_SBmin = scitar3.reset_index().groupby('SB_UID').agg(
-    {'specRef': pd.np.count_nonzero, 'BaseBands': pd.np.min, 'SPWs': pd.np.min,
-     'EffectiveChannels_agg': pd.np.min, 'EffectiveBandwidth_agg': pd.np.min})
+    {'specRef': pd.np.count_nonzero, 'Basebands_per_SpecConf': pd.np.min,
+     'SPWs_per_SpecConf': pd.np.min,
+     'Agg_EffectiveChannels': pd.np.min, 'Agg_EffectiveBandwidth': pd.np.min})
 scitar3_SBmax = scitar3.reset_index().groupby('SB_UID').agg(
-    {'BaseBands': pd.np.max, 'SPWs': pd.np.max,
-     'EffectiveChannels_agg': pd.np.max, 'EffectiveBandwidth_agg': pd.np.max})
+    {'Basebands_per_SpecConf': pd.np.max, 'SPWs_per_SpecConf': pd.np.max,
+     'Agg_EffectiveChannels': pd.np.max, 'Agg_EffectiveBandwidth': pd.np.max})
 
 sb_speconf_agg = pd.merge(
     scitar3_SBmin, scitar3_SBmax, left_index=True, right_index=True,
     suffixes=['_MIN', '_MAX'])
-sb_speconf_agg.columns= pd.Index(
-    [u'EffectiveChannels_agg_MIN', u'spectral_setups', u'BaseBands_MIN',
-     u'EffectiveBandwidth_agg_MIN', u'SPWs_MIN', u'EffectiveChannels_agg_MAX',
-     u'SPWs_MAX', u'BaseBands_MAX', u'EffectiveBandwidth_agg_MAX'],
+
+sb_speconf_agg.columns = pd.Index(
+    [u'Min_SPWs', u'Min_Basebands',
+     u'spectral_setups',
+     u'Min_Agg_EffectiveChannels', u'Max_Agg_EffectiveBandwidth',
+     u'Max_SPWs', u'Max_Basebands',
+     u'Max_Agg_EffectiveChannels', u'Max_Agg_EffectiveBandwidth'],
     dtype='object')
-
-
 
 schedblocks = pd.merge(
     schedblocks, sb_speconf_agg.reset_index(), on='SB_UID')
@@ -116,7 +189,7 @@ schedblocks = pd.merge(
 merge1 = pd.merge(
     datas.projects,
     grades[['CODE', 'SCICAT', 'BANDS', 'time12m_aprc', 'time7m_aprc',
-            'timeTP_aprc', 'timeNonStd_aprc', 'APRCSCORE', 'APRCNSCORE',
+            'timeTP_aprc', 'timeNonStd_aprc',
             'APRCRank', 'APRCGrade']],
     on='CODE')
 
@@ -131,20 +204,16 @@ merge3 = pd.merge(merge2, datas.sciencegoals, on=['OBSPROJECT_UID'])
 
 merge3.to_csv('/home/itoledo/Documents/proj_sg.csv')
 
-merge4 = pd.merge(
-    merge3, schedblocks,
-    left_on=['OBSPROJECT_UID', 'sg_name'],
-    right_on=['OBSPROJECT_UID', 'SG_ID'], suffixes=['_SG', '_SB'])
-
-tp_amp_su = merge4[merge4.sbNote.str.contains('mpca')].SB_UID.unique()
+tp_amp_su = schedblocks[schedblocks.sbNote.str.contains('mpca')].SB_UID.unique()
 
 sb_fs = scitar2.query('SB_UID not in @tp_amp_su')
-sb_fs_spw = pd.merge(scitar2, spectral, on=['SB_UID', 'specRef'])
+sb_fs_spw = pd.merge(scitar2, spectral_sc, on=['SB_UID', 'specRef'])
 
 sb_target_num = sb_fs.groupby('SB_UID').agg(
     {'fieldRef': pd.Series.nunique, 'pointings': pd.Series.max,
      'targetId': pd.Series.nunique, 'paramRef': pd.Series.nunique,
      'specRef': pd.Series.nunique}).reset_index()
+
 single_field_su = sb_target_num.query('fieldRef == 1').SB_UID.unique()
 schedblocks['single_field'] = schedblocks.apply(
     lambda x: True if x['SB_UID'] in single_field_su else False, axis=1)
@@ -170,13 +239,13 @@ schedblocks['single_specconf'] = schedblocks.apply(
     lambda x: True if x['SB_UID'] in single_specconf_su else False, axis=1)
 
 tdm_su = sb_fs_spw.groupby(
-    'SB_UID').EffectiveChannels.max().reset_index().query(
-    'EffectiveChannels <= 128').SB_UID.unique()
+    'SB_UID').EffectiveChannels_SPW.max().reset_index().query(
+    'EffectiveChannels_SPW <= 128').SB_UID.unique()
 schedblocks['tdm_only'] = schedblocks.apply(
     lambda x: True if x['SB_UID'] in tdm_su else False, axis=1)
 
 mixed_su = sb_fs_spw.groupby(
-    'SB_UID').EffectiveChannels.agg(
+    'SB_UID').EffectiveChannels_SPW.agg(
     [pd.np.min, pd.np.max]).reset_index().query(
     'amin <= 128 and amax > 257').SB_UID.unique()
 schedblocks['mixed_corr'] = schedblocks.apply(
@@ -194,19 +263,19 @@ schedblocks['ephem_int'] = schedblocks.apply(
     lambda x: True if x['SB_UID'] in ephem_int_su else False, axis=1)
 
 has_cont_su = sb_fs_spw[
-    (sb_fs_spw.lineName.str.contains('cont') == True) |
-    (sb_fs_spw.lineName.str.contains('Cont') == True)].SB_UID.unique()
-schedblocks['has_cont_only'] = schedblocks.apply(
+    (sb_fs_spw.lineName_SPW.str.contains('cont') == True) |
+    (sb_fs_spw.lineName_SPW.str.contains('Cont') == True)].SB_UID.unique()
+schedblocks['has_cont_spw'] = schedblocks.apply(
     lambda x: True if x['SB_UID'] in has_cont_su else False, axis=1)
 
 has_narrow_spw = sb_fs_spw.groupby(
-    'SB_UID').EffectiveBandwidth.agg(
+    'SB_UID').EffectiveBandwidth_SPW.agg(
     [pd.np.min, pd.np.max]).reset_index().query('amin < 1').SB_UID.unique()
 schedblocks['has_narrow_spw'] = schedblocks.apply(
     lambda x: True if x['SB_UID'] in has_narrow_spw else False, axis=1)
 
 has_only_narrow_spw = sb_fs_spw.groupby(
-    'SB_UID').EffectiveBandwidth.agg(
+    'SB_UID').EffectiveBandwidth_SPW.agg(
     [pd.np.min, pd.np.max]).reset_index().query('amax < 1').SB_UID.unique()
 schedblocks['has_only_narrow_spw'] = schedblocks.apply(
     lambda x: True if x['SB_UID'] in has_only_narrow_spw else False, axis=1)
@@ -240,6 +309,7 @@ obs_param = merge4.apply(
     lambda r: ct.observable(
         r['RA'], r['DEC'], alma1, r['ephem'], r['minAR'], r['maxAR'],
         r['array'], r['SB_UID']), axis=1)
+
 merge5 = pd.merge(merge4, obs_param, on='SB_UID', how='left')
 
 availability = merge5.apply(
@@ -249,42 +319,20 @@ availability = merge5.apply(
         r['band_SB'], date_df), axis=1)
 summary = pd.concat([merge5, availability], axis=1)
 summary.to_pickle('/home/itoledo/Documents/cycle3sum.data')
+
+newc = pd.read_excel('/home/itoledo/Documents/C36-1-6_data-final.xls')
+ccodes = grades.query('APRCGrade == "C"').CODE.unique()
+csgnames = newc[newc['APRC Grade'] == "C"]['SG Name [SB]'].unique()
+
+summary['SG_sel'] = summary.apply(
+    lambda x: True if (
+        (x['APRCGrade'] in ["A", "B"]) or
+        ((x['CODE'] in ccodes) and (x['sg_name'] in csgnames))) else
+    False, axis=1)
+
+summary.to_pickle('/home/itoledo/Documents/cycle3sum.data')
+
 # summary = pd.read_pickle('/home/itoledo/Documents/cycle3sum.data')
-summary['assumedconf_ar_ot'] = (summary.minAR_ot / 0.9) * summary.repFreq / 100.
-
-c1 = np.sqrt(datas.ares.data[0][1] * datas.ares.data[0][2])
-c2 = np.sqrt(datas.ares.data[1][1] * datas.ares.data[1][2])
-c3 = np.sqrt(datas.ares.data[2][1] * datas.ares.data[2][2])
-c4 = np.sqrt(datas.ares.data[3][1] * datas.ares.data[3][2])
-c5 = np.sqrt(datas.ares.data[4][1] * datas.ares.data[4][2])
-c6 = np.sqrt(datas.ares.data[5][1] * datas.ares.data[5][2])
-c7 = np.sqrt(datas.ares.data[6][1] * datas.ares.data[6][2])
-c8 = np.sqrt(datas.ares.data[7][1] * datas.ares.data[7][2])
-
-
-def find_nearest(array, value):
-    idx = (np.abs(array-value)).argmin()
-    return array[idx], idx, (np.abs(array-value)).min()
-
-
-def find_array(value):
-    closest = 90000000.
-    n = 0
-    array = -20
-    for c in [c1, c2, c3, c4, c5, c6, c7, c8]:
-        a = find_nearest(c, value)
-        if a[2] < closest:
-            closest = a[2]
-            array = n
-        n += 1
-
-    return datas.ares.array[array]
-
-summary['OT_BestConf'] = summary.apply(
-    lambda x: find_array(x['assumedconf_ar_ot']) if x['array'] == "TWELVE-M"
-    else "N/A",
-    axis=1)
-
 
 datas.sg_targets.to_csv('/home/itoledo/Documents/sg_targets.csv')
 datas.target.to_csv('/home/itoledo/Documents/sb_target.csv')
@@ -296,441 +344,433 @@ datas.spectralwindow.to_csv('/home/itoledo/Documents/sb_specwindow.csv')
 datas.fieldsource.to_csv('/home/itoledo/Documents/sb_fieldsource.csv')
 
 
-# def av_arrays_opt(sel):
-#
-#     map_ra = np.arange(0, 24, 24. / (24 * 60.))
-#     use_ra = np.zeros(1440)
-#
-#     for r in sel.iterrows():
-#         data = r[1]
-#         if data.RA == 0 or data.up == 24:
-#             use_ra += (data.estimatedTime_SB / 24.) / data.twelve_good
-#         elif data.rise > data.set:
-#             use_ra[map_ra < data.set] += \
-#                 (data.estimatedTime_SB / data.up) / data.twelve_good
-#             use_ra[map_ra > data.rise] += \
-#                 (data.estimatedTime_SB / data.up) / data.twelve_good
-#         else:
-#             use_ra[(map_ra > data.rise) & (map_ra < data.set)] += \
-#                 (data.estimatedTime_SB / data.up) / data.twelve_good
-#
-#     return map_ra, use_ra
-#
-#
-# def av_arrays(sel, minlst=-2., maxlst=2.):
-#
-#     map_ra = np.arange(0, 24, 24. / (24 * 60.))
-#     use_ra_b3 = np.zeros(1440)
-#     use_ra_b4 = np.zeros(1440)
-#     use_ra_b6 = np.zeros(1440)
-#     use_ra_b7 = np.zeros(1440)
-#     use_ra_b8 = np.zeros(1440)
-#     use_ra_b9 = np.zeros(1440)
-#     use_ra_b10 = np.zeros(1440)
-#
-#     for r in sel.iterrows():
-#         data = r[1]
-#
-#         if data.RA == 0 or data.up == 24:
-#             use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, \
-#                 use_ra_b10 = add_band(
-#                     'all', data.estimatedTime_SB / 24., data.band_SB, use_ra_b3,
-#                     use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
-#                     use_ra_b10)
-#             continue
-#
-#         if data.up > maxlst - minlst:
-#             if maxlst < (data.RA / 15.) < 24 + minlst:
-#                 rise = (data.RA / 15.) + minlst
-#                 set = (data.RA / 15.) + maxlst
-#                 up = maxlst - minlst
-#                 use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#                     use_ra_b9, use_ra_b10 = add_band(
-#                         (map_ra > rise) & (map_ra < set),
-#                         data.estimatedTime_SB / up, data.band_SB, use_ra_b3,
-#                         use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
-#                         use_ra_b10)
-#             else:
-#                 if (data.RA / 15.) < maxlst:
-#                     rise = 24 + minlst + (data.RA / 15.)
-#                     set = (data.RA / 15.) + maxlst
-#                     up = maxlst - minlst
-#                 else:
-#                     rise = (data.RA / 15.) + minlst
-#                     set = maxlst - (24 - (data.RA / 15.))
-#                     up = maxlst - minlst
-#                 use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#                     use_ra_b9, use_ra_b10 = add_band(
-#                         map_ra < set, data.estimatedTime_SB / up, data.band_SB,
-#                         use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                         use_ra_b9, use_ra_b10)
-#                 use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#                     use_ra_b9, use_ra_b10 = add_band(
-#                         map_ra > rise, data.estimatedTime_SB / up, data.band_SB,
-#                         use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                         use_ra_b9, use_ra_b10)
-#             continue
-#
-#         if data.rise > data.set:
-#             rise = data.rise
-#             set = data.set
-#             up = data.up
-#             if data.up > maxlst - minlst:
-#                 if set > maxlst:
-#                     set = maxlst
-#                 if rise < 24 + minlst:
-#                     rise = 24 + minlst
-#                 up = maxlst - minlst
-#             use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,\
-#                 use_ra_b10 = add_band(
-#                     map_ra < set, data.estimatedTime_SB / up, data.band_SB,
-#                     use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                     use_ra_b9, use_ra_b10)
-#             use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, \
-#                 use_ra_b10 = add_band(
-#                     map_ra > rise, data.estimatedTime_SB / up, data.band_SB,
-#                     use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                     use_ra_b9, use_ra_b10)
-#         else:
-#             rise = data.rise
-#             set = data.set
-#             up = data.up
-#             if up > maxlst - minlst and data.ephem is False:
-#                 if rise < data.RA / 15. + minlst:
-#                     rise = data.RA / 15. + minlst
-#                 if set > data.RA / 15. + maxlst:
-#                     set = data.RA / 15. + maxlst
-#                 up = maxlst - minlst
-#                 use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#                     use_ra_b9, use_ra_b10 = add_band(
-#                         (map_ra > rise) & (map_ra < set),
-#                         data.estimatedTime_SB / up, data.band_SB, use_ra_b3,
-#                         use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
-#                         use_ra_b10)
-#
-#     return map_ra, [use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                     use_ra_b9, use_ra_b10]
-#
-#
-# def add_band(ind, timet, band, use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10):
-#
-#     if band == "ALMA_RB_03":
-#         if ind == "all":
-#             use_ra_b3 += timet
-#         else:
-#             use_ra_b3[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_04":
-#         if ind == "all":
-#             use_ra_b4 += timet
-#         else:
-#             use_ra_b4[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_06":
-#         if ind == "all":
-#             use_ra_b6 += timet
-#         else:
-#             use_ra_b6[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_07":
-#         if ind == "all":
-#             use_ra_b7 += timet
-#         else:
-#             use_ra_b7[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_08":
-#         if ind == "all":
-#             use_ra_b8 += timet
-#         else:
-#             use_ra_b8[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_09":
-#         if ind == "all":
-#             use_ra_b9 += timet
-#         else:
-#             use_ra_b9[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_10":
-#         if ind == "all":
-#             use_ra_b10 += timet
-#         else:
-#             use_ra_b10[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
-#
-#
-#
-# def conf_time(datedf):
-#     tot_t = np.zeros(1440)
-#     lst = np.arange(0, 24, 24. / (24 * 60.))
-#     for i in datedf.iterrows():
-#         lst_end = int(round(i[1].lst_end))
-#
-#         if i[1].available_time == 24:
-#             t = np.ones(1440)
-#
-#         elif i[1].lst_start > i[1].lst_end:
-#             t = np.zeros(1440)
-#             t[lst > i[1].lst_start] += 1.
-#             t[lst < i[1].lst_end] += 1.
-#
-#         else:
-#             t = np.zeros(1440)
-#             t[(lst > i[1].lst_start) & (lst < i[1].lst_end)] += 1.
-#
-#         tot_t += t
-#
-#     return tot_t
-#
-# c361b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-1"')
-# c362b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-2"')
-# c363b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-3"')
-# c364b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-4"')
-# c365b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-5"')
-# c366b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-6"')
-# c367b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-7"')
-# c368b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-8"')
-#
-# tot_t1 = conf_time(date_df.query('C36_1 == 1'))
-# tot_t2 = conf_time(date_df.query('C36_2 == 1'))
-# tot_t3 = conf_time(date_df.query('C36_3 == 1'))
-# tot_t4 = conf_time(date_df.query('C36_4 == 1'))
-# tot_t5 = conf_time(date_df.query('C36_5 == 1'))
-# tot_t6 = conf_time(date_df.query('C36_6 == 1'))
-# tot_t7 = conf_time(date_df.query('C36_7 == 1'))
-# tot_t8 = conf_time(date_df.query('C36_8 == 1'))
-#
-# ra1b, used1b = av_arrays(c361b)
-# ra2b, used2b = av_arrays(c362b)
-# ra3b, used3b = av_arrays(c363b)
-# ra4b, used4b = av_arrays(c364b)
-# ra5b, used5b = av_arrays(c365b)
-# ra6b, used6b = av_arrays(c366b)
-# ra7b, used7b = av_arrays(c367b)
-# ra8b, used8b = av_arrays(c368b)
-#
-#
-# def do_pre_plots(ra, used, tot_t, filename, title):
-#     py.close()
-#     py.figure(figsize=(11.69,8.27))
-#     py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4] + used[5] + used[6], width=1.66666667e-02, ec='#4575b4', fc='#4575b4', label='Band 10')
-#     py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4] + used[5], width=1.66666667e-02, ec='#91bfdb', fc='#91bfdb', label='Band 9')
-#     py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4], width=1.66666667e-02, ec='#e0f3f8', fc='#e0f3f8', label='Band 8')
-#     py.bar(ra, used[0] + used[1] + used[2] + used[3], width=1.66666667e-02, ec='#ffffbf', fc='#ffffbf', label='Band 7')
-#     py.bar(ra, used[0] + used[1] + used[2], width=1.66666667e-02, ec='#fee090', fc='#fee090', label='Band 6')
-#     py.bar(ra, used[0] + used[1], width=1.66666667e-02, ec='#fc8d59', fc='#fc8d59', label='Band 4')
-#     py.bar(ra, used[0], width=1.66666667e-02, ec='#d73027', fc='#d73027', label='Band 3')
-#     py.xlim(0,24)
-#     py.xlabel('RA [hours]')
-#     py.ylabel('Time Needed [hours]')
-#     py.title(title)
-#     py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t, 'k--', label='100% efficiency')
-#     py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6, 'k-.', label='60% efficiency')
-#     py.legend(framealpha=0.7, fontsize='x-small')
-#     py.savefig('/home/itoledo/Documents/' + filename, dpi=300)
-#
-# do_pre_plots(ra1b, used1b, tot_t1, 'C36-1.png', 'C36-1 Pressure')
-# do_pre_plots(ra2b, used2b, tot_t2, 'C36-2.png', 'C36-2 Pressure')
-# do_pre_plots(ra3b, used3b, tot_t3, 'C36-3.png', 'C36-3 Pressure')
-# do_pre_plots(ra4b, used4b, tot_t4, 'C36-4.png', 'C36-4 Pressure')
-# do_pre_plots(ra5b, used5b, tot_t5, 'C36-5.png', 'C36-5 Pressure')
-# do_pre_plots(ra6b, used6b, tot_t6, 'C36-6.png', 'C36-6 Pressure')
-# do_pre_plots(ra7b, used7b, tot_t7, 'C36-7.png', 'C36-7 Pressure')
-# do_pre_plots(ra8b, used8b, tot_t8, 'C36-8.png', 'C36-8 Pressure')
-#
-# ra1b, used1b = av_arrays(c361b, minlst=-3., maxlst=3.)
-# ra2b, used2b = av_arrays(c362b, minlst=-3., maxlst=3.)
-# ra3b, used3b = av_arrays(c363b, minlst=-3., maxlst=3.)
-# ra4b, used4b = av_arrays(c364b, minlst=-3., maxlst=3.)
-# ra5b, used5b = av_arrays(c365b, minlst=-3., maxlst=3.)
-# ra6b, used6b = av_arrays(c366b, minlst=-3., maxlst=3.)
-# ra7b, used7b = av_arrays(c367b, minlst=-3., maxlst=3.)
-# ra8b, used8b = av_arrays(c368b, minlst=-3., maxlst=3.)
-#
-# do_pre_plots(ra1b, used1b, tot_t1, 'C36-1_relax.png', 'C36-1 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra2b, used2b, tot_t2, 'C36-2_relax.png', 'C36-2 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra3b, used3b, tot_t3, 'C36-3_relax.png', 'C36-3 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra4b, used4b, tot_t4, 'C36-4_relax.png', 'C36-4 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra5b, used5b, tot_t5, 'C36-5_relax.png', 'C36-5 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra6b, used6b, tot_t6, 'C36-6_relax.png', 'C36-6 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra7b, used7b, tot_t7, 'C36-7_relax.png', 'C36-7 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra8b, used8b, tot_t8, 'C36-8_relax.png', 'C36-8 Pressure (-3 to +3 HA, over 20 deg)')
-#
-#
-#
-# def conf_time_hours(datedf):
-#     tot_t = np.zeros(24)
-#     lst = np.arange(0, 24, 1)
-#     for i in datedf.iterrows():
-#         lst_end = int(round(i[1].lst_end))
-#         if lst_end == 24:
-#             lst_end = 23.99
-#
-#         if i[1].available_time == 24:
-#             t = np.ones(24)
-#
-#         elif i[1].lst_start > i[1].lst_end:
-#             t = np.zeros(24)
-#             t[lst > i[1].lst_start] += 1.
-#             t[lst < i[1].lst_end] += 1.
-#
-#         else:
-#             t = np.zeros(24)
-#             t[(lst > i[1].lst_start) & (lst < i[1].lst_end)] += 1.
-#
-#         tot_t += t
-#
-#     return tot_t
-#
-# tot_t1h = conf_time_hours(date_df.query('C36_1 == 1'))
-# tot_t2h = conf_time_hours(date_df.query('C36_2 == 1'))
-# tot_t3h = conf_time_hours(date_df.query('C36_3 == 1'))
-# tot_t4h = conf_time_hours(date_df.query('C36_4 == 1'))
-# tot_t5h = conf_time_hours(date_df.query('C36_5 == 1'))
-# tot_t6h = conf_time_hours(date_df.query('C36_6 == 1'))
-# tot_t7h = conf_time_hours(date_df.query('C36_7 == 1'))
-# tot_t8h = conf_time_hours(date_df.query('C36_8 == 1'))
-#
-#
-# def av_arrays_grade(sel, minlst=-2., maxlst=2.):
-#
-#     map_ra = np.arange(0, 24, 24. / (24 * 60.))
-#     use_ra_high = np.zeros(1440)
-#     use_ra_fill = np.zeros(1440)
-#
-#     for r in sel.iterrows():
-#         data = r[1]
-#
-#         if data.RA == 0 or data.up == 24:
-#             use_ra_high, use_ra_fill = add_grade('all', data.estimatedTime_SB / 24., data.APRCGrade,use_ra_high, use_ra_fill)
-#             continue
-#
-#         if data.up > maxlst - minlst:
-#             if maxlst < (data.RA / 15.) < 24 + minlst:
-#                 rise = (data.RA / 15.) + minlst
-#                 set = (data.RA / 15.) + maxlst
-#                 up = maxlst - minlst
-#                 use_ra_high, use_ra_fill = add_grade((map_ra > rise) & (map_ra < set), data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
-#             else:
-#                 if (data.RA / 15.) < maxlst:
-#                     rise = 24 + minlst + (data.RA / 15.)
-#                     set = (data.RA / 15.) + maxlst
-#                     up = maxlst - minlst
-#                 else:
-#                     rise = (data.RA / 15.) + minlst
-#                     set = maxlst - (24 - (data.RA / 15.))
-#                     up = maxlst - minlst
-#                 use_ra_high, use_ra_fill = add_grade(map_ra < set, data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
-#                 use_ra_high, use_ra_fill = add_grade(map_ra > rise, data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
-#             continue
-#
-#         if data.rise > data.set:
-#             rise = data.rise
-#             set = data.set
-#             up = data.up
-#             if data.up > maxlst - minlst:
-#                 if set > maxlst:
-#                     set = maxlst
-#                 if rise < 24 + minlst:
-#                     rise = 24 + minlst
-#                 up = maxlst - minlst
-#             use_ra_high, use_ra_fill = add_grade(map_ra < set, data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
-#             use_ra_high, use_ra_fill = add_grade(map_ra > rise, data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
-#         else:
-#             rise = data.rise
-#             set = data.set
-#             up = data.up
-#             if up > maxlst - minlst and data.ephem is False:
-#                 if rise < data.RA / 15. + minlst:
-#                     rise = data.RA / 15. + minlst
-#                 if set > data.RA / 15. + maxlst:
-#                     set = data.RA / 15. + maxlst
-#                 up = maxlst - minlst
-#                 use_ra_high, use_ra_fill = add_grade((map_ra > rise) & (map_ra < set), data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
-#
-#     return map_ra, [use_ra_high, use_ra_fill]
-#
-#
-# def add_grade(ind, timet, grade, use_ra_high, use_ra_fill):
-#
-#     if grade in ["A", "B"]:
-#         if ind == "all":
-#             use_ra_high += timet
-#         else:
-#             use_ra_high[ind] += timet
-#         return use_ra_high, use_ra_fill
-#     if grade == "C":
-#         if ind == "all":
-#             use_ra_fill += timet
-#         else:
-#             use_ra_fill[ind] += timet
-#         return use_ra_high, use_ra_fill
-#
-# newc = pd.read_excel('/home/itoledo/Documents/C36-1-6_data-final.xls')
-# ccodes = newc[newc['APRC Grade'] == "C"]['Prj. Code'].unique()
-# csgnames = newc[newc['APRC Grade'] == "C"]['SG Name [SB]'].unique()
-# summary['APRCGrade'] = summary.apply(lambda x: x['APRCGrade'] if x['APRCGrade'] in ["A", "B"] else "U", axis=1)
-# summary['APRCGrade'] = summary.apply(lambda x: "C" if x['CODE'] in ccodes else x['APRCGrade'], axis=1)
-# summary['SG_sel'] = summary.apply(lambda x: True if ((x['APRCGrade'] in ["A", "B"]) or ((x['CODE'] in ccodes) and (x['sg_name'] in csgnames))) else False, axis=1)
-#
-#
-# c361bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-1" and SG_sel == True')
-# c362bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-2" and SG_sel == True')
-# c363bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-3" and SG_sel == True')
-# c364bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-4" and SG_sel == True')
-# c365bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-5" and SG_sel == True')
-# c366bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-6" and SG_sel == True')
-# c367bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-7" and SG_sel == True')
-# c368bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-8" and SG_sel == True')
-#
-# ra1bf, used1bf = av_arrays_grade(c361bf)
-# ra2bf, used2bf = av_arrays_grade(c362bf)
-# ra3bf, used3bf = av_arrays_grade(c363bf)
-# ra4bf, used4bf = av_arrays_grade(c364bf)
-# ra5bf, used5bf = av_arrays_grade(c365bf)
-# ra6bf, used6bf = av_arrays_grade(c366bf)
-# ra7bf, used7bf = av_arrays_grade(c367bf)
-# ra8bf, used8bf = av_arrays_grade(c368bf)
-#
-#
-# def do_pre_plots_fill(ra, used, tot_t, filename, title):
-#     py.close()
-#     py.figure(figsize=(11.69,8.27))
-#     py.bar(ra, used[0] + used[1], width=1.66666667e-02, ec='#e41a1c', fc='#e41a1c', label='Fillers')
-#     py.bar(ra, used[0], width=1.66666667e-02, ec='#4daf4a', fc='#4daf4a', label='High Priority')
-#     py.xlim(0,24)
-#     py.xlabel('RA [hours]')
-#     py.ylabel('Time Needed [hours]')
-#     py.title(title)
-#     py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t, 'k--', label='100% efficiency')
-#     py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6, 'k-.', label='60% efficiency')
-#     py.legend(framealpha=0.7, fontsize='x-small')
-#     py.savefig('/home/itoledo/Documents/' + filename, dpi=300)
-#
-#
-# do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade.png', 'C36-1 Pressure')
-# do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade.png', 'C36-2 Pressure')
-# do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade.png', 'C36-3 Pressure')
-# do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade.png', 'C36-4 Pressure')
-# do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade.png', 'C36-5 Pressure')
-# do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade.png', 'C36-6 Pressure')
-# do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade.png', 'C36-7 Pressure')
-# do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade.png', 'C36-8 Pressure')
-#
-# ra1bf, used1bf = av_arrays_grade(c361bf, minlst=-3., maxlst=3.)
-# ra2bf, used2bf = av_arrays_grade(c362bf, minlst=-3., maxlst=3.)
-# ra3bf, used3bf = av_arrays_grade(c363bf, minlst=-3., maxlst=3.)
-# ra4bf, used4bf = av_arrays_grade(c364bf, minlst=-3., maxlst=3.)
-# ra5bf, used5bf = av_arrays_grade(c365bf, minlst=-3., maxlst=3.)
-# ra6bf, used6bf = av_arrays_grade(c366bf, minlst=-3., maxlst=3.)
-# ra7bf, used7bf = av_arrays_grade(c367bf, minlst=-3., maxlst=3.)
-# ra8bf, used8bf = av_arrays_grade(c368bf, minlst=-3., maxlst=3.)
-#
-# do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade_relax.png', 'C36-1 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade_relax.png', 'C36-2 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade_relax.png', 'C36-3 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade_relax.png', 'C36-4 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade_relax.png', 'C36-5 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade_relax.png', 'C36-6 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade_relax.png', 'C36-7 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade_relax.png', 'C36-8 Pressure (-3 to +3 HA, over 20 deg)')
+def av_arrays_opt(sel):
+
+    map_ra = np.arange(0, 24, 24. / (24 * 60.))
+    use_ra = np.zeros(1440)
+
+    for r in sel.iterrows():
+        data = r[1]
+        if data.RA == 0 or data.up == 24:
+            use_ra += (data.estimatedTime_SB / 24.) / data.twelve_good
+        elif data.rise > data.set:
+            use_ra[map_ra < data.set] += \
+                (data.estimatedTime_SB / data.up) / data.twelve_good
+            use_ra[map_ra > data.rise] += \
+                (data.estimatedTime_SB / data.up) / data.twelve_good
+        else:
+            use_ra[(map_ra > data.rise) & (map_ra < data.set)] += \
+                (data.estimatedTime_SB / data.up) / data.twelve_good
+
+    return map_ra, use_ra
+
+
+def av_arrays(sel, minlst=-2., maxlst=2.):
+
+    map_ra = np.arange(0, 24, 24. / (24 * 60.))
+    use_ra_b3 = np.zeros(1440)
+    use_ra_b4 = np.zeros(1440)
+    use_ra_b6 = np.zeros(1440)
+    use_ra_b7 = np.zeros(1440)
+    use_ra_b8 = np.zeros(1440)
+    use_ra_b9 = np.zeros(1440)
+    use_ra_b10 = np.zeros(1440)
+
+    for r in sel.iterrows():
+        data = r[1]
+
+        if data.RA == 0 or data.up == 24:
+            use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, \
+                use_ra_b10 = add_band(
+                    'all', data.estimatedTime_SB / 24., data.band_SB, use_ra_b3,
+                    use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
+                    use_ra_b10)
+            continue
+
+        if data.up > maxlst - minlst:
+            if maxlst < (data.RA / 15.) < 24 + minlst:
+                rise = (data.RA / 15.) + minlst
+                set = (data.RA / 15.) + maxlst
+                up = maxlst - minlst
+                use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+                    use_ra_b9, use_ra_b10 = add_band(
+                        (map_ra > rise) & (map_ra < set),
+                        data.estimatedTime_SB / up, data.band_SB, use_ra_b3,
+                        use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
+                        use_ra_b10)
+            else:
+                if (data.RA / 15.) < maxlst:
+                    rise = 24 + minlst + (data.RA / 15.)
+                    set = (data.RA / 15.) + maxlst
+                    up = maxlst - minlst
+                else:
+                    rise = (data.RA / 15.) + minlst
+                    set = maxlst - (24 - (data.RA / 15.))
+                    up = maxlst - minlst
+                use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+                    use_ra_b9, use_ra_b10 = add_band(
+                        map_ra < set, data.estimatedTime_SB / up, data.band_SB,
+                        use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                        use_ra_b9, use_ra_b10)
+                use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+                    use_ra_b9, use_ra_b10 = add_band(
+                        map_ra > rise, data.estimatedTime_SB / up, data.band_SB,
+                        use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                        use_ra_b9, use_ra_b10)
+            continue
+
+        if data.rise > data.set:
+            rise = data.rise
+            set = data.set
+            up = data.up
+            if data.up > maxlst - minlst:
+                if set > maxlst:
+                    set = maxlst
+                if rise < 24 + minlst:
+                    rise = 24 + minlst
+                up = maxlst - minlst
+            use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,\
+                use_ra_b10 = add_band(
+                    map_ra < set, data.estimatedTime_SB / up, data.band_SB,
+                    use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                    use_ra_b9, use_ra_b10)
+            use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, \
+                use_ra_b10 = add_band(
+                    map_ra > rise, data.estimatedTime_SB / up, data.band_SB,
+                    use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                    use_ra_b9, use_ra_b10)
+        else:
+            rise = data.rise
+            set = data.set
+            up = data.up
+            if up > maxlst - minlst and data.ephem is False:
+                if rise < data.RA / 15. + minlst:
+                    rise = data.RA / 15. + minlst
+                if set > data.RA / 15. + maxlst:
+                    set = data.RA / 15. + maxlst
+                up = maxlst - minlst
+                use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+                    use_ra_b9, use_ra_b10 = add_band(
+                        (map_ra > rise) & (map_ra < set),
+                        data.estimatedTime_SB / up, data.band_SB, use_ra_b3,
+                        use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
+                        use_ra_b10)
+
+    return map_ra, [use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                    use_ra_b9, use_ra_b10]
+
+
+def add_band(ind, timet, band, use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10):
+
+    if band == "ALMA_RB_03":
+        if ind == "all":
+            use_ra_b3 += timet
+        else:
+            use_ra_b3[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_04":
+        if ind == "all":
+            use_ra_b4 += timet
+        else:
+            use_ra_b4[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_06":
+        if ind == "all":
+            use_ra_b6 += timet
+        else:
+            use_ra_b6[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_07":
+        if ind == "all":
+            use_ra_b7 += timet
+        else:
+            use_ra_b7[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_08":
+        if ind == "all":
+            use_ra_b8 += timet
+        else:
+            use_ra_b8[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_09":
+        if ind == "all":
+            use_ra_b9 += timet
+        else:
+            use_ra_b9[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_10":
+        if ind == "all":
+            use_ra_b10 += timet
+        else:
+            use_ra_b10[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, use_ra_b10
+
+
+def conf_time(datedf):
+    tot_t = np.zeros(1440)
+    lst = np.arange(0, 24, 24. / (24 * 60.))
+    for i in datedf.iterrows():
+        lst_end = int(round(i[1].lst_end))
+
+        if i[1].available_time == 24:
+            t = np.ones(1440)
+
+        elif i[1].lst_start > i[1].lst_end:
+            t = np.zeros(1440)
+            t[lst > i[1].lst_start] += 1.
+            t[lst < i[1].lst_end] += 1.
+
+        else:
+            t = np.zeros(1440)
+            t[(lst > i[1].lst_start) & (lst < i[1].lst_end)] += 1.
+
+        tot_t += t
+
+    return tot_t
+
+c361b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-1"')
+c362b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-2"')
+c363b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-3"')
+c364b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-4"')
+c365b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-5"')
+c366b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-6"')
+c367b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-7"')
+c368b = summary.query('APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-8"')
+
+tot_t1 = conf_time(date_df.query('C36_1 == 1'))
+tot_t2 = conf_time(date_df.query('C36_2 == 1'))
+tot_t3 = conf_time(date_df.query('C36_3 == 1'))
+tot_t4 = conf_time(date_df.query('C36_4 == 1'))
+tot_t5 = conf_time(date_df.query('C36_5 == 1'))
+tot_t6 = conf_time(date_df.query('C36_6 == 1'))
+tot_t7 = conf_time(date_df.query('C36_7 == 1'))
+tot_t8 = conf_time(date_df.query('C36_8 == 1'))
+
+ra1b, used1b = av_arrays(c361b)
+ra2b, used2b = av_arrays(c362b)
+ra3b, used3b = av_arrays(c363b)
+ra4b, used4b = av_arrays(c364b)
+ra5b, used5b = av_arrays(c365b)
+ra6b, used6b = av_arrays(c366b)
+ra7b, used7b = av_arrays(c367b)
+ra8b, used8b = av_arrays(c368b)
+
+
+def do_pre_plots(ra, used, tot_t, filename, title):
+    py.close()
+    py.figure(figsize=(11.69,8.27))
+    py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4] + used[5] + used[6], width=1.66666667e-02, ec='#4575b4', fc='#4575b4', label='Band 10')
+    py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4] + used[5], width=1.66666667e-02, ec='#91bfdb', fc='#91bfdb', label='Band 9')
+    py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4], width=1.66666667e-02, ec='#e0f3f8', fc='#e0f3f8', label='Band 8')
+    py.bar(ra, used[0] + used[1] + used[2] + used[3], width=1.66666667e-02, ec='#ffffbf', fc='#ffffbf', label='Band 7')
+    py.bar(ra, used[0] + used[1] + used[2], width=1.66666667e-02, ec='#fee090', fc='#fee090', label='Band 6')
+    py.bar(ra, used[0] + used[1], width=1.66666667e-02, ec='#fc8d59', fc='#fc8d59', label='Band 4')
+    py.bar(ra, used[0], width=1.66666667e-02, ec='#d73027', fc='#d73027', label='Band 3')
+    py.xlim(0,24)
+    py.xlabel('RA [hours]')
+    py.ylabel('Time Needed [hours]')
+    py.title(title)
+    py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t, 'k--', label='100% efficiency')
+    py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6, 'k-.', label='60% efficiency')
+    py.legend(framealpha=0.7, fontsize='x-small')
+    py.savefig('/home/itoledo/Documents/' + filename, dpi=300)
+
+do_pre_plots(ra1b, used1b, tot_t1, 'C36-1.png', 'C36-1 Pressure')
+do_pre_plots(ra2b, used2b, tot_t2, 'C36-2.png', 'C36-2 Pressure')
+do_pre_plots(ra3b, used3b, tot_t3, 'C36-3.png', 'C36-3 Pressure')
+do_pre_plots(ra4b, used4b, tot_t4, 'C36-4.png', 'C36-4 Pressure')
+do_pre_plots(ra5b, used5b, tot_t5, 'C36-5.png', 'C36-5 Pressure')
+do_pre_plots(ra6b, used6b, tot_t6, 'C36-6.png', 'C36-6 Pressure')
+do_pre_plots(ra7b, used7b, tot_t7, 'C36-7.png', 'C36-7 Pressure')
+do_pre_plots(ra8b, used8b, tot_t8, 'C36-8.png', 'C36-8 Pressure')
+
+ra1b, used1b = av_arrays(c361b, minlst=-3., maxlst=3.)
+ra2b, used2b = av_arrays(c362b, minlst=-3., maxlst=3.)
+ra3b, used3b = av_arrays(c363b, minlst=-3., maxlst=3.)
+ra4b, used4b = av_arrays(c364b, minlst=-3., maxlst=3.)
+ra5b, used5b = av_arrays(c365b, minlst=-3., maxlst=3.)
+ra6b, used6b = av_arrays(c366b, minlst=-3., maxlst=3.)
+ra7b, used7b = av_arrays(c367b, minlst=-3., maxlst=3.)
+ra8b, used8b = av_arrays(c368b, minlst=-3., maxlst=3.)
+
+do_pre_plots(ra1b, used1b, tot_t1, 'C36-1_relax.png', 'C36-1 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots(ra2b, used2b, tot_t2, 'C36-2_relax.png', 'C36-2 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots(ra3b, used3b, tot_t3, 'C36-3_relax.png', 'C36-3 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots(ra4b, used4b, tot_t4, 'C36-4_relax.png', 'C36-4 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots(ra5b, used5b, tot_t5, 'C36-5_relax.png', 'C36-5 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots(ra6b, used6b, tot_t6, 'C36-6_relax.png', 'C36-6 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots(ra7b, used7b, tot_t7, 'C36-7_relax.png', 'C36-7 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots(ra8b, used8b, tot_t8, 'C36-8_relax.png', 'C36-8 Pressure (-3 to +3 HA, over 20 deg)')
+
+
+
+def conf_time_hours(datedf):
+    tot_t = np.zeros(24)
+    lst = np.arange(0, 24, 1)
+    for i in datedf.iterrows():
+        lst_end = int(round(i[1].lst_end))
+        if lst_end == 24:
+            lst_end = 23.99
+
+        if i[1].available_time == 24:
+            t = np.ones(24)
+
+        elif i[1].lst_start > i[1].lst_end:
+            t = np.zeros(24)
+            t[lst > i[1].lst_start] += 1.
+            t[lst < i[1].lst_end] += 1.
+
+        else:
+            t = np.zeros(24)
+            t[(lst > i[1].lst_start) & (lst < i[1].lst_end)] += 1.
+
+        tot_t += t
+
+    return tot_t
+
+tot_t1h = conf_time_hours(date_df.query('C36_1 == 1'))
+tot_t2h = conf_time_hours(date_df.query('C36_2 == 1'))
+tot_t3h = conf_time_hours(date_df.query('C36_3 == 1'))
+tot_t4h = conf_time_hours(date_df.query('C36_4 == 1'))
+tot_t5h = conf_time_hours(date_df.query('C36_5 == 1'))
+tot_t6h = conf_time_hours(date_df.query('C36_6 == 1'))
+tot_t7h = conf_time_hours(date_df.query('C36_7 == 1'))
+tot_t8h = conf_time_hours(date_df.query('C36_8 == 1'))
+
+
+def av_arrays_grade(sel, minlst=-2., maxlst=2.):
+
+    map_ra = np.arange(0, 24, 24. / (24 * 60.))
+    use_ra_high = np.zeros(1440)
+    use_ra_fill = np.zeros(1440)
+
+    for r in sel.iterrows():
+        data = r[1]
+
+        if data.RA == 0 or data.up == 24:
+            use_ra_high, use_ra_fill = add_grade('all', data.estimatedTime_SB / 24., data.APRCGrade,use_ra_high, use_ra_fill)
+            continue
+
+        if data.up > maxlst - minlst:
+            if maxlst < (data.RA / 15.) < 24 + minlst:
+                rise = (data.RA / 15.) + minlst
+                set = (data.RA / 15.) + maxlst
+                up = maxlst - minlst
+                use_ra_high, use_ra_fill = add_grade((map_ra > rise) & (map_ra < set), data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
+            else:
+                if (data.RA / 15.) < maxlst:
+                    rise = 24 + minlst + (data.RA / 15.)
+                    set = (data.RA / 15.) + maxlst
+                    up = maxlst - minlst
+                else:
+                    rise = (data.RA / 15.) + minlst
+                    set = maxlst - (24 - (data.RA / 15.))
+                    up = maxlst - minlst
+                use_ra_high, use_ra_fill = add_grade(map_ra < set, data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
+                use_ra_high, use_ra_fill = add_grade(map_ra > rise, data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
+            continue
+
+        if data.rise > data.set:
+            rise = data.rise
+            set = data.set
+            up = data.up
+            if data.up > maxlst - minlst:
+                if set > maxlst:
+                    set = maxlst
+                if rise < 24 + minlst:
+                    rise = 24 + minlst
+                up = maxlst - minlst
+            use_ra_high, use_ra_fill = add_grade(map_ra < set, data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
+            use_ra_high, use_ra_fill = add_grade(map_ra > rise, data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
+        else:
+            rise = data.rise
+            set = data.set
+            up = data.up
+            if up > maxlst - minlst and data.ephem is False:
+                if rise < data.RA / 15. + minlst:
+                    rise = data.RA / 15. + minlst
+                if set > data.RA / 15. + maxlst:
+                    set = data.RA / 15. + maxlst
+                up = maxlst - minlst
+                use_ra_high, use_ra_fill = add_grade((map_ra > rise) & (map_ra < set), data.estimatedTime_SB / up, data.APRCGrade, use_ra_high, use_ra_fill)
+
+    return map_ra, [use_ra_high, use_ra_fill]
+
+
+def add_grade(ind, timet, grade, use_ra_high, use_ra_fill):
+
+    if grade in ["A", "B"]:
+        if ind == "all":
+            use_ra_high += timet
+        else:
+            use_ra_high[ind] += timet
+        return use_ra_high, use_ra_fill
+    if grade == "C":
+        if ind == "all":
+            use_ra_fill += timet
+        else:
+            use_ra_fill[ind] += timet
+        return use_ra_high, use_ra_fill
+
+
+c361bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-1" and SG_sel == True')
+c362bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-2" and SG_sel == True')
+c363bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-3" and SG_sel == True')
+c364bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-4" and SG_sel == True')
+c365bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-5" and SG_sel == True')
+c366bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-6" and SG_sel == True')
+c367bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-7" and SG_sel == True')
+c368bf = summary.query('APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" and BestConf == "C36-8" and SG_sel == True')
+
+ra1bf, used1bf = av_arrays_grade(c361bf)
+ra2bf, used2bf = av_arrays_grade(c362bf)
+ra3bf, used3bf = av_arrays_grade(c363bf)
+ra4bf, used4bf = av_arrays_grade(c364bf)
+ra5bf, used5bf = av_arrays_grade(c365bf)
+ra6bf, used6bf = av_arrays_grade(c366bf)
+ra7bf, used7bf = av_arrays_grade(c367bf)
+ra8bf, used8bf = av_arrays_grade(c368bf)
+
+
+def do_pre_plots_fill(ra, used, tot_t, filename, title):
+    py.close()
+    py.figure(figsize=(11.69,8.27))
+    py.bar(ra, used[0] + used[1], width=1.66666667e-02, ec='#e41a1c', fc='#e41a1c', label='Fillers')
+    py.bar(ra, used[0], width=1.66666667e-02, ec='#4daf4a', fc='#4daf4a', label='High Priority')
+    py.xlim(0,24)
+    py.xlabel('RA [hours]')
+    py.ylabel('Time Needed [hours]')
+    py.title(title)
+    py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t, 'k--', label='100% efficiency')
+    py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6, 'k-.', label='60% efficiency')
+    py.legend(framealpha=0.7, fontsize='x-small')
+    py.savefig('/home/itoledo/Documents/' + filename, dpi=300)
+
+
+do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade.png', 'C36-1 Pressure')
+do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade.png', 'C36-2 Pressure')
+do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade.png', 'C36-3 Pressure')
+do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade.png', 'C36-4 Pressure')
+do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade.png', 'C36-5 Pressure')
+do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade.png', 'C36-6 Pressure')
+do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade.png', 'C36-7 Pressure')
+do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade.png', 'C36-8 Pressure')
+
+ra1bf, used1bf = av_arrays_grade(c361bf, minlst=-3., maxlst=3.)
+ra2bf, used2bf = av_arrays_grade(c362bf, minlst=-3., maxlst=3.)
+ra3bf, used3bf = av_arrays_grade(c363bf, minlst=-3., maxlst=3.)
+ra4bf, used4bf = av_arrays_grade(c364bf, minlst=-3., maxlst=3.)
+ra5bf, used5bf = av_arrays_grade(c365bf, minlst=-3., maxlst=3.)
+ra6bf, used6bf = av_arrays_grade(c366bf, minlst=-3., maxlst=3.)
+ra7bf, used7bf = av_arrays_grade(c367bf, minlst=-3., maxlst=3.)
+ra8bf, used8bf = av_arrays_grade(c368bf, minlst=-3., maxlst=3.)
+
+do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade_relax.png', 'C36-1 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade_relax.png', 'C36-2 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade_relax.png', 'C36-3 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade_relax.png', 'C36-4 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade_relax.png', 'C36-5 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade_relax.png', 'C36-6 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade_relax.png', 'C36-7 Pressure (-3 to +3 HA, over 20 deg)')
+do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade_relax.png', 'C36-8 Pressure (-3 to +3 HA, over 20 deg)')
 

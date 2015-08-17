@@ -90,14 +90,14 @@ class arrayRes:
         self.data.append(pickle.load(f))
         f.close()  
 
-    def find_array(self, ar, las, declination, useACA, noOf12):
+    def find_array(self, ar, las, declination, useACA, noOf12, uid):
     
         nData = len(self.data[0][0])
         decMin = self.data[0][0][0]
-        decMax = self.data[0][0][nData-1]
-        deltaDec = (decMax-decMin)/nData
+        decMax = self.data[0][0][nData - 1]
+        deltaDec = (decMax - decMin) / nData
         
-        index = int(math.floor(((declination-decMin) / deltaDec)))
+        index = int(math.floor(((declination - decMin) / deltaDec)))
         
         scalingFrequency = 1.
     
@@ -121,14 +121,15 @@ class arrayRes:
             
             if (ar * 1.1 > spatialResolutionArr >= ar / 2.
                     and noOf12 == 1):
-
-                if useACA == 0:
-                    if self.las[arr] * 1.25 > las:
-                        match.append(arr)
-                        notFound = False
-                else:
-                    match.append(arr)
-                    notFound = False
+                # if useACA == 0:
+                #     if self.las[arr] * 2. > las:
+                #         match.append(arr)
+                #         notFound = False
+                #     else:
+                #         print self.las[arr] * 1.25, las, uid
+                # else:
+                match.append(arr)
+                notFound = False
 
             if arr == 0 and ar * 1.1 >= spatialResolutionArr:
                 match.append(arr)
@@ -136,7 +137,15 @@ class arrayRes:
 
         return match, notFound
 
-    def run(self, AR, LAS, declination, useACA, noOf12, uid):
+    def run(self, AR, LAS, declination, useACA, noOf12, OT_BestConf, uid):
+
+        if OT_BestConf == "C36-7":
+            return [self.res[6] * 0.8, 0], [self.res[6] * 1.2, 0], 'C36-7', ''
+        if OT_BestConf == "C36-8":
+            return [self.res[7] * 0.8, 0], [self.res[7] * 1.2, 0], 'C36-8', ''
+
+        if declination >= 43:
+            declination = 40.
 
         self.minAR = [0., -99.]
         self.maxAR = [0, -99.]
@@ -150,7 +159,7 @@ class arrayRes:
         while notFound and nTry < maxTry:
             nTry += 1
             matchArr , notFound = self.find_array(
-                AR, LAS, declination, useACA, noOf12)
+                AR, LAS, declination, useACA, noOf12, uid)
             fudgeFactor += deltaFudgeFactor  
             AR *= fudgeFactor
     
@@ -169,25 +178,35 @@ class arrayRes:
                     print " LBL array cannot be combined, check OT"
 
                 else:
+                    maxar = False
                     try:
                         arr2 = self.matchArrayCycle3[min(matchArr)]
                     except KeyError:
                         try:
                             arr2 = self.matchArrayCycle3[max(matchArr)]
+                            maxar = True
                         except KeyError:
                             print(
                                 "Two Configurations required, but only one "
                                 "needed, check OT?", uid)
                             print matchArr, AR, LAS, useACA, noOf12
                             return 0
-                    self.minAR[0] = self.res[max(matchArr)] * 0.8
-                    self.maxAR[0] = self.res[min(matchArr)] * 1.2
+                    if maxar:
+                        self.minAR[0] = self.res[max(matchArr)] * 0.8
+                        self.maxAR[0] = self.res[max(matchArr)] * 1.2
+                    else:
+                        self.minAR[0] = self.res[min(matchArr)] * 0.8
+                        self.maxAR[0] = self.res[min(matchArr)] * 1.2
                     
                     self.minAR[1] = self.res[arr2] * 0.8
                     self.maxAR[1] = self.res[arr2] * 1.3
         if noOf12 == 2:
-            return self.minAR, self.maxAR, self.array[min(matchArr)], \
-                self.array[arr2]
+            if maxar:
+                return self.minAR, self.maxAR, self.array[max(matchArr)], \
+                    self.array[arr2]
+            else:
+                return self.minAR, self.maxAR, self.array[min(matchArr)], \
+                    self.array[arr2]
         else:
             return self.minAR, self.maxAR, self.array[min(matchArr)], 'Ca  '
     

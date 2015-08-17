@@ -117,13 +117,8 @@ class Database(object):
             "AND obs2.OBS_PROJECT_ID = obs1.PRJ_ARCHIVE_UID AND "
             "obs1.PRJ_ARCHIVE_UID = obs3.PROJECTUID")
 
-        # conx_string = os.environ['CON_STR']
-        ip = 'orasw.apotest.alma.cl'
-        port = 1521
-        dsn_tns = cx_Oracle.makedsn(ip, port, 'ALMAI2', 'ALMAI2.SCO.CL')
-
-        # self.connection = cx_Oracle.connect(conx_string)
-        self.connection = cx_Oracle.connect('alma', 'almafordev', dsn_tns)
+        conx_string = os.environ['CON_STR']
+        self.connection = cx_Oracle.connect(conx_string)
         self.cursor = self.connection.cursor()
 
         # Initialize with saved data and update, Default behavior.
@@ -207,8 +202,8 @@ class Database(object):
             # self.qa0: QAO flags for observed SBs
             # Query QA0 flags from AQUA tables
             self.sqlqa0 = str(
-                "SELECT SCHEDBLOCKUID as SB_UID,QA0STATUS,STARTTIME,ENDTIME,"
-                "EXECBLOCKUID,EXECFRACTION "
+                "SELECT SCHEDBLOCKUID as SB_UID, QA0STATUS, STARTTIME, ENDTIME,"
+                "EXECBLOCKUID, EXECFRACTION "
                 "FROM ALMA.AQUA_EXECBLOCK "
                 "WHERE regexp_like (OBSPROJECTCODE, '^2015\..*\.[AST]')")
 
@@ -226,6 +221,14 @@ class Database(object):
             self.cursor.execute(sql2)
             self.executive = pd.DataFrame(
                 self.cursor.fetchall(), columns=['OBSPROJECT_UID', 'EXEC'])
+
+            self.sql3 = str(
+                "SELECT obs1.ARCHIVE_UID, obs1.PRJ_REF, obs1.SB_NAME, "
+                "obs1.STATUS, obs1.EXECUTION_COUNT "
+                "FROM ALMA.BMMV_SCHEDBLOCK obs1, ALMA.BMMV_OBSPROJECT obs2 "
+                "WHERE obs1.PRJ_REF = obs2.PRJ_ARCHIVE_UID "
+                "AND regexp_like (obs2.PRJ_CODE, '^2015\..*\.[AST]')"
+            )
 
             self.start_apa()
 
@@ -277,8 +280,6 @@ class Database(object):
                 '/', '_') + '.xml', axis=1
         )
 
-        number = self.projects.__len__()
-
         self.read_obsproject_p1(path=self.phase1_data + 'obsproject/')
 
     def read_obsproject_p1(self, path):
@@ -310,6 +311,8 @@ class Database(object):
         tart = []
         visitt = []
         temp_paramt = []
+        sgspwt = []
+        sgspsct = []
 
         for r in self.obsproject_p1.iterrows():
             obsproject_uid = r[1].OBSPROJECT_UID
@@ -326,6 +329,10 @@ class Database(object):
             obspropparse.get_ph1_sg()
             sgt.extend(obspropparse.sciencegoals)
             tart.extend(obspropparse.sg_targets)
+            if len(obspropparse.sg_specscan) > 0:
+                sgspsct.extend(obspropparse.sg_specscan)
+            if len(obspropparse.sg_specwindows) > 0:
+                sgspwt.extend(obspropparse.sg_specwindows)
             if len(obspropparse.visits) > 0:
                 visitt.extend(obspropparse.visits)
             if len(obspropparse.temp_param) > 0:
@@ -335,7 +342,8 @@ class Database(object):
         tart_arr = np.array(tart, dtype=object)
         visitt_arr = np.array(visitt, dtype=object)
         temp_paramt_arr = np.array(temp_paramt, dtype=object)
-
+        sgspwt_arr = np.array(sgspwt, dtype=object)
+        sgspsct_arr = np.array(sgspsct, dtype=object)
 
         self.sciencegoals = pd.DataFrame(
             sgt_arr,
@@ -344,6 +352,7 @@ class Database(object):
                      'est7Time', 'eTPTime',
                      'AR', 'LAS', 'ARcor', 'LAScor', 'sensitivity',
                      'useACA', 'useTP', 'isTimeConstrained', 'repFreq',
+                     'repFreq_spec', 'singleContFreq', 'isCalSpecial',
                      'isPointSource', 'polarization', 'isSpectralScan', 'type',
                      'hasSB', 'dummy', 'num_targets', 'mode']
         ).set_index('SG_ID', drop=False)
@@ -351,7 +360,9 @@ class Database(object):
         self.sg_targets = pd.DataFrame(
             tart_arr,
             columns=['TARG_ID', 'OBSPROJECT_UID', 'SG_ID', 'tarType',
-                     'solarSystem', 'sourceName', 'RA', 'DEC', 'isMosaic']
+                     'solarSystem', 'sourceName', 'RA', 'DEC', 'isMosaic',
+                     'centerVel', 'centerVel_units', 'centerVel_refsys',
+                     'centerVel_doppler', 'lineWidth']
         ).set_index('TARG_ID', drop=False)
 
         self.visits = pd.DataFrame(
@@ -366,6 +377,18 @@ class Database(object):
             columns=['SG_ID', 'sgName', 'OBSPROJECT_UID', 'startTime', 'endTime',
                      'margin', 'margin_unit', 'repeats', 'LSTmin', 'LSTmax',
                      'note', 'avoidConstraint', 'priority', 'fixedStart']
+        )
+
+        self.sg_spw = pd.DataFrame(
+            sgspwt_arr,
+            columns=['SG_ID', 'SPW_ID', 'transitionName', 'centerFrequency',
+                     'bandwidth', 'spectralRes', 'isRepSPW', 'isSkyFreq',
+                     'group_index']
+        )
+        self.sg_specscan = pd.DataFrame(
+            sgspsct_arr,
+            columns=['SG_ID', 'SSCAN_ID', 'startFrequency', 'endFrequency',
+                     'bandwidth', 'spectralRes', 'isSkyFreq']
         )
 
     def obs_review(self, path):
@@ -598,7 +621,7 @@ class Database(object):
         try:
             minAR, maxAR, conf1, conf2 = self.ares.run(
                 sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA'],
-                num12, uid)
+                num12, sbrow['OT_BestConf'], uid)
         except:
             print "Exception, %s" % uid
             print sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA']
@@ -614,6 +637,7 @@ class Database(object):
                  SB_TP_num],
                 index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
                        "SB_7m_num", "SB_TP_num"])
+
         return pd.Series(
             [minAR[0], maxAR[0], conf1, num12, SB_BL_num, SB_7m_num, SB_TP_num],
             index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",

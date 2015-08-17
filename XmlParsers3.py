@@ -28,6 +28,8 @@ class ObsProposal(object):
         self.sciencegoals = []
         self.visits = []
         self.temp_param = []
+        self.sg_specwindows = []
+        self.sg_specscan = []
 
     def get_ph1_sg(self):
         sg_list = self.data.findall(prj + 'ScienceGoal')
@@ -117,7 +119,6 @@ class ObsProposal(object):
                         isAvoidConstraint, priority, visitId, prev_visitId,
                         requiredDelay, requiredDelay_unit, isfixedStart])
             except AttributeError:
-                print sg_name
                 temp = performance.TemporalParameters
                 for t in temp:
                     startTime = t.startTime.pyval
@@ -146,16 +147,83 @@ class ObsProposal(object):
                     ])
 
         # Get SG representative Frequency, polarization configuration.
+        calparam = sg.CalibrationSetupParameters
+        calspecial = False
+        if calparam.attrib['selection'] == 'user':
+            calspecial = True
+
         spectral = sg.SpectralSetupParameters
         repFreq = convert_ghz(
             performance.representativeFrequency.pyval,
             performance.representativeFrequency.attrib['unit'])
+        repFreqSepc = convert_ghz(
+            spectral.representativeFrequency.pyval,
+            spectral.representativeFrequency.attrib['unit'])
+
         polarization = spectral.attrib['polarisation']
         type_pol = spectral.attrib['type']
         specscan = spectral.findall(prj + 'SpectralScan')
+        try:
+            singleContFreq = convert_ghz(
+                spectral.singleContinuumFrequency.pyval,
+                spectral.singleContinuumFrequency.attrib['unit']
+            )
+        except:
+            singleContFreq = None
+
+        spw = spectral.findall(prj + 'ScienceSpectralWindow')
         is_spec_scan = False
         if len(specscan) > 0:
             is_spec_scan = True
+            for n in range(len(specscan)):
+                ss = specscan[n]
+                ss_index = ss['index'].pyval
+                startFrequency = convert_ghz(
+                    ss.startFrequency.pyval,
+                    ss.startFrequency.attrib['unit'])
+                endFrequency = convert_ghz(
+                    ss.endFrequency.pyval,
+                    ss.endFrequency.attrib['unit'])
+                bandwidth = convert_ghz(
+                    ss.bandWidth.pyval,
+                    ss.bandWidth.attrib['unit']
+                )
+                specRes = convert_ghz(
+                    ss.spectralResolution.pyval,
+                    ss.spectralResolution.attrib['unit']
+                )
+                isSkyFreq = ss.isSkyFrequency.pyval
+
+                self.sg_specscan.append([
+                    sg_id, ss_index, startFrequency, endFrequency,
+                    bandwidth, specRes, isSkyFreq
+                ])
+
+        else:
+            for n in range(len(spw)):
+                sp = spw[n]
+                spw_index = sp['index'].pyval
+                transitionName = sp.transitionName.pyval
+                centerFrequency = convert_ghz(
+                    sp.centerFrequency.pyval,
+                    sp.centerFrequency.attrib['unit']
+                )
+                bandWidth = convert_ghz(
+                    sp.bandWidth.pyval,
+                    sp.bandWidth.attrib['unit']
+                )
+                spectralResolution = convert_ghz(
+                    sp.spectralResolution.pyval,
+                    sp.spectralResolution.attrib['unit']
+                )
+                representativeWin = sp.representativeWindow.pyval
+                isSkyFreq = sp.isSkyFrequency.pyval
+                groupIndex = sp.groupIndex.pyval
+                self.sg_specwindows.append([
+                    sg_id, spw_index, transitionName, centerFrequency,
+                    bandWidth, spectralResolution, representativeWin,
+                    isSkyFreq, groupIndex
+                ])
 
         # Correct AR and LAS to equivalent resolutions at 100GHz
         ARcor = AR * repFreq / 100.
@@ -191,6 +259,7 @@ class ObsProposal(object):
             sg_id, self.obsproject_uid, ous_id, sg_name, bands, estimatedTime,
             twelveTime, ACATime, sevenTime, TPTime, AR, LAS, ARcor,
             LAScor, sensitivity, useACA, useTP, isTimeConstrained, repFreq,
+            repFreqSepc, singleContFreq, calspecial,
             isPointSource, polarization, is_spec_scan, type_pol, hasSB, two_12m,
             num_targets, sg_mode]
         )
@@ -233,9 +302,29 @@ class ObsProposal(object):
         except AttributeError:
             isMosaic = None
 
+        sourceVelocity = target.sourceVelocity
+        try:
+            centerVelocity = sourceVelocity.findall(val + 'centerVelocity')[0].pyval
+            centerVelocity_units = sourceVelocity.findall(val + 'centerVelocity')[0].attrib['unit']
+            centerVelocity_refSys = sourceVelocity.attrib['referenceSystem']
+            centerVelocity_dopp = sourceVelocity.attrib['dopplerCalcType']
+        except:
+            centerVelocity = None
+            centerVelocity_units = None
+            centerVelocity_refSys = None
+            centerVelocity_dopp = None
+
+        expectedprop = target.ExpectedProperties
+        expectedLineWidth = convert_ghz(
+            expectedprop.expectedLineWidth.pyval,
+            expectedprop.expectedLineWidth.attrib['unit']
+        )
+
+
         self.sg_targets.append(
             [tid, obsp_uid, sgid, typetar, solarSystem, sourceName, ra, dec,
-             isMosaic])
+             isMosaic, centerVelocity, centerVelocity_units,
+             centerVelocity_refSys, centerVelocity_dopp, expectedLineWidth])
 
 
 class ObsProject(object):
@@ -263,7 +352,13 @@ class ObsProject(object):
         :param path:
         """
         io_file = open(path + xml_file)
-        tree = objectify.parse(io_file)
+        try:
+            tree = objectify.parse(io_file)
+        except:
+            if xml_file == "uid___A001_X1ee_X1234.xml":
+                io_file.close()
+                io_file = open('/home/itoledo/Work/APA3/conf/' + xml_file)
+                tree = objectify.parse(io_file)
         io_file.close()
         data = tree.getroot()
         self.status = data.attrib['status']
@@ -754,9 +849,6 @@ class ObsReview(object):
                     mous_id = mous.attrib['entityPartId']
                     mous_name = mous.name.pyval
                     try:
-                        # TODO: WARNING, we are assuming that all mous have
-                        # only one SchedBlockRef. For Cycle 1 and 2 this is
-                        # Ok, but is not a correct assumption for future
                         sblist = mous.findall(prj + 'ObsUnitSet')
                         SB_UID = mous.SchedBlockRef.attrib['entityId']
                     except AttributeError:
