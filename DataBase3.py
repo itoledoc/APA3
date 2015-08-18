@@ -100,8 +100,8 @@ class Database(object):
         self.obsproject_p1 = pd.DataFrame()
         self.ares = ARes.arrayRes()
 
-        # self.grades = pd.read_table(
-        #     self.apa_path + 'conf/c2grade.csv', sep=',')
+        self.grades = pd.read_table(
+            self.apa_path + 'conf/DC_final modified gradeC.csv', sep=',')
         # self.sb_sg_p1 = pd.read_pickle(self.apa_path + 'conf/sb_sg_p1.pandas')
 
         # Global SQL search expressions
