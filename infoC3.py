@@ -581,7 +581,7 @@ ra7b, used7b = av_arrays(c367b)
 ra8b, used8b = av_arrays(c368b)
 
 
-def do_pre_plots(ra, used, tot_t, filename, title):
+def do_pre_plots(ra, used, tot_t, filename, title, lab=False, xleg='', yleg=''):
     py.close()
     py.figure(figsize=(11.69, 8.27))
     py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4] + used[5] +
@@ -600,24 +600,25 @@ def do_pre_plots(ra, used, tot_t, filename, title):
     py.bar(ra, used[0],
            width=1.66666667e-02, ec='#d73027', fc='#d73027', label='Band 3')
     py.xlim(0, 24)
-    py.xlabel('RA [hours]')
-    py.ylabel('Time Needed [hours]')
-    py.title(title)
-    py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t, 'k--',
-            label='100% efficiency')
+    py.xlabel(xleg)
+    py.ylabel(yleg)
+    py.title(title, fontsize='xx-large')
+    # py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t, 'k--',
+    #         label='100% efficiency')
     py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6, 'k-.',
-            label='60% efficiency')
-    py.legend(framealpha=0.7, fontsize='x-small')
-    py.savefig('/home/itoledo/Documents/' + filename, dpi=300)
+            label='Exp. Efficiency [h]')
+    if lab:
+        py.legend(framealpha=0.5, ncol=2)
+    py.savefig('/home/itoledo/Documents/' + filename, dpi=300, bbox_inches='tight')
 
-do_pre_plots(ra1b, used1b, tot_t1, 'C36-1.png', 'C36-1 Pressure')
-do_pre_plots(ra2b, used2b, tot_t2, 'C36-2.png', 'C36-2 Pressure')
-do_pre_plots(ra3b, used3b, tot_t3, 'C36-3.png', 'C36-3 Pressure')
+do_pre_plots(ra1b, used1b, tot_t1, 'C36-1.png', 'C36-1 Pressure', yleg='Time Needed [hours]')
+do_pre_plots(ra2b, used2b, tot_t2, 'C36-2.png', 'C36-2 Pressure', lab=True)
+do_pre_plots(ra3b, used3b, tot_t3, 'C36-3.png', 'C36-3 Pressure', yleg='Time Needed [hours]')
 do_pre_plots(ra4b, used4b, tot_t4, 'C36-4.png', 'C36-4 Pressure')
-do_pre_plots(ra5b, used5b, tot_t5, 'C36-5.png', 'C36-5 Pressure')
+do_pre_plots(ra5b, used5b, tot_t5, 'C36-5.png', 'C36-5 Pressure', yleg='Time Needed [hours]')
 do_pre_plots(ra6b, used6b, tot_t6, 'C36-6.png', 'C36-6 Pressure')
-do_pre_plots(ra7b, used7b, tot_t7, 'C36-7.png', 'C36-7 Pressure')
-do_pre_plots(ra8b, used8b, tot_t8, 'C36-8.png', 'C36-8 Pressure')
+do_pre_plots(ra7b, used7b, tot_t7, 'C36-7.png', 'C36-7 Pressure', yleg='Time Needed [hours]', xleg='RA [hours]')
+do_pre_plots(ra8b, used8b, tot_t8, 'C36-8.png', 'C36-8 Pressure', xleg='RA [hours]')
 
 ra1b, used1b = av_arrays(c361b, minlst=-3., maxlst=3.)
 ra2b, used2b = av_arrays(c362b, minlst=-3., maxlst=3.)
@@ -803,33 +804,34 @@ ra7bf, used7bf = av_arrays_grade(c367bf)
 ra8bf, used8bf = av_arrays_grade(c368bf)
 
 
-def do_pre_plots_fill(ra, used, tot_t, filename, title):
+def do_pre_plots_fill(ra, used, tot_t, filename, title, lab=False, xleg='', yleg=''):
     py.close()
     py.figure(figsize=(11.69, 8.27))
     py.bar(ra, used[0] + used[1],
-           width=1.66666667e-02, ec='#e41a1c', fc='#e41a1c', label='Fillers')
+           width=1.66666667e-02, ec='#e41a1c', fc='#e41a1c', label='Grade C')
     py.bar(ra, used[0], width=1.66666667e-02,
-           ec='#4daf4a', fc='#4daf4a', label='High Priority')
+           ec='#4daf4a', fc='#4daf4a', label='Grades A&B')
     py.xlim(0, 24)
-    py.xlabel('RA [hours]')
-    py.ylabel('Time Needed [hours]')
-    py.title(title)
-    py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t,
-            'k--', label='100% efficiency')
+    py.xlabel(xleg)
+    py.ylabel(yleg)
+    py.title(title, fontsize='xx-large')
+    # py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t,
+    #        'k--', label='100% efficiency')
     py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6,
-            'k-.', label='60% efficiency')
-    py.legend(framealpha=0.7, fontsize='x-small')
+            'k-.', label='Exp. Efficiency [h]')
+    if lab:
+        py.legend(framealpha=0.5)
     py.savefig('/home/itoledo/Documents/' + filename, dpi=300)
 
 
-do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade.png', 'C36-1 Pressure')
-do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade.png', 'C36-2 Pressure')
-do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade.png', 'C36-3 Pressure')
+do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade.png', 'C36-1 Pressure', yleg='Time Needed [hours]')
+do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade.png', 'C36-2 Pressure', lab=True)
+do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade.png', 'C36-3 Pressure', yleg='Time Needed [hours]')
 do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade.png', 'C36-4 Pressure')
-do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade.png', 'C36-5 Pressure')
+do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade.png', 'C36-5 Pressure', yleg='Time Needed [hours]')
 do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade.png', 'C36-6 Pressure')
-do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade.png', 'C36-7 Pressure')
-do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade.png', 'C36-8 Pressure')
+do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade.png', 'C36-7 Pressure', yleg='Time Needed [hours]', xleg='RA [hours]')
+do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade.png', 'C36-8 Pressure', xleg='RA [hours]')
 
 ra1bf, used1bf = av_arrays_grade(c361bf, minlst=-3., maxlst=3.)
 ra2bf, used2bf = av_arrays_grade(c362bf, minlst=-3., maxlst=3.)

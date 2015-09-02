@@ -19,6 +19,7 @@ connection = cx_Oracle.connect(conx_string)
 cursor = connection.cursor()
 
 path = os.environ['PHASEONE_C3']
+# path = '/home/itoledo/Documents/cycle3_osf/'
 
 sql1 = str(
     "SELECT PRJ_ARCHIVE_UID as OBSPROJECT_UID,PI,PRJ_NAME,CODE,"

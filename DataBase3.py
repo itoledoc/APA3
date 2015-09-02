@@ -207,11 +207,11 @@ class Database(object):
                 "FROM ALMA.AQUA_EXECBLOCK "
                 "WHERE regexp_like (OBSPROJECTCODE, '^2015\..*\.[AST]')")
 
-            # self.cursor.execute(self.sqlqa0)
-            # self.aqua_execblock = pd.DataFrame(
-            #     self.cursor.fetchall(),
-            #     columns=[rec[0] for rec in self.cursor.description]
-            # ).set_index('SB_UID', drop=False)
+            self.cursor.execute(self.sqlqa0)
+            self.aqua_execblock = pd.DataFrame(
+                self.cursor.fetchall(),
+                columns=[rec[0] for rec in self.cursor.description]
+            ).set_index('SB_UID', drop=False)
 
             # Query for Executives
             sql2 = str(
@@ -279,6 +279,11 @@ class Database(object):
             lambda r: r['OBSPROJECT_UID'].replace('://', '___').replace(
                 '/', '_') + '.xml', axis=1
         )
+
+        selected_aprc = self.grades.query(
+            'APRCGrade in ["A", "B", "C"]').CODE.unique()
+
+        self.projects = self.projects.query('CODE in @selected_aprc')
 
         self.read_obsproject_p1(path=self.phase1_data + 'obsproject/')
 
