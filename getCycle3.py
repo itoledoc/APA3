@@ -1,9 +1,9 @@
-__author__ = 'itoledo'
-
 import os
 import cx_Oracle
 from XmlParsers3 import *
 import shutil
+
+__author__ = 'itoledo'
 
 prj = '{Alma/ObsPrep/ObsProject}'
 val = '{Alma/ValueTypes}'

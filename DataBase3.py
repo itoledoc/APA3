@@ -1,11 +1,9 @@
-__author__ = 'itoledo'
-
-
 import os
 import sys
 import pandas as pd
 import ephem
 import arrayResolutionCy3 as ARes
+import arrayResolution2pJ as AR2es
 import cx_Oracle
 
 from collections import namedtuple
@@ -99,6 +97,7 @@ class Database(object):
 
         self.obsproject_p1 = pd.DataFrame()
         self.ares = ARes.arrayRes()
+        self.ares2 = AR2es.arrayRes(wto_path='/home/itoledo/Work/APA3/')
 
         self.grades = pd.read_table(
             self.apa_path + 'conf/DC_final modified gradeC.csv', sep=',')
@@ -627,6 +626,72 @@ class Database(object):
             minAR, maxAR, conf1, conf2 = self.ares.run(
                 sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA'],
                 num12, sbrow['OT_BestConf'], uid)
+        except:
+            print "Exception, %s" % uid
+            print sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA']
+            return pd.Series(
+                [0, 0, 'C', num12, SB_BL_num, SB_7m_num, SB_TP_num],
+                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                       "SB_7m_num", "SB_TP_num"])
+
+        if not isExtended:
+
+            return pd.Series(
+                [minAR[1], maxAR[1], conf2, num12, SB_BL_num, SB_7m_num,
+                 SB_TP_num],
+                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                       "SB_7m_num", "SB_TP_num"])
+
+        return pd.Series(
+            [minAR[0], maxAR[0], conf1, num12, SB_BL_num, SB_7m_num, SB_TP_num],
+            index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                   "SB_7m_num", "SB_TP_num"])
+
+    def get_ar_lim2(self, sbrow):
+
+        ouid = sbrow['OBSPROJECT_UID']
+        sgn = sbrow['SG_ID']
+        uid = sbrow['SB_UID']
+        sgrow = self.sciencegoals.query('OBSPROJECT_UID == @ouid and '
+                                        'sg_name == @sgn')
+
+        sbs = self.schedblocks.query(
+            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "TWELVE-M"')
+        isExtended = True
+        SB_BL_num = len(sbs)
+        SB_7m_num = len(self.schedblocks.query(
+            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "SEVEN-M"'))
+        SB_TP_num = len(self.schedblocks.query(
+            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and '
+            'array == "TP-Array"'))
+
+        if sbrow['array'] != "TWELVE-M":
+            return pd.Series(
+                [None, None, 'N/A', 0, SB_BL_num, SB_7m_num, SB_TP_num],
+                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                       "SB_7m_num", "SB_TP_num"])
+        if len(sgrow) == 0:
+            print "What? %s" % uid
+            return pd.Series(
+                [0, 0, 'E', 0, SB_BL_num, SB_7m_num, SB_TP_num],
+                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
+                       "SB_7m_num", "SB_TP_num"])
+        else:
+            sgrow = sgrow.iloc[0]
+
+        num12 = 1
+
+        if len(sbs) > 1:
+            two = sbs[sbs.sbNote.str.contains('compact')]
+            if len(two) > 0:
+                num12 = 2
+                isExtended = True
+                if sbrow['sbName'].endswith('_TC'):
+                    isExtended = False
+        try:
+            minAR, maxAR, conf1, conf2 = self.ares2.run(
+                sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA'],
+                num12, uid, sbrow['OT_BestConf'])
         except:
             print "Exception, %s" % uid
             print sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA']

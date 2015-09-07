@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import pickle
+import math
 
 """
 Script to return the Cycle 3 array parameter for a given LAS, Angular Resolution:
@@ -14,7 +16,7 @@ Output :
 
 HISTORY:
     - 2015.07.06:
-        - start from scatch to clean arrayResolution2p.py
+        - start from scatch to clean arrayResolution2pJ.py
         - check if the LAS with 1 12-m array is okay.
         - if no solution is found change the AR by a fudge factor to converge
         - by default the frequency is taken to 100 GHz, no scaling is applied.
@@ -25,10 +27,6 @@ HISTORY:
 
 __author__ = "ALMA : SL"
 __version__ = "0.1.0@2015.07.06"
-
-
-import pickle
-import math
 
 LATITUDE_ALMA = -23.03
 DEG2RAD = math.pi/180.

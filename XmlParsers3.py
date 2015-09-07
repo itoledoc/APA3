@@ -1,9 +1,10 @@
-__author__ = 'itoledo'
-
 from lxml import objectify
 import pandas as pd
 from converter3 import *
 import ephem
+
+__author__ = 'itoledo'
+
 
 prj = '{Alma/ObsPrep/ObsProject}'
 val = '{Alma/ValueTypes}'
