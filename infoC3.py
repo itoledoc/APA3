@@ -344,517 +344,521 @@ datas.spectralwindow.to_csv('/home/itoledo/Documents/sb_specwindow.csv')
 datas.fieldsource.to_csv('/home/itoledo/Documents/sb_fieldsource.csv')
 
 
-# def av_arrays_opt(sel):
-#
-#     map_ra = np.arange(0, 24, 24. / (24 * 60.))
-#     use_ra = np.zeros(1440)
-#
-#     for r in sel.iterrows():
-#         data = r[1]
-#         if data.RA == 0 or data.up == 24:
-#             use_ra += (data.estimatedTime_SB / 24.) / data.twelve_good
-#         elif data.rise > data.set:
-#             use_ra[map_ra < data.set] += \
-#                 (data.estimatedTime_SB / data.up) / data.twelve_good
-#             use_ra[map_ra > data.rise] += \
-#                 (data.estimatedTime_SB / data.up) / data.twelve_good
-#         else:
-#             use_ra[(map_ra > data.rise) & (map_ra < data.set)] += \
-#                 (data.estimatedTime_SB / data.up) / data.twelve_good
-#
-#     return map_ra, use_ra
-#
-#
-# def av_arrays(sel, minlst=-2., maxlst=2.):
-#
-#     map_ra = np.arange(0, 24, 24. / (24 * 60.))
-#     use_ra_b3 = np.zeros(1440)
-#     use_ra_b4 = np.zeros(1440)
-#     use_ra_b6 = np.zeros(1440)
-#     use_ra_b7 = np.zeros(1440)
-#     use_ra_b8 = np.zeros(1440)
-#     use_ra_b9 = np.zeros(1440)
-#     use_ra_b10 = np.zeros(1440)
-#
-#     for r in sel.iterrows():
-#         data = r[1]
-#
-#         if data.RA == 0 or data.up == 24:
-#             use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, \
-#                 use_ra_b10 = add_band(
-#                     'all', data.estimatedTime_SB / 24., data.band_SB, use_ra_b3,
-#                     use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
-#                     use_ra_b10)
-#             continue
-#
-#         if data.up > maxlst - minlst:
-#             if maxlst < (data.RA / 15.) < 24 + minlst:
-#                 rise = (data.RA / 15.) + minlst
-#                 set_lst = (data.RA / 15.) + maxlst
-#                 up = maxlst - minlst
-#                 use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#                     use_ra_b9, use_ra_b10 = add_band(
-#                         (map_ra > rise) & (map_ra < set_lst),
-#                         data.estimatedTime_SB / up, data.band_SB, use_ra_b3,
-#                         use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
-#                         use_ra_b10)
-#             else:
-#                 if (data.RA / 15.) < maxlst:
-#                     rise = 24 + minlst + (data.RA / 15.)
-#                     set_lst = (data.RA / 15.) + maxlst
-#                     up = maxlst - minlst
-#                 else:
-#                     rise = (data.RA / 15.) + minlst
-#                     set_lst = maxlst - (24 - (data.RA / 15.))
-#                     up = maxlst - minlst
-#                 use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#                     use_ra_b9, use_ra_b10 = add_band(
-#                         map_ra < set_lst, data.estimatedTime_SB / up,
-#                         data.band_SB,
-#                         use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                         use_ra_b9, use_ra_b10)
-#                 use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#                     use_ra_b9, use_ra_b10 = add_band(
-#                         map_ra > rise, data.estimatedTime_SB / up, data.band_SB,
-#                         use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                         use_ra_b9, use_ra_b10)
-#             continue
-#
-#         if data.rise > data.set:
-#             rise = data.rise
-#             set_lst = data.set
-#             up = data.up
-#             if data.up > maxlst - minlst:
-#                 if set_lst > maxlst:
-#                     set_lst = maxlst
-#                 if rise < 24 + minlst:
-#                     rise = 24 + minlst
-#                 up = maxlst - minlst
-#             use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,\
-#                 use_ra_b10 = add_band(
-#                     map_ra < set_lst, data.estimatedTime_SB / up, data.band_SB,
-#                     use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                     use_ra_b9, use_ra_b10)
-#             use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, \
-#                 use_ra_b10 = add_band(
-#                     map_ra > rise, data.estimatedTime_SB / up, data.band_SB,
-#                     use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                     use_ra_b9, use_ra_b10)
-#         else:
-#             rise = data.rise
-#             set_lst = data.set
-#             up = data.up
-#             if up > maxlst - minlst and data.ephem is False:
-#                 if rise < data.RA / 15. + minlst:
-#                     rise = data.RA / 15. + minlst
-#                 if set_lst > data.RA / 15. + maxlst:
-#                     set_lst = data.RA / 15. + maxlst
-#                 up = maxlst - minlst
-#                 use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#                     use_ra_b9, use_ra_b10 = add_band(
-#                         (map_ra > rise) & (map_ra < set_lst),
-#                         data.estimatedTime_SB / up, data.band_SB, use_ra_b3,
-#                         use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
-#                         use_ra_b10)
-#
-#     return map_ra, [use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#                     use_ra_b9, use_ra_b10]
-#
-#
-# def add_band(
-#         ind, timet, band, use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
-#         use_ra_b9, use_ra_b10):
-#
-#     if band == "ALMA_RB_03":
-#         if ind == "all":
-#             use_ra_b3 += timet
-#         else:
-#             use_ra_b3[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#             use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_04":
-#         if ind == "all":
-#             use_ra_b4 += timet
-#         else:
-#             use_ra_b4[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#             use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_06":
-#         if ind == "all":
-#             use_ra_b6 += timet
-#         else:
-#             use_ra_b6[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#             use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_07":
-#         if ind == "all":
-#             use_ra_b7 += timet
-#         else:
-#             use_ra_b7[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#             use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_08":
-#         if ind == "all":
-#             use_ra_b8 += timet
-#         else:
-#             use_ra_b8[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#             use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_09":
-#         if ind == "all":
-#             use_ra_b9 += timet
-#         else:
-#             use_ra_b9[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#             use_ra_b9, use_ra_b10
-#     if band == "ALMA_RB_10":
-#         if ind == "all":
-#             use_ra_b10 += timet
-#         else:
-#             use_ra_b10[ind] += timet
-#         return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
-#             use_ra_b9, use_ra_b10
-#
-#
-# def conf_time(datedf):
-#     tot_t = np.zeros(1440)
-#     lst = np.arange(0, 24, 24. / (24 * 60.))
-#     for i in datedf.iterrows():
-#
-#         if i[1].available_time == 24:
-#             t = np.ones(1440)
-#
-#         elif i[1].lst_start > i[1].lst_end:
-#             t = np.zeros(1440)
-#             t[lst > i[1].lst_start] += 1.
-#             t[lst < i[1].lst_end] += 1.
-#
-#         else:
-#             t = np.zeros(1440)
-#             t[(lst > i[1].lst_start) & (lst < i[1].lst_end)] += 1.
-#
-#         tot_t += t
-#
-#     return tot_t
-#
-# c361b = summary.query(
-#     'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
-#     'BestConf == "C36-1"')
-# c362b = summary.query(
-#     'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
-#     'BestConf == "C36-2"')
-# c363b = summary.query(
-#     'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
-#     'BestConf == "C36-3"')
-# c364b = summary.query(
-#     'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
-#     'BestConf == "C36-4"')
-# c365b = summary.query(
-#     'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
-#     'BestConf == "C36-5"')
-# c366b = summary.query(
-#     'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
-#     'BestConf == "C36-6"')
-# c367b = summary.query(
-#     'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
-#     'BestConf == "C36-7"')
-# c368b = summary.query(
-#     'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
-#     'BestConf == "C36-8"')
-#
-# tot_t1 = conf_time(date_df.query('C36_1 == 1'))
-# tot_t2 = conf_time(date_df.query('C36_2 == 1'))
-# tot_t3 = conf_time(date_df.query('C36_3 == 1'))
-# tot_t4 = conf_time(date_df.query('C36_4 == 1'))
-# tot_t5 = conf_time(date_df.query('C36_5 == 1'))
-# tot_t6 = conf_time(date_df.query('C36_6 == 1'))
-# tot_t7 = conf_time(date_df.query('C36_7 == 1'))
-# tot_t8 = conf_time(date_df.query('C36_8 == 1'))
-#
-# ra1b, used1b = av_arrays(c361b)
-# ra2b, used2b = av_arrays(c362b)
-# ra3b, used3b = av_arrays(c363b)
-# ra4b, used4b = av_arrays(c364b)
-# ra5b, used5b = av_arrays(c365b)
-# ra6b, used6b = av_arrays(c366b)
-# ra7b, used7b = av_arrays(c367b)
-# ra8b, used8b = av_arrays(c368b)
-#
-#
-# def do_pre_plots(ra, used, tot_t, filename, title, lab=False, xleg='', yleg=''):
-#     py.close()
-#     py.figure(figsize=(11.69, 8.27))
-#     py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4] + used[5] +
-#            used[6],
-#            width=1.66666667e-02, ec='#4575b4', fc='#4575b4', label='Band 10')
-#     py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4] + used[5],
-#            width=1.66666667e-02, ec='#91bfdb', fc='#91bfdb', label='Band 9')
-#     py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4],
-#            width=1.66666667e-02, ec='#e0f3f8', fc='#e0f3f8', label='Band 8')
-#     py.bar(ra, used[0] + used[1] + used[2] + used[3],
-#            width=1.66666667e-02, ec='#ffffbf', fc='#ffffbf', label='Band 7')
-#     py.bar(ra, used[0] + used[1] + used[2],
-#            width=1.66666667e-02, ec='#fee090', fc='#fee090', label='Band 6')
-#     py.bar(ra, used[0] + used[1],
-#            width=1.66666667e-02, ec='#fc8d59', fc='#fc8d59', label='Band 4')
-#     py.bar(ra, used[0],
-#            width=1.66666667e-02, ec='#d73027', fc='#d73027', label='Band 3')
-#     py.xlim(0, 24)
-#     py.xlabel(xleg)
-#     py.ylabel(yleg)
-#     py.title(title, fontsize='xx-large')
-#     # py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t, 'k--',
-#     #         label='100% efficiency')
-#     py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6, 'k-.',
-#             label='Exp. Efficiency [h]')
-#     if lab:
-#         py.legend(framealpha=0.5, ncol=2)
-#     py.savefig('/home/itoledo/Documents/' + filename, dpi=300, bbox_inches='tight')
-#
-# do_pre_plots(ra1b, used1b, tot_t1, 'C36-1.png', 'C36-1 Pressure', yleg='Time Needed [hours]')
-# do_pre_plots(ra2b, used2b, tot_t2, 'C36-2.png', 'C36-2 Pressure', lab=True)
-# do_pre_plots(ra3b, used3b, tot_t3, 'C36-3.png', 'C36-3 Pressure', yleg='Time Needed [hours]')
-# do_pre_plots(ra4b, used4b, tot_t4, 'C36-4.png', 'C36-4 Pressure')
-# do_pre_plots(ra5b, used5b, tot_t5, 'C36-5.png', 'C36-5 Pressure', yleg='Time Needed [hours]')
-# do_pre_plots(ra6b, used6b, tot_t6, 'C36-6.png', 'C36-6 Pressure')
-# do_pre_plots(ra7b, used7b, tot_t7, 'C36-7.png', 'C36-7 Pressure', yleg='Time Needed [hours]', xleg='RA [hours]')
-# do_pre_plots(ra8b, used8b, tot_t8, 'C36-8.png', 'C36-8 Pressure', xleg='RA [hours]')
-#
-# ra1b, used1b = av_arrays(c361b, minlst=-3., maxlst=3.)
-# ra2b, used2b = av_arrays(c362b, minlst=-3., maxlst=3.)
-# ra3b, used3b = av_arrays(c363b, minlst=-3., maxlst=3.)
-# ra4b, used4b = av_arrays(c364b, minlst=-3., maxlst=3.)
-# ra5b, used5b = av_arrays(c365b, minlst=-3., maxlst=3.)
-# ra6b, used6b = av_arrays(c366b, minlst=-3., maxlst=3.)
-# ra7b, used7b = av_arrays(c367b, minlst=-3., maxlst=3.)
-# ra8b, used8b = av_arrays(c368b, minlst=-3., maxlst=3.)
-#
-# do_pre_plots(ra1b, used1b, tot_t1, 'C36-1_relax.png',
-#              'C36-1 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra2b, used2b, tot_t2, 'C36-2_relax.png',
-#              'C36-2 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra3b, used3b, tot_t3, 'C36-3_relax.png',
-#              'C36-3 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra4b, used4b, tot_t4, 'C36-4_relax.png',
-#              'C36-4 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra5b, used5b, tot_t5, 'C36-5_relax.png',
-#              'C36-5 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra6b, used6b, tot_t6, 'C36-6_relax.png',
-#              'C36-6 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra7b, used7b, tot_t7, 'C36-7_relax.png',
-#              'C36-7 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots(ra8b, used8b, tot_t8, 'C36-8_relax.png',
-#              'C36-8 Pressure (-3 to +3 HA, over 20 deg)')
-#
-#
-# def conf_time_hours(datedf):
-#     tot_t = np.zeros(24)
-#     lst = np.arange(0, 24, 1)
-#     for i in datedf.iterrows():
-#
-#         if i[1].available_time == 24:
-#             t = np.ones(24)
-#
-#         elif i[1].lst_start > i[1].lst_end:
-#             t = np.zeros(24)
-#             t[lst > i[1].lst_start] += 1.
-#             t[lst < i[1].lst_end] += 1.
-#
-#         else:
-#             t = np.zeros(24)
-#             t[(lst > i[1].lst_start) & (lst < i[1].lst_end)] += 1.
-#
-#         tot_t += t
-#
-#     return tot_t
-#
-# tot_t1h = conf_time_hours(date_df.query('C36_1 == 1'))
-# tot_t2h = conf_time_hours(date_df.query('C36_2 == 1'))
-# tot_t3h = conf_time_hours(date_df.query('C36_3 == 1'))
-# tot_t4h = conf_time_hours(date_df.query('C36_4 == 1'))
-# tot_t5h = conf_time_hours(date_df.query('C36_5 == 1'))
-# tot_t6h = conf_time_hours(date_df.query('C36_6 == 1'))
-# tot_t7h = conf_time_hours(date_df.query('C36_7 == 1'))
-# tot_t8h = conf_time_hours(date_df.query('C36_8 == 1'))
-#
-#
-# def av_arrays_grade(sel, minlst=-2., maxlst=2.):
-#
-#     map_ra = np.arange(0, 24, 24. / (24 * 60.))
-#     use_ra_high = np.zeros(1440)
-#     use_ra_fill = np.zeros(1440)
-#
-#     for r in sel.iterrows():
-#         data = r[1]
-#
-#         if data.RA == 0 or data.up == 24:
-#             use_ra_high, use_ra_fill = add_grade(
-#                 'all', data.estimatedTime_SB / 24., data.APRCGrade,
-#                 use_ra_high, use_ra_fill)
-#             continue
-#
-#         if data.up > maxlst - minlst:
-#             if maxlst < (data.RA / 15.) < 24 + minlst:
-#                 rise = (data.RA / 15.) + minlst
-#                 set_lst = (data.RA / 15.) + maxlst
-#                 up = maxlst - minlst
-#                 use_ra_high, use_ra_fill = add_grade(
-#                     (map_ra > rise) & (map_ra < set_lst),
-#                     data.estimatedTime_SB / up, data.APRCGrade,
-#                     use_ra_high, use_ra_fill)
-#             else:
-#                 if (data.RA / 15.) < maxlst:
-#                     rise = 24 + minlst + (data.RA / 15.)
-#                     set_lst = (data.RA / 15.) + maxlst
-#                     up = maxlst - minlst
-#                 else:
-#                     rise = (data.RA / 15.) + minlst
-#                     set_lst = maxlst - (24 - (data.RA / 15.))
-#                     up = maxlst - minlst
-#                 use_ra_high, use_ra_fill = add_grade(
-#                     map_ra < set_lst, data.estimatedTime_SB / up,
-#                     data.APRCGrade, use_ra_high, use_ra_fill)
-#                 use_ra_high, use_ra_fill = add_grade(
-#                     map_ra > rise, data.estimatedTime_SB / up, data.APRCGrade,
-#                     use_ra_high, use_ra_fill)
-#             continue
-#
-#         if data.rise > data.set:
-#             rise = data.rise
-#             set_lst = data.set
-#             up = data.up
-#             if data.up > maxlst - minlst:
-#                 if set_lst > maxlst:
-#                     set_lst = maxlst
-#                 if rise < 24 + minlst:
-#                     rise = 24 + minlst
-#                 up = maxlst - minlst
-#             use_ra_high, use_ra_fill = add_grade(
-#                 map_ra < set_lst, data.estimatedTime_SB / up, data.APRCGrade,
-#                 use_ra_high, use_ra_fill)
-#             use_ra_high, use_ra_fill = add_grade(
-#                 map_ra > rise, data.estimatedTime_SB / up, data.APRCGrade,
-#                 use_ra_high, use_ra_fill)
-#         else:
-#             rise = data.rise
-#             set_lst = data.set
-#             up = data.up
-#             if up > maxlst - minlst and data.ephem is False:
-#                 if rise < data.RA / 15. + minlst:
-#                     rise = data.RA / 15. + minlst
-#                 if set_lst > data.RA / 15. + maxlst:
-#                     set_lst = data.RA / 15. + maxlst
-#                 up = maxlst - minlst
-#                 use_ra_high, use_ra_fill = add_grade(
-#                     (map_ra > rise) & (map_ra < set_lst),
-#                     data.estimatedTime_SB / up, data.APRCGrade, use_ra_high,
-#                     use_ra_fill)
-#
-#     return map_ra, [use_ra_high, use_ra_fill]
-#
-#
-# def add_grade(ind, timet, grade, use_ra_high, use_ra_fill):
-#
-#     if grade in ["A", "B"]:
-#         if ind == "all":
-#             use_ra_high += timet
-#         else:
-#             use_ra_high[ind] += timet
-#         return use_ra_high, use_ra_fill
-#     if grade == "C":
-#         if ind == "all":
-#             use_ra_fill += timet
-#         else:
-#             use_ra_fill[ind] += timet
-#         return use_ra_high, use_ra_fill
-#
-#
-# c361bf = summary.query(
-#     'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
-#     'and BestConf == "C36-1" and SG_sel == True')
-# c362bf = summary.query(
-#     'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
-#     'and BestConf == "C36-2" and SG_sel == True')
-# c363bf = summary.query(
-#     'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
-#     'and BestConf == "C36-3" and SG_sel == True')
-# c364bf = summary.query(
-#     'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
-#     'and BestConf == "C36-4" and SG_sel == True')
-# c365bf = summary.query(
-#     'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
-#     'and BestConf == "C36-5" and SG_sel == True')
-# c366bf = summary.query(
-#     'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
-#     'and BestConf == "C36-6" and SG_sel == True')
-# c367bf = summary.query(
-#     'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
-#     'and BestConf == "C36-7" and SG_sel == True')
-# c368bf = summary.query(
-#     'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
-#     'and BestConf == "C36-8" and SG_sel == True')
-#
-# ra1bf, used1bf = av_arrays_grade(c361bf)
-# ra2bf, used2bf = av_arrays_grade(c362bf)
-# ra3bf, used3bf = av_arrays_grade(c363bf)
-# ra4bf, used4bf = av_arrays_grade(c364bf)
-# ra5bf, used5bf = av_arrays_grade(c365bf)
-# ra6bf, used6bf = av_arrays_grade(c366bf)
-# ra7bf, used7bf = av_arrays_grade(c367bf)
-# ra8bf, used8bf = av_arrays_grade(c368bf)
-#
-#
-# def do_pre_plots_fill(ra, used, tot_t, filename, title, lab=False, xleg='', yleg=''):
-#     py.close()
-#     py.figure(figsize=(11.69, 8.27))
-#     py.bar(ra, used[0] + used[1],
-#            width=1.66666667e-02, ec='#e41a1c', fc='#e41a1c', label='Grade C')
-#     py.bar(ra, used[0], width=1.66666667e-02,
-#            ec='#4daf4a', fc='#4daf4a', label='Grades A&B')
-#     py.xlim(0, 24)
-#     py.xlabel(xleg)
-#     py.ylabel(yleg)
-#     py.title(title, fontsize='xx-large')
-#     # py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t,
-#     #        'k--', label='100% efficiency')
-#     py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6,
-#             'k-.', label='Exp. Efficiency [h]')
-#     if lab:
-#         py.legend(framealpha=0.5)
-#     py.savefig('/home/itoledo/Documents/' + filename, dpi=300)
-#
-#
-# do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade.png', 'C36-1 Pressure', yleg='Time Needed [hours]')
-# do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade.png', 'C36-2 Pressure', lab=True)
-# do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade.png', 'C36-3 Pressure', yleg='Time Needed [hours]')
-# do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade.png', 'C36-4 Pressure')
-# do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade.png', 'C36-5 Pressure', yleg='Time Needed [hours]')
-# do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade.png', 'C36-6 Pressure')
-# do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade.png', 'C36-7 Pressure', yleg='Time Needed [hours]', xleg='RA [hours]')
-# do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade.png', 'C36-8 Pressure', xleg='RA [hours]')
-#
-# ra1bf, used1bf = av_arrays_grade(c361bf, minlst=-3., maxlst=3.)
-# ra2bf, used2bf = av_arrays_grade(c362bf, minlst=-3., maxlst=3.)
-# ra3bf, used3bf = av_arrays_grade(c363bf, minlst=-3., maxlst=3.)
-# ra4bf, used4bf = av_arrays_grade(c364bf, minlst=-3., maxlst=3.)
-# ra5bf, used5bf = av_arrays_grade(c365bf, minlst=-3., maxlst=3.)
-# ra6bf, used6bf = av_arrays_grade(c366bf, minlst=-3., maxlst=3.)
-# ra7bf, used7bf = av_arrays_grade(c367bf, minlst=-3., maxlst=3.)
-# ra8bf, used8bf = av_arrays_grade(c368bf, minlst=-3., maxlst=3.)
-#
-# do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade_relax.png',
-#                   'C36-1 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade_relax.png',
-#                   'C36-2 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade_relax.png',
-#                   'C36-3 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade_relax.png',
-#                   'C36-4 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade_relax.png',
-#                   'C36-5 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade_relax.png',
-#                   'C36-6 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade_relax.png',
-#                   'C36-7 Pressure (-3 to +3 HA, over 20 deg)')
-# do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade_relax.png',
-#                   'C36-8 Pressure (-3 to +3 HA, over 20 deg)')
+def av_arrays_opt(sel):
+
+    map_ra = np.arange(0, 24, 24. / (24 * 60.))
+    use_ra = np.zeros(1440)
+
+    for r in sel.iterrows():
+        data = r[1]
+        if data.RA == 0 or data.up == 24:
+            use_ra += (data.estimatedTime_SB / 24.) / data.twelve_good
+        elif data.rise > data.set:
+            use_ra[map_ra < data.set] += \
+                (data.estimatedTime_SB / data.up) / data.twelve_good
+            use_ra[map_ra > data.rise] += \
+                (data.estimatedTime_SB / data.up) / data.twelve_good
+        else:
+            use_ra[(map_ra > data.rise) & (map_ra < data.set)] += \
+                (data.estimatedTime_SB / data.up) / data.twelve_good
+
+    return map_ra, use_ra
+
+
+def av_arrays(sel, minlst=-2., maxlst=2.):
+
+    map_ra = np.arange(0, 24, 24. / (24 * 60.))
+    use_ra_b3 = np.zeros(1440)
+    use_ra_b4 = np.zeros(1440)
+    use_ra_b6 = np.zeros(1440)
+    use_ra_b7 = np.zeros(1440)
+    use_ra_b8 = np.zeros(1440)
+    use_ra_b9 = np.zeros(1440)
+    use_ra_b10 = np.zeros(1440)
+
+    for r in sel.iterrows():
+        data = r[1]
+
+        if data.RA == 0 or data.up == 24:
+            use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, \
+                use_ra_b10 = add_band(
+                    'all', data.estimatedTime_SB / 24., data.band_SB, use_ra_b3,
+                    use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
+                    use_ra_b10)
+            continue
+
+        if data.up > maxlst - minlst:
+            if maxlst < (data.RA / 15.) < 24 + minlst:
+                rise = (data.RA / 15.) + minlst
+                set_lst = (data.RA / 15.) + maxlst
+                up = maxlst - minlst
+                use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+                    use_ra_b9, use_ra_b10 = add_band(
+                        (map_ra > rise) & (map_ra < set_lst),
+                        data.estimatedTime_SB / up, data.band_SB, use_ra_b3,
+                        use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
+                        use_ra_b10)
+            else:
+                if (data.RA / 15.) < maxlst:
+                    rise = 24 + minlst + (data.RA / 15.)
+                    set_lst = (data.RA / 15.) + maxlst
+                    up = maxlst - minlst
+                else:
+                    rise = (data.RA / 15.) + minlst
+                    set_lst = maxlst - (24 - (data.RA / 15.))
+                    up = maxlst - minlst
+                use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+                    use_ra_b9, use_ra_b10 = add_band(
+                        map_ra < set_lst, data.estimatedTime_SB / up,
+                        data.band_SB,
+                        use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                        use_ra_b9, use_ra_b10)
+                use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+                    use_ra_b9, use_ra_b10 = add_band(
+                        map_ra > rise, data.estimatedTime_SB / up, data.band_SB,
+                        use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                        use_ra_b9, use_ra_b10)
+            continue
+
+        if data.rise > data.set:
+            rise = data.rise
+            set_lst = data.set
+            up = data.up
+            if data.up > maxlst - minlst:
+                if set_lst > maxlst:
+                    set_lst = maxlst
+                if rise < 24 + minlst:
+                    rise = 24 + minlst
+                up = maxlst - minlst
+            use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,\
+                use_ra_b10 = add_band(
+                    map_ra < set_lst, data.estimatedTime_SB / up, data.band_SB,
+                    use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                    use_ra_b9, use_ra_b10)
+            use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9, \
+                use_ra_b10 = add_band(
+                    map_ra > rise, data.estimatedTime_SB / up, data.band_SB,
+                    use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                    use_ra_b9, use_ra_b10)
+        else:
+            rise = data.rise
+            set_lst = data.set
+            up = data.up
+            if up > maxlst - minlst and data.ephem is False:
+                if rise < data.RA / 15. + minlst:
+                    rise = data.RA / 15. + minlst
+                if set_lst > data.RA / 15. + maxlst:
+                    set_lst = data.RA / 15. + maxlst
+                up = maxlst - minlst
+                use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+                    use_ra_b9, use_ra_b10 = add_band(
+                        (map_ra > rise) & (map_ra < set_lst),
+                        data.estimatedTime_SB / up, data.band_SB, use_ra_b3,
+                        use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, use_ra_b9,
+                        use_ra_b10)
+
+    return map_ra, [use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+                    use_ra_b9, use_ra_b10]
+
+
+def add_band(
+        ind, timet, band, use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8,
+        use_ra_b9, use_ra_b10):
+
+    if band == "ALMA_RB_03":
+        if ind == "all":
+            use_ra_b3 += timet
+        else:
+            use_ra_b3[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+            use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_04":
+        if ind == "all":
+            use_ra_b4 += timet
+        else:
+            use_ra_b4[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+            use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_06":
+        if ind == "all":
+            use_ra_b6 += timet
+        else:
+            use_ra_b6[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+            use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_07":
+        if ind == "all":
+            use_ra_b7 += timet
+        else:
+            use_ra_b7[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+            use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_08":
+        if ind == "all":
+            use_ra_b8 += timet
+        else:
+            use_ra_b8[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+            use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_09":
+        if ind == "all":
+            use_ra_b9 += timet
+        else:
+            use_ra_b9[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+            use_ra_b9, use_ra_b10
+    if band == "ALMA_RB_10":
+        if ind == "all":
+            use_ra_b10 += timet
+        else:
+            use_ra_b10[ind] += timet
+        return use_ra_b3, use_ra_b4, use_ra_b6, use_ra_b7, use_ra_b8, \
+            use_ra_b9, use_ra_b10
+
+
+def conf_time(datedf):
+    tot_t = np.zeros(1440)
+    lst = np.arange(0, 24, 24. / (24 * 60.))
+    for i in datedf.iterrows():
+
+        if i[1].available_time == 24:
+            t = np.ones(1440)
+
+        elif i[1].lst_start > i[1].lst_end:
+            t = np.zeros(1440)
+            t[lst > i[1].lst_start] += 1.
+            t[lst < i[1].lst_end] += 1.
+
+        else:
+            t = np.zeros(1440)
+            t[(lst > i[1].lst_start) & (lst < i[1].lst_end)] += 1.
+
+        tot_t += t
+
+    return tot_t
+
+c361b = summary.query(
+    'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
+    'BestConf == "C36-1"')
+c362b = summary.query(
+    'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
+    'BestConf == "C36-2"')
+c363b = summary.query(
+    'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
+    'BestConf == "C36-3"')
+c364b = summary.query(
+    'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
+    'BestConf == "C36-4"')
+c365b = summary.query(
+    'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
+    'BestConf == "C36-5"')
+c366b = summary.query(
+    'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
+    'BestConf == "C36-6"')
+c367b = summary.query(
+    'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
+    'BestConf == "C36-7"')
+c368b = summary.query(
+    'APRCGrade in ["A", "B"] and twelve_good > 0 and array == "TWELVE-M" and '
+    'BestConf == "C36-8"')
+
+tot_t1 = conf_time(date_df.query('C36_1 == 1'))
+tot_t2 = conf_time(date_df.query('C36_2 == 1'))
+tot_t3 = conf_time(date_df.query('C36_3 == 1'))
+tot_t4 = conf_time(date_df.query('C36_4 == 1'))
+tot_t5 = conf_time(date_df.query('C36_5 == 1'))
+tot_t6 = conf_time(date_df.query('C36_6 == 1'))
+tot_t7 = conf_time(date_df.query('C36_7 == 1'))
+tot_t8 = conf_time(date_df.query('C36_8 == 1'))
+
+ra1b, used1b = av_arrays(c361b)
+ra2b, used2b = av_arrays(c362b)
+ra3b, used3b = av_arrays(c363b)
+ra4b, used4b = av_arrays(c364b)
+ra5b, used5b = av_arrays(c365b)
+ra6b, used6b = av_arrays(c366b)
+ra7b, used7b = av_arrays(c367b)
+ra8b, used8b = av_arrays(c368b)
+
+
+def do_pre_plots(ra, used, tot_t, filename, title, lab=False, xleg='', yleg=''):
+    py.close()
+    py.figure(figsize=(11.69, 8.27))
+    py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4] + used[5] +
+           used[6],
+           width=1.66666667e-02, ec='#4575b4', fc='#4575b4', label='Band 10')
+    py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4] + used[5],
+           width=1.66666667e-02, ec='#91bfdb', fc='#91bfdb', label='Band 9')
+    py.bar(ra, used[0] + used[1] + used[2] + used[3] + used[4],
+           width=1.66666667e-02, ec='#e0f3f8', fc='#e0f3f8', label='Band 8')
+    py.bar(ra, used[0] + used[1] + used[2] + used[3],
+           width=1.66666667e-02, ec='#ffffbf', fc='#ffffbf', label='Band 7')
+    py.bar(ra, used[0] + used[1] + used[2],
+           width=1.66666667e-02, ec='#fee090', fc='#fee090', label='Band 6')
+    py.bar(ra, used[0] + used[1],
+           width=1.66666667e-02, ec='#fc8d59', fc='#fc8d59', label='Band 4')
+    py.bar(ra, used[0],
+           width=1.66666667e-02, ec='#d73027', fc='#d73027', label='Band 3')
+    py.xlim(0, 24)
+    py.xlabel(xleg)
+    py.ylabel(yleg)
+    py.title(title, fontsize='xx-large')
+    # py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t, 'k--',
+    #         label='100% efficiency')
+    py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6, 'k-.',
+            label='Exp. Efficiency [h]')
+    if lab:
+        py.legend(framealpha=0.5, ncol=2)
+    py.savefig('/home/itoledo/Documents/' + filename, dpi=300, bbox_inches='tight')
+
+do_pre_plots(ra1b, used1b, tot_t1, 'C36-1.png', 'C36-1 Pressure', yleg='Time Needed [hours]')
+do_pre_plots(ra2b, used2b, tot_t2, 'C36-2.png', 'C36-2 Pressure', lab=True)
+do_pre_plots(ra3b, used3b, tot_t3, 'C36-3.png', 'C36-3 Pressure', yleg='Time Needed [hours]')
+do_pre_plots(ra4b, used4b, tot_t4, 'C36-4.png', 'C36-4 Pressure')
+do_pre_plots(ra5b, used5b, tot_t5, 'C36-5.png', 'C36-5 Pressure', yleg='Time Needed [hours]')
+do_pre_plots(ra6b, used6b, tot_t6, 'C36-6.png', 'C36-6 Pressure')
+do_pre_plots(ra7b, used7b, tot_t7, 'C36-7.png', 'C36-7 Pressure', yleg='Time Needed [hours]', xleg='RA [hours]')
+do_pre_plots(ra8b, used8b, tot_t8, 'C36-8.png', 'C36-8 Pressure', xleg='RA [hours]')
+
+ra1b, used1b = av_arrays(c361b, minlst=-3., maxlst=3.)
+ra2b, used2b = av_arrays(c362b, minlst=-3., maxlst=3.)
+ra3b, used3b = av_arrays(c363b, minlst=-3., maxlst=3.)
+ra4b, used4b = av_arrays(c364b, minlst=-3., maxlst=3.)
+ra5b, used5b = av_arrays(c365b, minlst=-3., maxlst=3.)
+ra6b, used6b = av_arrays(c366b, minlst=-3., maxlst=3.)
+ra7b, used7b = av_arrays(c367b, minlst=-3., maxlst=3.)
+ra8b, used8b = av_arrays(c368b, minlst=-3., maxlst=3.)
+
+do_pre_plots(ra1b, used1b, tot_t1, 'C36-1_relax.png',
+             'C36-1 Pressure')
+do_pre_plots(ra2b, used2b, tot_t2, 'C36-2_relax.png',
+             'C36-2 Pressure')
+do_pre_plots(ra3b, used3b, tot_t3, 'C36-3_relax.png',
+             'C36-3 Pressure')
+do_pre_plots(ra4b, used4b, tot_t4, 'C36-4_relax.png',
+             'C36-4 Pressure')
+do_pre_plots(ra5b, used5b, tot_t5, 'C36-5_relax.png',
+             'C36-5 Pressure')
+do_pre_plots(ra6b, used6b, tot_t6, 'C36-6_relax.png',
+             'C36-6 Pressure')
+do_pre_plots(ra7b, used7b, tot_t7, 'C36-7_relax.png',
+             'C36-7 Pressure')
+do_pre_plots(ra8b, used8b, tot_t8, 'C36-8_relax.png',
+             'C36-8 Pressure')
+
+
+def conf_time_hours(datedf):
+    tot_t = np.zeros(24)
+    lst = np.arange(0, 24, 1)
+    for i in datedf.iterrows():
+
+        if i[1].available_time == 24:
+            t = np.ones(24)
+
+        elif i[1].lst_start > i[1].lst_end:
+            t = np.zeros(24)
+            t[lst > i[1].lst_start] += 1.
+            t[lst < i[1].lst_end] += 1.
+
+        else:
+            t = np.zeros(24)
+            t[(lst > i[1].lst_start) & (lst < i[1].lst_end)] += 1.
+
+        tot_t += t
+
+    return tot_t
+
+tot_t1h = conf_time_hours(date_df.query('C36_1 == 1'))
+tot_t2h = conf_time_hours(date_df.query('C36_2 == 1'))
+tot_t3h = conf_time_hours(date_df.query('C36_3 == 1'))
+tot_t4h = conf_time_hours(date_df.query('C36_4 == 1'))
+tot_t5h = conf_time_hours(date_df.query('C36_5 == 1'))
+tot_t6h = conf_time_hours(date_df.query('C36_6 == 1'))
+tot_t7h = conf_time_hours(date_df.query('C36_7 == 1'))
+tot_t8h = conf_time_hours(date_df.query('C36_8 == 1'))
+
+
+def av_arrays_grade(sel, minlst=-2., maxlst=2.):
+
+    map_ra = np.arange(0, 24, 24. / (24 * 60.))
+    use_ra_high = np.zeros(1440)
+    use_ra_fill = np.zeros(1440)
+
+    for r in sel.iterrows():
+        data = r[1]
+
+        if data.RA == 0 or data.up == 24:
+            use_ra_high, use_ra_fill = add_grade(
+                'all', data.estimatedTime_SB / 24., data.APRCGrade,
+                use_ra_high, use_ra_fill)
+            continue
+
+        if data.up > maxlst - minlst:
+            if maxlst < (data.RA / 15.) < 24 + minlst:
+                rise = (data.RA / 15.) + minlst
+                set_lst = (data.RA / 15.) + maxlst
+                up = maxlst - minlst
+                use_ra_high, use_ra_fill = add_grade(
+                    (map_ra > rise) & (map_ra < set_lst),
+                    data.estimatedTime_SB / up, data.APRCGrade,
+                    use_ra_high, use_ra_fill)
+            else:
+                if (data.RA / 15.) < maxlst:
+                    rise = 24 + minlst + (data.RA / 15.)
+                    set_lst = (data.RA / 15.) + maxlst
+                    up = maxlst - minlst
+                else:
+                    rise = (data.RA / 15.) + minlst
+                    set_lst = maxlst - (24 - (data.RA / 15.))
+                    up = maxlst - minlst
+                use_ra_high, use_ra_fill = add_grade(
+                    map_ra < set_lst, data.estimatedTime_SB / up,
+                    data.APRCGrade, use_ra_high, use_ra_fill)
+                use_ra_high, use_ra_fill = add_grade(
+                    map_ra > rise, data.estimatedTime_SB / up, data.APRCGrade,
+                    use_ra_high, use_ra_fill)
+            continue
+
+        if data.rise > data.set:
+            rise = data.rise
+            set_lst = data.set
+            up = data.up
+            if data.up > maxlst - minlst:
+                if set_lst > maxlst:
+                    set_lst = maxlst
+                if rise < 24 + minlst:
+                    rise = 24 + minlst
+                up = maxlst - minlst
+            use_ra_high, use_ra_fill = add_grade(
+                map_ra < set_lst, data.estimatedTime_SB / up, data.APRCGrade,
+                use_ra_high, use_ra_fill)
+            use_ra_high, use_ra_fill = add_grade(
+                map_ra > rise, data.estimatedTime_SB / up, data.APRCGrade,
+                use_ra_high, use_ra_fill)
+        else:
+            rise = data.rise
+            set_lst = data.set
+            up = data.up
+            if up > maxlst - minlst and data.ephem is False:
+                if rise < data.RA / 15. + minlst:
+                    rise = data.RA / 15. + minlst
+                if set_lst > data.RA / 15. + maxlst:
+                    set_lst = data.RA / 15. + maxlst
+                up = maxlst - minlst
+                use_ra_high, use_ra_fill = add_grade(
+                    (map_ra > rise) & (map_ra < set_lst),
+                    data.estimatedTime_SB / up, data.APRCGrade, use_ra_high,
+                    use_ra_fill)
+
+    return map_ra, [use_ra_high, use_ra_fill]
+
+
+def add_grade(ind, timet, grade, use_ra_high, use_ra_fill):
+
+    if grade in ["A", "B"]:
+        if ind == "all":
+            use_ra_high += timet
+        else:
+            use_ra_high[ind] += timet
+        return use_ra_high, use_ra_fill
+    if grade == "C":
+        if ind == "all":
+            use_ra_fill += timet
+        else:
+            use_ra_fill[ind] += timet
+        return use_ra_high, use_ra_fill
+
+
+c361bf = summary.query(
+    'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
+    'and BestConf == "C36-1" and SG_sel == True')
+c362bf = summary.query(
+    'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
+    'and BestConf == "C36-2" and SG_sel == True')
+c363bf = summary.query(
+    'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
+    'and BestConf == "C36-3" and SG_sel == True')
+c364bf = summary.query(
+    'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
+    'and BestConf == "C36-4" and SG_sel == True')
+c365bf = summary.query(
+    'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
+    'and BestConf == "C36-5" and SG_sel == True')
+c366bf = summary.query(
+    'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
+    'and BestConf == "C36-6" and SG_sel == True')
+c367bf = summary.query(
+    'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
+    'and BestConf == "C36-7" and SG_sel == True')
+c368bf = summary.query(
+    'APRCGrade in ["A", "B", "C"] and twelve_good > 0 and array == "TWELVE-M" '
+    'and BestConf == "C36-8" and SG_sel == True')
+
+ra1bf, used1bf = av_arrays_grade(c361bf)
+ra2bf, used2bf = av_arrays_grade(c362bf)
+ra3bf, used3bf = av_arrays_grade(c363bf)
+ra4bf, used4bf = av_arrays_grade(c364bf)
+ra5bf, used5bf = av_arrays_grade(c365bf)
+ra6bf, used6bf = av_arrays_grade(c366bf)
+ra7bf, used7bf = av_arrays_grade(c367bf)
+ra8bf, used8bf = av_arrays_grade(c368bf)
+
+
+def do_pre_plots_fill(ra, used, tot_t, filename, title, lab=False, xleg='', yleg=''):
+    py.close()
+    py.figure(figsize=(11.69, 8.27))
+    if title != 'C36-7 Pressure' and title != 'C36-8 Pressure':
+        py.bar(ra, used[0] + used[1],
+               width=1.66666667e-02, ec='#e41a1c', fc='#e41a1c', label='Grade C')
+    else:
+        print used[1]
+
+    py.bar(ra, used[0], width=1.66666667e-02,
+           ec='#4daf4a', fc='#4daf4a', label='Grades A&B')
+
+    py.xlim(0, 24)
+    py.xlabel(xleg)
+    py.ylabel(yleg)
+    py.title(title, fontsize='xx-large')
+    # py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t,
+    #        'k--', label='100% efficiency')
+    py.plot(np.arange(0, 24, 24. / (24 * 60.)), tot_t * 0.6,
+            'k-.', label='Exp. Efficiency [h]')
+    if lab:
+        py.legend(framealpha=0.5)
+    py.savefig('/home/itoledo/Documents/' + filename, dpi=300)
+
+do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade.png', 'C36-1 Pressure', yleg='Time Needed [hours]')
+do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade.png', 'C36-2 Pressure', lab=True)
+do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade.png', 'C36-3 Pressure', yleg='Time Needed [hours]')
+do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade.png', 'C36-4 Pressure')
+do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade.png', 'C36-5 Pressure', yleg='Time Needed [hours]')
+do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade.png', 'C36-6 Pressure')
+do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade.png', 'C36-7 Pressure', yleg='Time Needed [hours]', xleg='RA [hours]')
+do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade.png', 'C36-8 Pressure', xleg='RA [hours]')
+
+ra1bf, used1bf = av_arrays_grade(c361bf, minlst=-3., maxlst=3.)
+ra2bf, used2bf = av_arrays_grade(c362bf, minlst=-3., maxlst=3.)
+ra3bf, used3bf = av_arrays_grade(c363bf, minlst=-3., maxlst=3.)
+ra4bf, used4bf = av_arrays_grade(c364bf, minlst=-3., maxlst=3.)
+ra5bf, used5bf = av_arrays_grade(c365bf, minlst=-3., maxlst=3.)
+ra6bf, used6bf = av_arrays_grade(c366bf, minlst=-3., maxlst=3.)
+ra7bf, used7bf = av_arrays_grade(c367bf, minlst=-3., maxlst=3.)
+ra8bf, used8bf = av_arrays_grade(c368bf, minlst=-3., maxlst=3.)
+
+do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade_relax.png',
+                  'C36-1 Pressure')
+do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade_relax.png',
+                  'C36-2 Pressure')
+do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade_relax.png',
+                  'C36-3 Pressure')
+do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade_relax.png',
+                  'C36-4 Pressure')
+do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade_relax.png',
+                  'C36-5 Pressure')
+do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade_relax.png',
+                  'C36-6 Pressure')
+do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade_relax.png',
+                  'C36-7 Pressure')
+do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade_relax.png',
+                  'C36-8 Pressure')
