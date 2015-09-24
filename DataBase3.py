@@ -1,9 +1,8 @@
 import os
 import sys
-import pandas as pd
-import ephem
+# import pandas as pd
+# import ephem
 import arrayResolutionCy3 as ARes
-import arrayResolution2pJ as AR2es
 import cx_Oracle
 
 from collections import namedtuple
@@ -42,6 +41,8 @@ conflim = pd.Series(
      'C36-7': 0.20499999999999999,
      'C36-8': 0.0})
 
+phase_i_status = ["Phase1Submitted", "Rejected", "Approved"]
+
 
 class Database(object):
 
@@ -66,7 +67,7 @@ class Database(object):
 
     def __init__(self, path='/.apa3/', forcenew=False, verbose=True):
         """
-
+        Initialize the APA ETL database
 
         """
 
@@ -95,26 +96,29 @@ class Database(object):
         self.status = ["Canceled", "Rejected"]
         self.verbose = verbose
 
-        self.obsproject_p1 = pd.DataFrame()
+        self.obsproject = pd.DataFrame()
         self.ares = ARes.arrayRes()
-        self.ares2 = AR2es.arrayRes(wto_path='/home/itoledo/Work/APA3/')
 
-        self.grades = pd.read_table(
-            self.apa_path + 'conf/DC_final modified gradeC.csv', sep=',')
+        # self.grades = pd.read_table(
+        #     self.apa_path + 'conf/DC_final modified gradeC.csv', sep=',')
         # self.sb_sg_p1 = pd.read_pickle(self.apa_path + 'conf/sb_sg_p1.pandas')
 
         # Global SQL search expressions
         # Search Project's PT information and match with PT Status
         self.sql1 = str(
-            "SELECT PRJ_ARCHIVE_UID as OBSPROJECT_UID,PI,PRJ_NAME,"
+            "SELECT obs1.PRJ_ARCHIVE_UID as OBSPROJECT_UID, obs1.PI, "
+            "obs1.PRJ_NAME,"
             "CODE,PRJ_SCIENTIFIC_RANK,PRJ_VERSION,"
             "PRJ_LETTER_GRADE,DOMAIN_ENTITY_STATE as PRJ_STATUS,"
-            "ARCHIVE_UID as OBSPROPOSAL_UID "
+            "obs3.ARCHIVE_UID as OBSPROPOSAL_UID, obs4.DC_LETTER_GRADE,"
+            "obs3.CYCLE "
             "FROM ALMA.BMMV_OBSPROJECT obs1, ALMA.OBS_PROJECT_STATUS obs2,"
-            " ALMA.BMMV_OBSPROPOSAL obs3 "
-            "WHERE regexp_like (CODE, '^2015\..*\.[AST]') "
+            " ALMA.BMMV_OBSPROPOSAL obs3, ALMA.PROPOSAL obs4 "
+            "WHERE regexp_like (CODE, '^201[35]\..*\.[AST]') "
             "AND obs2.OBS_PROJECT_ID = obs1.PRJ_ARCHIVE_UID AND "
-            "obs1.PRJ_ARCHIVE_UID = obs3.PROJECTUID")
+            "obs1.PRJ_ARCHIVE_UID = obs3.PROJECTUID AND "
+            "obs4.ARCHIVE_UID = obs3.ARCHIVE_UID AND "
+            "obs4.DC_LETTER_GRADE IN ('A', 'B', 'C')")
 
         conx_string = os.environ['CON_STR']
         self.connection = cx_Oracle.connect(conx_string)
@@ -155,39 +159,7 @@ class Database(object):
             os.mkdir(self.sbxml)
             os.mkdir(self.obsxml)
             os.mkdir(self.propxml)
-            # Global Oracle Connection
 
-            # Populate different dataframes related to projects and SBs statuses
-            # self.scheduling_proj: data frame with projects at SCHEDULING_AOS
-            # Query Projects currently on SCHEDULING_AOS
-            self.sqlsched_proj = str(
-                "SELECT CODE,OBSPROJECT_UID as OBSPROJECT_UID,"
-                "VERSION as PRJ_SAOS_VERSION, STATUS as PRJ_SAOS_STATUS "
-                "FROM SCHEDULING_AOS.OBSPROJECT "
-                "WHERE regexp_like (CODE, '^2015\..*\.[AST]')")
-            # self.cursor.execute(self.sqlsched_proj)
-            # self.saos_obsproject = pd.DataFrame(
-            #     self.cursor.fetchall(),
-            #     columns=[rec[0] for rec in self.cursor.description]
-            # ).set_index('CODE', drop=False)
-
-            # self.scheduling_sb: SBs at SCHEDULING_AOS
-            # Query SBs in the SCHEDULING_AOS tables
-            self.sqlsched_sb = str(
-                "SELECT ou.OBSUNIT_UID as OUS_ID, sb.NAME as SB_NAME,"
-                "sb.SCHEDBLOCK_CTRL_EXEC_COUNT,"
-                "sb.SCHEDBLOCK_CTRL_STATE as SB_SAOS_STATUS,"
-                "ou.OBSUNIT_PROJECT_UID as OBSPROJECT_UID "
-                "FROM SCHEDULING_AOS.SCHEDBLOCK sb, SCHEDULING_AOS.OBSUNIT ou "
-                "WHERE sb.SCHEDBLOCKID = ou.OBSUNITID AND sb.CSV = 0")
-            # self.cursor.execute(self.sqlsched_sb)
-            # self.saos_schedblock = pd.DataFrame(
-            #     self.cursor.fetchall(),
-            #     columns=[rec[0] for rec in self.cursor.description]
-            # ).set_index('OUS_ID', drop=False)
-
-            # self.sbstates: SBs status (PT?)
-            # Query SBs status
             self.sqlstates = str(
                 "SELECT DOMAIN_ENTITY_STATE as SB_STATE,"
                 "DOMAIN_ENTITY_ID as SB_UID,OBS_PROJECT_ID as OBSPROJECT_UID "
@@ -216,7 +188,7 @@ class Database(object):
             sql2 = str(
                 "SELECT PROJECTUID as OBSPROJECT_UID, ASSOCIATEDEXEC "
                 "FROM ALMA.BMMV_OBSPROPOSAL "
-                "WHERE regexp_like (CYCLE, '^2015.[1A]')")
+                "WHERE regexp_like (CYCLE, '^201[35].[1A]')")
             self.cursor.execute(sql2)
             self.executive = pd.DataFrame(
                 self.cursor.fetchall(), columns=['OBSPROJECT_UID', 'EXEC'])
@@ -264,7 +236,13 @@ class Database(object):
         df1 = pd.DataFrame(
             self.cursor.fetchall(),
             columns=[rec[0] for rec in self.cursor.description])
+
+        df1 = df1.query(
+            '(CYCLE in ["2015.1", "2015.A"]) or '
+            '(CYCLE in ["2013.1", "2013.A"] and DC_LETTER_GRADE == "A")').copy()
+
         print(len(df1.query('PRJ_STATUS not in @status')))
+
         self.projects = pd.merge(
             df1.query('PRJ_STATUS not in @status'), self.executive,
             on='OBSPROJECT_UID'
@@ -278,15 +256,14 @@ class Database(object):
             lambda r: r['OBSPROJECT_UID'].replace('://', '___').replace(
                 '/', '_') + '.xml', axis=1
         )
+        self.projects['phase'] = self.projects.apply(
+            lambda r: 'I' if r['PRJ_STATUS'] in phase_i_status else 'II',
+            axis=1
+        )
 
-        selected_aprc = self.grades.query(
-            'APRCGrade in ["A", "B", "C"]').CODE.unique()
+        self.read_obsproject(path=self.phase1_data + 'obsproject/')
 
-        self.projects = self.projects.query('CODE in @selected_aprc')
-
-        self.read_obsproject_p1(path=self.phase1_data + 'obsproject/')
-
-    def read_obsproject_p1(self, path):
+    def read_obsproject(self, path):
 
         projt = []
 
@@ -298,18 +275,18 @@ class Database(object):
                 print("Something went wrong while trying to parse %s" % xml)
                 return 0
 
-            proj = obsparse.get_ph1_info()
+            proj = obsparse.get_info()
             projt.append(proj)
 
         projt_arr = np.array(projt, dtype=object)
-        self.obsproject_p1 = pd.DataFrame(
+        self.obsproject = pd.DataFrame(
             projt_arr,
             columns=['CODE', 'OBSPROJECT_UID', 'OBSPROPOSAL_UID',
                      'OBSREVIEW_UID', 'VERSION',
                      'NOTE', 'IS_CALIBRATION', 'IS_DDT']
         ).set_index('OBSPROJECT_UID', drop=False)
 
-    def read_obspropsal_p1(self, path):
+    def read_sciencegoals(self):
 
         sgt = []
         tart = []
@@ -318,7 +295,7 @@ class Database(object):
         sgspwt = []
         sgspsct = []
 
-        for r in self.obsproject_p1.iterrows():
+        for r in self.obsproject.iterrows():
             obsproject_uid = r[1].OBSPROJECT_UID
             obsproposal_uid = r[1].OBSPROPOSAL_UID
             if obsproject_uid is None:
@@ -326,11 +303,22 @@ class Database(object):
             xml = obsproposal_uid.replace('://', '___').replace('/', '_')
             xml += '.xml'
             try:
-                obspropparse = ObsProposal(xml, obsproject_uid, path)
+                if self.projects.ix[r[1].CODE, 'phase'] == 'I':
+                    obspropparse = ObsProposal(
+                        xml, obsproject_uid, self.phase1_data + 'obsproposal/')
+                    obspropparse.get_sg()
+                else:
+                    # print "Processing Phase II %s" % r[1].CODE
+                    xml = obsproject_uid.replace('://', '___').replace(
+                        '/', '_')
+                    xml += '.xml'
+                    obspropparse = ObsProject(
+                        xml, self.phase1_data + 'obsproject/')
+                    obspropparse.get_sg()
             except IOError:
                 print("Something went wrong while trying to parse %s" % xml)
                 continue
-            obspropparse.get_ph1_sg()
+
             sgt.extend(obspropparse.sciencegoals)
             tart.extend(obspropparse.sg_targets)
             if len(obspropparse.sg_specscan) > 0:
@@ -371,16 +359,18 @@ class Database(object):
 
         self.visits = pd.DataFrame(
             visitt_arr,
-            columns=['SG_ID', 'sgName', 'OBSPROJECT_UID', 'startTime', 'margin', 'margin_unit',
-                     'note', 'avoidConstraint', 'priority', 'visit_id',
-                     'prev_visit_id', 'requiredDelay', 'requiredDelay_unit', 'fixedStart']
+            columns=['SG_ID', 'sgName', 'OBSPROJECT_UID', 'startTime', 'margin',
+                     'margin_unit', 'note', 'avoidConstraint', 'priority',
+                     'visit_id', 'prev_visit_id', 'requiredDelay',
+                     'requiredDelay_unit', 'fixedStart']
         )
 
         self.temp_param = pd.DataFrame(
             temp_paramt_arr,
-            columns=['SG_ID', 'sgName', 'OBSPROJECT_UID', 'startTime', 'endTime',
-                     'margin', 'margin_unit', 'repeats', 'LSTmin', 'LSTmax',
-                     'note', 'avoidConstraint', 'priority', 'fixedStart']
+            columns=['SG_ID', 'sgName', 'OBSPROJECT_UID', 'startTime',
+                     'endTime', 'margin', 'margin_unit', 'repeats', 'LSTmin',
+                     'LSTmax', 'note', 'avoidConstraint', 'priority',
+                     'fixedStart']
         )
 
         self.sg_spw = pd.DataFrame(
@@ -395,27 +385,41 @@ class Database(object):
                      'bandwidth', 'spectralRes', 'isSkyFreq']
         )
 
-    def obs_review(self, path):
+    def read_sblocks(self):
         sbt = []
-        for r in self.obsproject_p1.iterrows():
-            obsreview_uid = r[1].OBSREVIEW_UID
-            if obsreview_uid is None:
-                continue
-            xml = obsreview_uid.replace('://', '___').replace('/', '_')
-            xml += '.xml'
-            try:
-                obsrevparse = ObsReview(xml, path)
-            except IOError:
-                print("Something went wrong while trying to parse %s" % xml)
-                continue
-            obsrevparse.get_sg_sb()
-            sbt.extend(obsrevparse.sg_sb)
+        for r in self.obsproject.iterrows():
+            if self.projects.ix[r[1].CODE, 'phase'] == 'I':
+                obsreview_uid = r[1].OBSREVIEW_UID
+                if obsreview_uid is None:
+                    continue
+                xml = obsreview_uid.replace('://', '___').replace('/', '_')
+                xml += '.xml'
+                try:
+                    obsrevparse = ObsReview(xml,
+                                            self.phase1_data + 'obsreview/')
+                except IOError:
+                    print("Something went wrong while trying to parse %s" % xml)
+                    continue
+                obsrevparse.get_sg_sb()
+                sbt.extend(obsrevparse.sg_sb)
+            else:
+                obsproject_uid = r[1].OBSPROJECT_UID
+                xml = obsproject_uid.replace('://', '___').replace('/', '_')
+                xml += '.xml'
+                try:
+                    obsproparse = ObsProject(xml,
+                                             self.phase1_data + 'obsproject/')
+                except IOError:
+                    print("Something went wrong while trying to parse %s" % xml)
+                    continue
+                obsproparse.get_sg_sb()
+                sbt.extend(obsproparse.sg_sb)
 
         sbt_arr = np.array(sbt, dtype=object)
 
         self.sblocks = pd.DataFrame(
             sbt_arr,
-            columns=['SB_UID', 'OBSPROJECT_UID', 'ous_name', 'GOUS_ID',
+            columns=['SB_UID', 'OBSPROJECT_UID', 'ous_name', 'OUS_ID', 'GOUS_ID',
                      'gous_name', 'MOUS_ID', 'mous_name',
                      'array', 'execount']
         ).set_index('SB_UID', drop=False)
@@ -454,8 +458,8 @@ class Database(object):
             xmlf = xmlf.replace('/', '_') + '.xml'
 
             sb1 = SchedBlock(
-                xmlf, sg_sb[1].SB_UID, sg_sb[1].OBSPROJECT_UID,
-                sg_sb[1].GOUS_ID, sg_sb[1].sg_name, path)
+                xmlf, sg_sb[1].SB_UID, sg_sb[1].OBSPROJECT_UID, sg_sb[1].OUS_ID,
+                sg_sb[1].sg_name, path)
 
             rs, rf, tar, spc, bb, spw, scpar, acpar, bcpar, pcpar, ordtar = \
                 sb1.read_schedblocks()
@@ -581,33 +585,57 @@ class Database(object):
         self.spectralwindow[toi] = self.spectralwindow[toi].astype(int)
         self.spectralwindow[tob] = self.spectralwindow[tob].astype(bool)
 
+    # noinspection PyUnusedLocal
     def get_ar_lim(self, sbrow):
 
         ouid = sbrow['OBSPROJECT_UID']
         sgn = sbrow['SG_ID']
         uid = sbrow['SB_UID']
+        ousid = sbrow['OUS_ID']
         sgrow = self.sciencegoals.query('OBSPROJECT_UID == @ouid and '
-                                        'sg_name == @sgn')
+                                        '(sg_name == @sgn or '
+                                        ' OUS_ID == @ousid)')
+        if len(sgrow) == 0:
+            sgn = sbrow['SG_ID'].rstrip()
+            sgn = sgn.lstrip()
+            sgrow = self.sciencegoals.query(
+                'OBSPROJECT_UID == @ouid and (sg_name == @sgn or '
+                ' OUS_ID == @ousid)')
+
+        if len(sgrow) == 0:
+            if sbrow['SG_ID'] == 'CO(4-3), [CI] 1-0 setup':
+                sgn = 'CO(4-3), [CI]1-0 setup'
+            elif sbrow['SG_ID'] == 'CO(7-6), [CI] 2-1 setup':
+                sgn = 'CO(7-6), [CI]2-1 setup'
+            elif sbrow['SG_ID'] == 'CRL618: HNC & HCO+ 3-2 + H29a + HC3N 28-27':
+                sgn = 'CRL618: HNC &HCO+ 3-2 + H29a + HC3N 28-27'
+            elif sbrow['SG_ID'] == 'HCN, H13CN & HC15N J=8-7':
+                sgn = 'HCN, H13CN &HC15N J=8-7'
+            else:
+                sgn = sgn
+            sgrow = self.sciencegoals.query(
+                'OBSPROJECT_UID == @ouid and (sg_name == @sgn or '
+                ' OUS_ID == @ousid)')
 
         sbs = self.schedblocks.query(
             'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "TWELVE-M"')
-        isExtended = True
-        SB_BL_num = len(sbs)
-        SB_7m_num = len(self.schedblocks.query(
+        isextended = True
+        sb_bl_num = len(sbs)
+        sb_7m_num = len(self.schedblocks.query(
             'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "SEVEN-M"'))
-        SB_TP_num = len(self.schedblocks.query(
+        sb_tp_num = len(self.schedblocks.query(
             'OBSPROJECT_UID == @ouid and SG_ID == @sgn and '
             'array == "TP-Array"'))
 
         if sbrow['array'] != "TWELVE-M":
             return pd.Series(
-                [None, None, 'N/A', 0, SB_BL_num, SB_7m_num, SB_TP_num],
+                [None, None, 'N/A', 0, sb_bl_num, sb_7m_num, sb_tp_num],
                 index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
                        "SB_7m_num", "SB_TP_num"])
         if len(sgrow) == 0:
             print "What? %s" % uid
             return pd.Series(
-                [0, 0, 'E', 0, SB_BL_num, SB_7m_num, SB_TP_num],
+                [0, 0, 'E', 0, sb_bl_num, sb_7m_num, sb_tp_num],
                 index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
                        "SB_7m_num", "SB_TP_num"])
         else:
@@ -616,99 +644,35 @@ class Database(object):
         num12 = 1
 
         if len(sbs) > 1:
-            two = sbs[sbs.sbNote.str.contains('compact')]
+            two = sbs[sbs.array12mType.str.contains('Comp')]
             if len(two) > 0:
                 num12 = 2
-                isExtended = True
+                isextended = True
                 if sbrow['sbName'].endswith('_TC'):
-                    isExtended = False
+                    isextended = False
+
+        # noinspection PyBroadException
         try:
-            minAR, maxAR, conf1, conf2 = self.ares.run(
+            minar, maxar, conf1, conf2 = self.ares.run(
                 sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA'],
                 num12, sbrow['OT_BestConf'], uid)
         except:
             print "Exception, %s" % uid
             print sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA']
             return pd.Series(
-                [0, 0, 'C', num12, SB_BL_num, SB_7m_num, SB_TP_num],
+                [0, 0, 'C', num12, sb_bl_num, sb_7m_num, sb_tp_num],
                 index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
                        "SB_7m_num", "SB_TP_num"])
 
-        if not isExtended:
+        if not isextended:
 
             return pd.Series(
-                [minAR[1], maxAR[1], conf2, num12, SB_BL_num, SB_7m_num,
-                 SB_TP_num],
+                [minar[1], maxar[1], conf2, num12, sb_bl_num, sb_7m_num,
+                 sb_tp_num],
                 index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
                        "SB_7m_num", "SB_TP_num"])
 
         return pd.Series(
-            [minAR[0], maxAR[0], conf1, num12, SB_BL_num, SB_7m_num, SB_TP_num],
-            index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
-                   "SB_7m_num", "SB_TP_num"])
-
-    def get_ar_lim2(self, sbrow):
-
-        ouid = sbrow['OBSPROJECT_UID']
-        sgn = sbrow['SG_ID']
-        uid = sbrow['SB_UID']
-        sgrow = self.sciencegoals.query('OBSPROJECT_UID == @ouid and '
-                                        'sg_name == @sgn')
-
-        sbs = self.schedblocks.query(
-            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "TWELVE-M"')
-        isExtended = True
-        SB_BL_num = len(sbs)
-        SB_7m_num = len(self.schedblocks.query(
-            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and array == "SEVEN-M"'))
-        SB_TP_num = len(self.schedblocks.query(
-            'OBSPROJECT_UID == @ouid and SG_ID == @sgn and '
-            'array == "TP-Array"'))
-
-        if sbrow['array'] != "TWELVE-M":
-            return pd.Series(
-                [None, None, 'N/A', 0, SB_BL_num, SB_7m_num, SB_TP_num],
-                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
-                       "SB_7m_num", "SB_TP_num"])
-        if len(sgrow) == 0:
-            print "What? %s" % uid
-            return pd.Series(
-                [0, 0, 'E', 0, SB_BL_num, SB_7m_num, SB_TP_num],
-                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
-                       "SB_7m_num", "SB_TP_num"])
-        else:
-            sgrow = sgrow.iloc[0]
-
-        num12 = 1
-
-        if len(sbs) > 1:
-            two = sbs[sbs.sbNote.str.contains('compact')]
-            if len(two) > 0:
-                num12 = 2
-                isExtended = True
-                if sbrow['sbName'].endswith('_TC'):
-                    isExtended = False
-        try:
-            minAR, maxAR, conf1, conf2 = self.ares2.run(
-                sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA'],
-                num12, uid, sbrow['OT_BestConf'])
-        except:
-            print "Exception, %s" % uid
-            print sgrow['ARcor'], sgrow['LAScor'], sbrow['DEC'], sgrow['useACA']
-            return pd.Series(
-                [0, 0, 'C', num12, SB_BL_num, SB_7m_num, SB_TP_num],
-                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
-                       "SB_7m_num", "SB_TP_num"])
-
-        if not isExtended:
-
-            return pd.Series(
-                [minAR[1], maxAR[1], conf2, num12, SB_BL_num, SB_7m_num,
-                 SB_TP_num],
-                index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
-                       "SB_7m_num", "SB_TP_num"])
-
-        return pd.Series(
-            [minAR[0], maxAR[0], conf1, num12, SB_BL_num, SB_7m_num, SB_TP_num],
+            [minar[0], maxar[0], conf1, num12, sb_bl_num, sb_7m_num, sb_tp_num],
             index=["minAR", "maxAR", "BestConf", "two_12m", "SB_BL_num",
                    "SB_7m_num", "SB_TP_num"])

@@ -22,31 +22,41 @@ path = os.environ['PHASEONE_C3']
 # path = '/home/itoledo/Documents/cycle3_osf/'
 
 sql1 = str(
-    "SELECT PRJ_ARCHIVE_UID as OBSPROJECT_UID,PI,PRJ_NAME,CODE,"
-    "PRJ_SCIENTIFIC_RANK,PRJ_VERSION,PRJ_LETTER_GRADE,"
-    "DOMAIN_ENTITY_STATE as PRJ_STATUS, ARCHIVE_UID as OBSPROPOSAL_UID "
-    "FROM ALMA.BMMV_OBSPROJECT obs1, ALMA.OBS_PROJECT_STATUS obs2, "
-    "ALMA.BMMV_OBSPROPOSAL obs3 "
-    "WHERE regexp_like (CODE, '^2015\..*\.[AST]') AND "
-    "obs2.OBS_PROJECT_ID = obs1.PRJ_ARCHIVE_UID AND "
-    "obs1.PRJ_ARCHIVE_UID = obs3.PROJECTUID")
+    "SELECT obs1.PRJ_ARCHIVE_UID as OBSPROJECT_UID, obs1.PI, "
+    "obs1.PRJ_NAME,"
+    "CODE,PRJ_SCIENTIFIC_RANK,PRJ_VERSION,"
+    "PRJ_LETTER_GRADE,DOMAIN_ENTITY_STATE as PRJ_STATUS,"
+    "obs3.ARCHIVE_UID as OBSPROPOSAL_UID, obs4.DC_LETTER_GRADE,"
+    "obs3.CYCLE "
+    "FROM ALMA.BMMV_OBSPROJECT obs1, ALMA.OBS_PROJECT_STATUS obs2,"
+    " ALMA.BMMV_OBSPROPOSAL obs3, ALMA.PROPOSAL obs4 "
+    "WHERE regexp_like (CODE, '^201[35]\..*\.[AST]') "
+    "AND obs2.OBS_PROJECT_ID = obs1.PRJ_ARCHIVE_UID AND "
+    "obs1.PRJ_ARCHIVE_UID = obs3.PROJECTUID AND "
+    "obs4.ARCHIVE_UID = obs3.ARCHIVE_UID AND "
+    "obs4.DC_LETTER_GRADE IN ('A', 'B', 'C')")
 
 cursor.execute(sql1)
 
 df1 = pd.DataFrame(
     cursor.fetchall(), columns=[rec[0] for rec in cursor.description])
 
-grades = pd.read_csv(os.environ['APA3'] + 'conf/DC_final modified gradeC.csv')
-abcgrad = grades.query('APRCGrade in ["A", "B", "C"]').CODE.unique()
-df1 = df1.copy().query('CODE in @abcgrad')
+df1 = df1.query(
+    '((CYCLE in ["2015.1", "2015.A"]) or '
+    '(CYCLE in ["2013.1", "2013.A"] and DC_LETTER_GRADE == "A")) and '
+    'PRJ_STATUS != "Canceled"').copy()
 
 obsproject_uids = df1.OBSPROJECT_UID.unique()
 phase2 = df1.query(
-    'PRJ_STATUS in ["Ready", "Phase2Submitted", "InProgress"]'
+    'PRJ_STATUS not in ["Phase1Submitted", "Rejected", "Approved"]'
 ).OBSPROJECT_UID.unique()
 
 try:
     os.mkdir(path)
+    os.mkdir(path + 'obsproject')
+    os.mkdir(path + 'obsreview')
+    os.mkdir(path + 'obsproposal')
+    os.mkdir(path + 'schedblock')
 except OSError:
     shutil.rmtree(path)
     os.mkdir(path)
@@ -77,9 +87,29 @@ for r in os.listdir('/home/itoledo/Documents/cycle3_ii/obsproject'):
     if r.startswith('uid'):
         obsparse = ObsProject(
             r, path='/home/itoledo/Documents/cycle3_ii/obsproject/')
-        obspropuid = obsparse.ObsProposalRef.attrib['entityId']
+        obspropuid = obsparse.data.ObsProposalRef.attrib['entityId']
+
+        cursor.execute(
+            "SELECT TIMESTAMP, XMLTYPE.getClobVal(xml) "
+            "FROM ALMA.XML_OBSPROPOSAL_ENTITIES "
+            "WHERE ARCHIVE_UID = '%s'" % obspropuid)
+
         try:
-            obsrevuid = obsparse.ObsReviewRef.attrib['entityId']
+            data = cursor.fetchall()[0]
+            xml_content = data[1].read()
+            xmlfilename = obspropuid.replace('://', '___').replace('/', '_') + \
+                '.xml'
+            filename = '/home/itoledo/Documents/cycle3_ii/obsproposal/' + \
+                       xmlfilename
+            io_file = open(filename, 'w')
+            io_file.write(xml_content)
+            io_file.close()
+        except IndexError:
+            print("Proposal %s not found on archive?" %
+                  obspropuid)
+
+        try:
+            obsrevuid = obsparse.data.ObsReviewRef.attrib['entityId']
         except AttributeError:
             print("Obsproject %s has no ObsReviewRef" % r)
             continue
@@ -159,9 +189,9 @@ for r in os.listdir('/home/itoledo/Documents/cycle3_ii/obsproject/'):
         continue
     obsparse = ObsProject(
         r, path='/home/itoledo/Documents/cycle3_ii/obsproject/')
-    obspropuid = obsparse.ObsProjectEntity.attrib['entityId']
+    obspropuid = obsparse.data.ObsProjectEntity.attrib['entityId']
     if obspropuid in phase2:
-        op = obsparse.ObsProgram.findall('.//' + prj + 'SchedBlockRef')
+        op = obsparse.data.ObsProgram.findall('.//' + prj + 'SchedBlockRef')
         for sbref in op:
             sbuid = sbref.attrib['entityId']
             cursor.execute(

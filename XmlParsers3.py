@@ -11,6 +11,7 @@ val = '{Alma/ValueTypes}'
 sbl = '{Alma/ObsPrep/SchedBlock}'
 
 
+# noinspection PyBroadException
 class ObsProposal(object):
 
     def __init__(self, xml_file, obsproject_uid, path='./'):
@@ -32,7 +33,7 @@ class ObsProposal(object):
         self.sg_specwindows = []
         self.sg_specscan = []
 
-    def get_ph1_sg(self):
+    def get_sg(self):
         sg_list = self.data.findall(prj + 'ScienceGoal')
         c = 1
         for sg in sg_list:
@@ -46,87 +47,100 @@ class ObsProposal(object):
         try:
             # ous_id = the id of associated ObsUnitSet at the ObsProgram level.
             ous_id = sg.ObsUnitSetRef.attrib['partId']
-            hasSB = True
+            hassb = True
         except AttributeError:
             ous_id = None
-            hasSB = False
+            hassb = False
 
         # get SG name, bands and estimated time
         sg_name = sg.name.pyval
-        sg_mode = sg.attrib['mode']
+        try:
+            sg_mode = sg.attrib['mode']
+        except KeyError:
+            # print sg_id
+            sg_mode = None
         bands = sg.findall(prj + 'requiredReceiverBands')[0].pyval
-        estimatedTime = convert_tsec(
+        estimatedtime = convert_tsec(
             sg.estimatedTotalTime.pyval,
             sg.estimatedTotalTime.attrib['unit']) / 3600.
 
         # get SG's AR (in arcsec), LAS (arcsec), sensitivity (Jy), useACA and
         # useTP
         performance = sg.PerformanceParameters
-        AR = convert_sec(
+        ar = convert_sec(
             performance.desiredAngularResolution.pyval,
             performance.desiredAngularResolution.attrib['unit'])
-        LAS = convert_sec(
+        las = convert_sec(
             performance.desiredLargestScale.pyval,
             performance.desiredLargestScale.attrib['unit'])
         sensitivity = convert_jy(
             performance.desiredSensitivity.pyval,
             performance.desiredSensitivity.attrib['unit'])
-        useACA = performance.useACA.pyval
-        useTP = performance.useTP.pyval
-        isPointSource = performance.isPointSource.pyval
+        useaca = performance.useACA.pyval
+        usetp = performance.useTP.pyval
+        ispointsource = performance.isPointSource.pyval
 
         # Check if it is a TimeConstrained SG
         try:
-            isTimeConstrained = performance.isTimeConstrained.pyval
+            istimeconstrained = performance.isTimeConstrained.pyval
         except AttributeError:
-            isTimeConstrained = None
+            istimeconstrained = None
 
-        if isTimeConstrained:
+        if istimeconstrained:
             try:
                 visit = performance.VisitConstraint
                 for v in visit:
                     try:
-                        startTime = v.startTime.pyval
+                        starttime = v.startTime.pyval
                     except AttributeError:
-                        startTime = None
+                        starttime = None
                     try:
-                        allowedMargin = v.allowedMargin.pyval
-                        allowedMargin_unit = v.allowedMargin.attrib['unit']
+                        allowedmargin = v.allowedMargin.pyval
+                        allowedmargin_unit = v.allowedMargin.attrib['unit']
                     except AttributeError:
-                        allowedMargin = None
-                        allowedMargin_unit = None
+                        allowedmargin = None
+                        allowedmargin_unit = None
                     try:
                         note = v.note.pyval
                     except:
                         note = None
-                    isAvoidConstraint = v.isAvoidConstraint.pyval
+                    isavoidconstraint = v.isAvoidConstraint.pyval
                     priority = v.priority.pyval
                     try:
-                        isfixedStart = v.isFixedStart.pyval
+                        isfixedstart = v.isFixedStart.pyval
                     except AttributeError:
-                        isfixedStart = None
+                        isfixedstart = None
 
-                    visitId = v.visitId.pyval
-                    prev_visitId = v.previousVisitId.pyval
+                    visitid = v.visitId.pyval
+                    prev_visitid = v.previousVisitId.pyval
                     try:
-                        requiredDelay = v.requiredDelay.pyval
-                        requiredDelay_unit = v.requiredDelay.attrib['unit']
+                        requireddelay = v.requiredDelay.pyval
+                        requireddelay_unit = v.requiredDelay.attrib['unit']
                     except:
-                        requiredDelay = None
-                        requiredDelay_unit = None
+                        requireddelay = None
+                        requireddelay_unit = None
                     self.visits.append([
                         sg_id, sg_name, self.obsproject_uid,
-                        startTime, allowedMargin, allowedMargin_unit, note,
-                        isAvoidConstraint, priority, visitId, prev_visitId,
-                        requiredDelay, requiredDelay_unit, isfixedStart])
+                        starttime, allowedmargin, allowedmargin_unit, note,
+                        isavoidconstraint, priority, visitid, prev_visitid,
+                        requireddelay, requireddelay_unit, isfixedstart])
             except AttributeError:
-                temp = performance.TemporalParameters
+                try:
+                    temp = performance.TemporalParameters
+                except AttributeError:
+                    temp = performance.MonitoringConstraint
                 for t in temp:
-                    startTime = t.startTime.pyval
-                    endTime = t.endTime.pyval
-                    allowedMargin = t.allowedMargin.pyval
-                    allowedMargin_unit = t.allowedMargin.attrib['unit']
-                    repeats = t.repeats.pyval
+                    starttime = t.startTime.pyval
+                    try:
+                        endtime = t.endTime.pyval
+                    except AttributeError:
+                        endtime = None
+                    allowedmargin = t.allowedMargin.pyval
+                    allowedmargin_unit = t.allowedMargin.attrib['unit']
+                    try:
+                        repeats = t.repeats.pyval
+                    except AttributeError:
+                        repeats = None
                     try:
                         lSTMin = t.lSTMin.pyval
                         lSTMax = t.lSTMax.pyval
@@ -137,14 +151,14 @@ class ObsProposal(object):
                         note = t.note.pyval
                     except:
                         note = None
-                    isAvoidConstraint = t.isAvoidConstraint.pyval
+                    isavoidconstraint = t.isAvoidConstraint.pyval
                     priority = t.priority.pyval
-                    fixedStart = t.isFixedStart.pyval
+                    fixedstart = t.isFixedStart.pyval
                     self.temp_param.append([
                         sg_id, sg_name, self.obsproject_uid,
-                        startTime, endTime, allowedMargin, allowedMargin_unit,
-                        repeats, lSTMin, lSTMax, note, isAvoidConstraint,
-                        priority, fixedStart
+                        starttime, endtime, allowedmargin, allowedmargin_unit,
+                        repeats, lSTMin, lSTMax, note, isavoidconstraint,
+                        priority, fixedstart
                     ])
 
         # Get SG representative Frequency, polarization configuration.
@@ -227,8 +241,8 @@ class ObsProposal(object):
                 ])
 
         # Correct AR and LAS to equivalent resolutions at 100GHz
-        ARcor = AR * repFreq / 100.
-        LAScor = LAS * repFreq / 100.
+        ARcor = ar * repFreq / 100.
+        LAScor = las * repFreq / 100.
 
         # set variables that will be filled later. The relevant variable to
         # calculate new minAR and maxAR is two_12m, False if needs one 12m conf.
@@ -241,27 +255,33 @@ class ObsProposal(object):
             self.read_pro_targets(t, sg_id, self.obsproject_uid, c)
             c += 1
 
-        twelveTime = convert_tsec(
-            sg.estimated12mTime.pyval,
-            sg.estimated12mTime.attrib['unit']) / 3600.
-        ACATime = convert_tsec(
-            sg.estimatedACATime.pyval,
-            sg.estimatedACATime.attrib['unit']) / 3600.
-        sevenTime = convert_tsec(
-            float(sg.estimated7mTime.pyval),
-            sg.estimated7mTime.attrib['unit']) / 3600.
-        TPTime = convert_tsec(
-            sg.estimatedTPTime.pyval,
-            sg.estimatedTPTime.attrib['unit']) / 3600.
+        try:
+            twelveTime = convert_tsec(
+                sg.estimated12mTime.pyval,
+                sg.estimated12mTime.attrib['unit']) / 3600.
+            ACATime = convert_tsec(
+                sg.estimatedACATime.pyval,
+                sg.estimatedACATime.attrib['unit']) / 3600.
+            sevenTime = convert_tsec(
+                float(sg.estimated7mTime.pyval),
+                sg.estimated7mTime.attrib['unit']) / 3600.
+            TPTime = convert_tsec(
+                sg.estimatedTPTime.pyval,
+                sg.estimatedTPTime.attrib['unit']) / 3600.
+        except AttributeError:
+            twelveTime = None
+            ACATime = None
+            sevenTime = None
+            TPTime = None
 
         # Stores Science Goal parameters in a data frame instance
 
         self.sciencegoals.append([
-            sg_id, self.obsproject_uid, ous_id, sg_name, bands, estimatedTime,
-            twelveTime, ACATime, sevenTime, TPTime, AR, LAS, ARcor,
-            LAScor, sensitivity, useACA, useTP, isTimeConstrained, repFreq,
+            sg_id, self.obsproject_uid, ous_id, sg_name, bands, estimatedtime,
+            twelveTime, ACATime, sevenTime, TPTime, ar, las, ARcor,
+            LAScor, sensitivity, useaca, usetp, istimeconstrained, repFreq,
             repFreqSepc, singleContFreq, calspecial,
-            isPointSource, polarization, is_spec_scan, type_pol, hasSB, two_12m,
+            ispointsource, polarization, is_spec_scan, type_pol, hassb, two_12m,
             num_targets, sg_mode]
         )
 
@@ -277,7 +297,7 @@ class ObsProposal(object):
         sourceName = target.sourceName.pyval
         coord = target.sourceCoordinates
         coord_type = coord.attrib['system']
-        if coord_type == 'J2000':
+        if coord_type in ['J2000', 'ICRS']:
             ra = convert_deg(coord.findall(val + 'longitude')[0].pyval,
                              coord.findall(val + 'longitude')[0].attrib['unit'])
             dec = convert_deg(coord.findall(val + 'latitude')[0].pyval,
@@ -305,8 +325,10 @@ class ObsProposal(object):
 
         sourceVelocity = target.sourceVelocity
         try:
-            centerVelocity = sourceVelocity.findall(val + 'centerVelocity')[0].pyval
-            centerVelocity_units = sourceVelocity.findall(val + 'centerVelocity')[0].attrib['unit']
+            centerVelocity = sourceVelocity.findall(
+                val + 'centerVelocity')[0].pyval
+            centerVelocity_units = sourceVelocity.findall(
+                val + 'centerVelocity')[0].attrib['unit']
             centerVelocity_refSys = sourceVelocity.attrib['referenceSystem']
             centerVelocity_dopp = sourceVelocity.attrib['dopplerCalcType']
         except:
@@ -321,11 +343,21 @@ class ObsProposal(object):
             expectedprop.expectedLineWidth.attrib['unit']
         )
 
-
         self.sg_targets.append(
             [tid, obsp_uid, sgid, typetar, solarSystem, sourceName, ra, dec,
              isMosaic, centerVelocity, centerVelocity_units,
              centerVelocity_refSys, centerVelocity_dopp, expectedLineWidth])
+
+    def get_times(self):
+        try:
+            propf = self.data.ProposalFeedback
+            arrays = propf
+        except:
+            time12 = 0
+            timeACA = 0
+            time7 = 0
+            timetp = 0
+            timebl = 0
 
 
 class ObsProject(object):
@@ -353,6 +385,7 @@ class ObsProject(object):
         :param path:
         """
         io_file = open(path + xml_file)
+        # noinspection PyBroadException
         try:
             tree = objectify.parse(io_file)
         except:
@@ -361,33 +394,393 @@ class ObsProject(object):
                 io_file = open('/home/itoledo/Work/APA3/conf/' + xml_file)
                 tree = objectify.parse(io_file)
         io_file.close()
-        data = tree.getroot()
-        self.status = data.attrib['status']
-        for key in data.__dict__:
-            self.__setattr__(key, data.__dict__[key])
+        # noinspection PyUnboundLocalVariable
+        self.data = tree.getroot()
 
-    def get_ph1_info(self):
+        self.sg_targets = []
+        self.sciencegoals = []
+        self.visits = []
+        self.temp_param = []
+        self.sg_specwindows = []
+        self.sg_specscan = []
+        self.sg_sb = []
 
-        code = self.code.pyval
-        prj_version = self.version.pyval
-        staff_note = self.staffProjectNote.pyval
-        is_calibration = self.isCalibration.pyval
-        obsproject_uid = self.ObsProjectEntity.attrib['entityId']
-        obsproposal_uid = self.ObsProposalRef.attrib['entityId']
+    def get_sg_sb(self):
+        obsprog = self.data.ObsProgram
+        op = obsprog.ObsPlan
+        oussg_list = op.findall(prj + 'ObsUnitSet')
+        for oussg in oussg_list:
+            groupous_list = oussg.findall(prj + 'ObsUnitSet')
+            OUS_ID = oussg.attrib['entityPartId']
+            ous_name = oussg.name.pyval
+            OBSPROJECT_UID = oussg.ObsProjectRef.attrib['entityId']
+
+            # Now we iterate over all the children OUS (group ous and member
+            # ous) until we find "SchedBlockRef" tags at the member ous
+            # level.
+            for groupous in groupous_list:
+                gous_id = groupous.attrib['entityPartId']
+                mous_list = groupous.findall(prj + 'ObsUnitSet')
+                gous_name = groupous.name.pyval
+                for mous in mous_list:
+                    mous_id = mous.attrib['entityPartId']
+                    mous_name = mous.name.pyval
+                    try:
+                        sblist = mous.findall(prj + 'ObsUnitSet')
+                        SB_UID = mous.SchedBlockRef.attrib['entityId']
+                    except AttributeError:
+                        continue
+                    oucontrol = mous.ObsUnitControl
+                    execount = oucontrol.aggregatedExecutionCount.pyval
+                    array = mous.ObsUnitControl.attrib['arrayRequested']
+                    for sbs in mous.SchedBlockRef:
+                        SB_UID = sbs.attrib['entityId']
+                        self.sg_sb.append(
+                            [SB_UID, OBSPROJECT_UID, ous_name, OUS_ID,
+                             gous_id, gous_name, mous_id, mous_name, array,
+                             execount])
+
+    def get_info(self):
+
+        code = self.data.code.pyval
+        prj_version = self.data.version.pyval
+        staff_note = self.data.staffProjectNote.pyval
+        is_calibration = self.data.isCalibration.pyval
+        obsproject_uid = self.data.ObsProjectEntity.attrib['entityId']
+        obsproposal_uid = self.data.ObsProposalRef.attrib['entityId']
         try:
-            obsreview_uid = self.ObsReviewRef.attrib['entityId']
+            obsreview_uid = self.data.ObsReviewRef.attrib['entityId']
         except AttributeError:
             obsreview_uid = None
 
         try:
-            is_ddt = self.isDDT.pyval
+            is_ddt = self.data.isDDT.pyval
         except AttributeError:
             is_ddt = False
 
         return [code, obsproject_uid, obsproposal_uid, obsreview_uid,
                 prj_version, staff_note, is_calibration, is_ddt]
 
+    def get_sg(self):
+        self.obsproject_uid = self.data.ObsProjectEntity.attrib['entityId']
+        obsprog = self.data.ObsProgram
+        sg_list = obsprog.findall(prj + 'ScienceGoal')
+        c = 1
+        for sg in sg_list:
+            self.read_ph1_sg(sg, str("%02d" % c))
+            c += 1
 
+    def read_ph1_sg(self, sg, idnum):
+
+        sg_id = self.obsproject_uid + '_' + str(idnum)
+
+        # Handle exceptions of Science Goals without ObsUnitSets or SchedBlocks
+        try:
+            # ous_id = the id of associated ObsUnitSet at the ObsProgram level.
+            ous_id = sg.ObsUnitSetRef.attrib['partId']
+            hassb = True
+        except AttributeError:
+            ous_id = None
+            hassb = False
+
+        # get SG name, bands and estimated time
+        sg_name = sg.name.pyval
+        try:
+            sg_mode = sg.attrib['mode']
+        except KeyError:
+            # print sg_id
+            sg_mode = None
+        bands = sg.findall(prj + 'requiredReceiverBands')[0].pyval
+        estimatedtime = convert_tsec(
+            sg.estimatedTotalTime.pyval,
+            sg.estimatedTotalTime.attrib['unit']) / 3600.
+
+        # get SG's AR (in arcsec), LAS (arcsec), sensitivity (Jy), useACA and
+        # useTP
+        performance = sg.PerformanceParameters
+        ar = convert_sec(
+            performance.desiredAngularResolution.pyval,
+            performance.desiredAngularResolution.attrib['unit'])
+        las = convert_sec(
+            performance.desiredLargestScale.pyval,
+            performance.desiredLargestScale.attrib['unit'])
+        sensitivity = convert_jy(
+            performance.desiredSensitivity.pyval,
+            performance.desiredSensitivity.attrib['unit'])
+        useaca = performance.useACA.pyval
+        usetp = performance.useTP.pyval
+        ispointsource = performance.isPointSource.pyval
+
+        # Check if it is a TimeConstrained SG
+        try:
+            istimeconstrained = performance.isTimeConstrained.pyval
+        except AttributeError:
+            istimeconstrained = None
+
+        if istimeconstrained:
+            try:
+                visit = performance.VisitConstraint
+                for v in visit:
+                    try:
+                        starttime = v.startTime.pyval
+                    except AttributeError:
+                        starttime = None
+                    try:
+                        allowedmargin = v.allowedMargin.pyval
+                        allowedmargin_unit = v.allowedMargin.attrib['unit']
+                    except AttributeError:
+                        allowedmargin = None
+                        allowedmargin_unit = None
+                    try:
+                        note = v.note.pyval
+                    except:
+                        note = None
+                    isavoidconstraint = v.isAvoidConstraint.pyval
+                    priority = v.priority.pyval
+                    try:
+                        isfixedstart = v.isFixedStart.pyval
+                    except AttributeError:
+                        isfixedstart = None
+
+                    visitid = v.visitId.pyval
+                    prev_visitid = v.previousVisitId.pyval
+                    try:
+                        requireddelay = v.requiredDelay.pyval
+                        requireddelay_unit = v.requiredDelay.attrib['unit']
+                    except:
+                        requireddelay = None
+                        requireddelay_unit = None
+                    self.visits.append([
+                        sg_id, sg_name, self.obsproject_uid,
+                        starttime, allowedmargin, allowedmargin_unit, note,
+                        isavoidconstraint, priority, visitid, prev_visitid,
+                        requireddelay, requireddelay_unit, isfixedstart])
+            except AttributeError:
+                try:
+                    temp = performance.TemporalParameters
+                except AttributeError:
+                    temp = performance.MonitoringConstraint
+                for t in temp:
+                    starttime = t.startTime.pyval
+                    try:
+                        endtime = t.endTime.pyval
+                    except AttributeError:
+                        endtime = None
+                    allowedmargin = t.allowedMargin.pyval
+                    allowedmargin_unit = t.allowedMargin.attrib['unit']
+                    try:
+                        repeats = t.repeats.pyval
+                    except AttributeError:
+                        repeats = None
+                    try:
+                        lSTMin = t.lSTMin.pyval
+                        lSTMax = t.lSTMax.pyval
+                    except:
+                        lSTMin = None
+                        lSTMax = None
+                    try:
+                        note = t.note.pyval
+                    except:
+                        note = None
+                    isavoidconstraint = t.isAvoidConstraint.pyval
+                    priority = t.priority.pyval
+                    fixedstart = t.isFixedStart.pyval
+                    self.temp_param.append([
+                        sg_id, sg_name, self.obsproject_uid,
+                        starttime, endtime, allowedmargin, allowedmargin_unit,
+                        repeats, lSTMin, lSTMax, note, isavoidconstraint,
+                        priority, fixedstart
+                    ])
+
+        # Get SG representative Frequency, polarization configuration.
+        calparam = sg.CalibrationSetupParameters
+        calspecial = False
+        if calparam.attrib['selection'] == 'user':
+            calspecial = True
+
+        spectral = sg.SpectralSetupParameters
+        repFreq = convert_ghz(
+            performance.representativeFrequency.pyval,
+            performance.representativeFrequency.attrib['unit'])
+        repFreqSepc = convert_ghz(
+            spectral.representativeFrequency.pyval,
+            spectral.representativeFrequency.attrib['unit'])
+
+        polarization = spectral.attrib['polarisation']
+        type_pol = spectral.attrib['type']
+        specscan = spectral.findall(prj + 'SpectralScan')
+        try:
+            singleContFreq = convert_ghz(
+                spectral.singleContinuumFrequency.pyval,
+                spectral.singleContinuumFrequency.attrib['unit']
+            )
+        except:
+            singleContFreq = None
+
+        spw = spectral.findall(prj + 'ScienceSpectralWindow')
+        is_spec_scan = False
+        if len(specscan) > 0:
+            is_spec_scan = True
+            for n in range(len(specscan)):
+                ss = specscan[n]
+                ss_index = ss['index'].pyval
+                startFrequency = convert_ghz(
+                    ss.startFrequency.pyval,
+                    ss.startFrequency.attrib['unit'])
+                endFrequency = convert_ghz(
+                    ss.endFrequency.pyval,
+                    ss.endFrequency.attrib['unit'])
+                bandwidth = convert_ghz(
+                    ss.bandWidth.pyval,
+                    ss.bandWidth.attrib['unit']
+                )
+                specRes = convert_ghz(
+                    ss.spectralResolution.pyval,
+                    ss.spectralResolution.attrib['unit']
+                )
+                isSkyFreq = ss.isSkyFrequency.pyval
+
+                self.sg_specscan.append([
+                    sg_id, ss_index, startFrequency, endFrequency,
+                    bandwidth, specRes, isSkyFreq
+                ])
+
+        else:
+            for n in range(len(spw)):
+                sp = spw[n]
+                spw_index = sp['index'].pyval
+                transitionName = sp.transitionName.pyval
+                centerFrequency = convert_ghz(
+                    sp.centerFrequency.pyval,
+                    sp.centerFrequency.attrib['unit']
+                )
+                bandWidth = convert_ghz(
+                    sp.bandWidth.pyval,
+                    sp.bandWidth.attrib['unit']
+                )
+                spectralResolution = convert_ghz(
+                    sp.spectralResolution.pyval,
+                    sp.spectralResolution.attrib['unit']
+                )
+                representativeWin = sp.representativeWindow.pyval
+                isSkyFreq = sp.isSkyFrequency.pyval
+                groupIndex = sp.groupIndex.pyval
+                self.sg_specwindows.append([
+                    sg_id, spw_index, transitionName, centerFrequency,
+                    bandWidth, spectralResolution, representativeWin,
+                    isSkyFreq, groupIndex
+                ])
+
+        # Correct AR and LAS to equivalent resolutions at 100GHz
+        ARcor = ar * repFreq / 100.
+        LAScor = las * repFreq / 100.
+
+        # set variables that will be filled later. The relevant variable to
+        # calculate new minAR and maxAR is two_12m, False if needs one 12m conf.
+
+        two_12m = None
+        targets = sg.findall(prj + 'TargetParameters')
+        num_targets = len(targets)
+        c = 1
+        for t in targets:
+            self.read_pro_targets(t, sg_id, self.obsproject_uid, c)
+            c += 1
+
+        try:
+            twelveTime = convert_tsec(
+                sg.estimated12mTime.pyval,
+                sg.estimated12mTime.attrib['unit']) / 3600.
+            ACATime = convert_tsec(
+                sg.estimatedACATime.pyval,
+                sg.estimatedACATime.attrib['unit']) / 3600.
+            sevenTime = convert_tsec(
+                float(sg.estimated7mTime.pyval),
+                sg.estimated7mTime.attrib['unit']) / 3600.
+            TPTime = convert_tsec(
+                sg.estimatedTPTime.pyval,
+                sg.estimatedTPTime.attrib['unit']) / 3600.
+        except AttributeError:
+            twelveTime = None
+            ACATime = None
+            sevenTime = None
+            TPTime = None
+
+        # Stores Science Goal parameters in a data frame instance
+
+        self.sciencegoals.append([
+            sg_id, self.obsproject_uid, ous_id, sg_name, bands, estimatedtime,
+            twelveTime, ACATime, sevenTime, TPTime, ar, las, ARcor,
+            LAScor, sensitivity, useaca, usetp, istimeconstrained, repFreq,
+            repFreqSepc, singleContFreq, calspecial,
+            ispointsource, polarization, is_spec_scan, type_pol, hassb, two_12m,
+            num_targets, sg_mode]
+        )
+
+    def read_pro_targets(self, target, sgid, obsp_uid, c):
+
+        tid = sgid + '_' + str(c)
+        try:
+            solarSystem = target.attrib['solarSystemObject']
+        except KeyError:
+            solarSystem = None
+
+        typetar = target.attrib['type']
+        sourceName = target.sourceName.pyval
+        coord = target.sourceCoordinates
+        coord_type = coord.attrib['system']
+        if coord_type in ['J2000', 'ICRS']:
+            ra = convert_deg(coord.findall(val + 'longitude')[0].pyval,
+                             coord.findall(val + 'longitude')[0].attrib['unit'])
+            dec = convert_deg(coord.findall(val + 'latitude')[0].pyval,
+                              coord.findall(val + 'latitude')[0].attrib['unit'])
+        elif coord_type == 'galactic':
+            lon = convert_deg(
+                coord.findall(val + 'longitude')[0].pyval,
+                coord.findall(val + 'longitude')[0].attrib['unit'])
+            lat = convert_deg(
+                coord.findall(val + 'latitude')[0].pyval,
+                coord.findall(val + 'latitude')[0].attrib['unit'])
+            eph = ephem.Galactic(pd.np.radians(lon), pd.np.radians(lat))
+            ra = pd.np.degrees(eph.to_radec()[0])
+            dec = pd.np.degrees(eph.to_radec()[1])
+        else:
+            print "coord type is %s, deal with it" % coord_type
+            ra = convert_deg(coord.findall(val + 'longitude')[0].pyval,
+                             coord.findall(val + 'longitude')[0].attrib['unit'])
+            dec = convert_deg(coord.findall(val + 'latitude')[0].pyval,
+                              coord.findall(val + 'latitude')[0].attrib['unit'])
+        try:
+            isMosaic = target.isMosaic.pyval
+        except AttributeError:
+            isMosaic = None
+
+        sourceVelocity = target.sourceVelocity
+        try:
+            centerVelocity = sourceVelocity.findall(
+                val + 'centerVelocity')[0].pyval
+            centerVelocity_units = sourceVelocity.findall(
+                val + 'centerVelocity')[0].attrib['unit']
+            centerVelocity_refSys = sourceVelocity.attrib['referenceSystem']
+            centerVelocity_dopp = sourceVelocity.attrib['dopplerCalcType']
+        except:
+            centerVelocity = None
+            centerVelocity_units = None
+            centerVelocity_refSys = None
+            centerVelocity_dopp = None
+
+        expectedprop = target.ExpectedProperties
+        expectedLineWidth = convert_ghz(
+            expectedprop.expectedLineWidth.pyval,
+            expectedprop.expectedLineWidth.attrib['unit']
+        )
+
+        self.sg_targets.append(
+            [tid, obsp_uid, sgid, typetar, solarSystem, sourceName, ra, dec,
+             isMosaic, centerVelocity, centerVelocity_units,
+             centerVelocity_refSys, centerVelocity_dopp, expectedLineWidth])
+
+
+# noinspection PyBroadException
 class SchedBlock(object):
 
     def __init__(self, xml_file, sb_uid, obs_uid, ous_id, sg_id,
@@ -411,8 +804,6 @@ class SchedBlock(object):
         # Open SB with SB parser class
         """
 
-        :param sb_uid:
-        :param new:
         """
 
         # Extract root level data
@@ -433,11 +824,13 @@ class SchedBlock(object):
         weather = preconditions.findall('.//' + prj + 'WeatherConstraints')[0]
         ouc = self.data.find('.//' + prj + 'ObsUnitControl')
         estimatedTimet = ouc.find('.//' + prj + 'estimatedExecutionTime')
-        estimatedTime = convert_thour(estimatedTimet.pyval,
-                                     estimatedTimet.attrib['unit'])
+        estimatedTime = convert_thour(
+            estimatedTimet.pyval,
+            estimatedTimet.attrib['unit'])
         maximumTimet = ouc.find('.//' + prj + 'maximumTime')
-        maximumTime = convert_thour(maximumTimet.pyval,
-                                   maximumTimet.attrib['unit'])
+        maximumTime = convert_thour(
+            maximumTimet.pyval,
+            maximumTimet.attrib['unit'])
 
         try:
             # noinspection PyUnusedLocal
@@ -513,13 +906,15 @@ class SchedBlock(object):
         new = True
         for n in range(n_ss):
             if new:
-                r = self.read_spectralconf(self.data.SpectralSpec[n], self.sb_uid)
+                r = self.read_spectralconf(self.data.SpectralSpec[n],
+                                           self.sb_uid)
                 spc.append(r[0])
                 bb.extend(r[1])
                 spw.extend(r[2])
                 new = False
             else:
-                r = self.read_spectralconf(self.data.SpectralSpec[n], self.sb_uid)
+                r = self.read_spectralconf(self.data.SpectralSpec[n],
+                                           self.sb_uid)
                 spc.append(r[0])
                 bb.extend(r[1])
                 spw.extend(r[2])
@@ -537,8 +932,8 @@ class SchedBlock(object):
                                     sp.integrationTime.attrib['unit'])
             subs_dur = convert_tsec(sp.subScanDuration.pyval,
                                     sp.subScanDuration.attrib['unit'])
-            scpar.append([en_id, self.sb_uid, namep, rep_bw, sen_goal, sen_goal_u,
-                          int_time, subs_dur])
+            scpar.append([en_id, self.sb_uid, namep, rep_bw, sen_goal,
+                          sen_goal_u, int_time, subs_dur])
 
         acpar = []
         if n_acp > 0:
@@ -637,7 +1032,7 @@ class SchedBlock(object):
                 None, None, None, None, None, None
             )
         coord_type = coord.attrib['system']
-        if coord_type == 'J2000':
+        if coord_type in ['J2000', 'ICRS']:
             ra = convert_deg(coord.findall(val + 'longitude')[0].pyval,
                              coord.findall(val + 'longitude')[0].attrib['unit'])
             dec = convert_deg(coord.findall(val + 'latitude')[0].pyval,
@@ -717,6 +1112,7 @@ class SchedBlock(object):
     @staticmethod
     def read_baseband(spectconf, freqconf, sbuid):
         bbl = []
+
         rest_freq = convert_ghz(freqconf.restFrequency.pyval,
                                 freqconf.restFrequency.attrib['unit'])
         trans_name = freqconf.transitionName.pyval
@@ -724,6 +1120,7 @@ class SchedBlock(object):
                                freqconf.lO1Frequency.attrib['unit'])
         band = freqconf.attrib['receiverBand']
         doppler_ref = freqconf.attrib['dopplerReference']
+
         for baseband in range(len(freqconf.BaseBandSpecification)):
             bb = freqconf.BaseBandSpecification[baseband]
             partid = bb.attrib['entityPartId']
@@ -778,7 +1175,6 @@ class SchedBlock(object):
                         (bbRef, sbuid, name, sideBand, windowsFunction,
                          centerFreq, averagingFactor, effectiveBandwidth,
                          effectiveChannels, line_restFreq, line_name, use))
-
 
         except AttributeError:
             for baseband in range(len(correconf.ACABaseBandConfig)):
@@ -860,6 +1256,6 @@ class ObsReview(object):
                     for sbs in mous.SchedBlockRef:
                         SB_UID = sbs.attrib['entityId']
                         self.sg_sb.append(
-                            [SB_UID, OBSPROJECT_UID, ous_name,
+                            [SB_UID, OBSPROJECT_UID, ous_name, OUS_ID,
                              gous_id, gous_name, mous_id, mous_name, array,
                              execount])

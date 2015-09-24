@@ -126,8 +126,8 @@ class arrayRes:
                 #     else:
                 #         print self.las[arr] * 1.25, las, uid
                 # else:
-                if not (self.las[arr] * 2. > las):
-                    print self.las[arr] * 1.25, las, uid, self.array[arr]
+                # if not (self.las[arr] * 2. > las):
+                #     print self.las[arr] * 1.25, las, uid, self.array[arr]
                 match.append(arr)
                 notFound = False
 

@@ -5,8 +5,8 @@ import pylab as py
 import pandas as pd
 
 datas = DaB.Database()
-datas.read_obspropsal_p1(datas.phase1_data + 'obsproposal/')
-datas.obs_review(datas.phase1_data + 'obsreview/')
+datas.read_sciencegoals()
+datas.read_sblocks()
 datas.sciencegoals['sg_name'] = datas.sciencegoals.sg_name.astype(str)
 datas.read_sb(datas.phase1_data + 'schedblock/')
 datas.sciencegoals.ix['uid://A001/X1ed/X38e_01', 'sg_name'] = '08477'
@@ -49,10 +49,9 @@ def find_array(value):
 
     return datas.ares.array[array]
 
-grades = pd.read_csv(
-    '/home/itoledo/Work/APA3/conf/DC_final modified gradeC.csv')
 
-selproj = grades.query('APRCGrade in ["A", "B", "C"]').CODE.unique()
+selproj = datas.projects.query(
+    'DC_LETTER_GRADE in ["A", "B", "C"]').CODE.unique()
 sel_obsproj = datas.projects.query('CODE in @selproj').OBSPROJECT_UID.unique()
 
 datas.schedblocks = datas.schedblocks.query('OBSPROJECT_UID in @sel_obsproj')
@@ -195,7 +194,7 @@ merge1 = pd.merge(
 
 merge2 = pd.merge(
     merge1,
-    datas.obsproject_p1[['CODE', 'OBSREVIEW_UID']], on='CODE')
+    datas.obsproject[['CODE', 'OBSREVIEW_UID']], on='CODE')
 
 merge2.to_csv('/home/itoledo/Documents/project_info.csv')
 
@@ -609,16 +608,23 @@ def do_pre_plots(ra, used, tot_t, filename, title, lab=False, xleg='', yleg=''):
             label='Exp. Efficiency [h]')
     if lab:
         py.legend(framealpha=0.5, ncol=2)
-    py.savefig('/home/itoledo/Documents/' + filename, dpi=300, bbox_inches='tight')
+    py.savefig('/home/itoledo/Documents/' + filename, dpi=300,
+               bbox_inches='tight')
 
-do_pre_plots(ra1b, used1b, tot_t1, 'C36-1.png', 'C36-1 Pressure', yleg='Time Needed [hours]')
-do_pre_plots(ra2b, used2b, tot_t2, 'C36-2.png', 'C36-2 Pressure', lab=True)
-do_pre_plots(ra3b, used3b, tot_t3, 'C36-3.png', 'C36-3 Pressure', yleg='Time Needed [hours]')
+do_pre_plots(ra1b, used1b, tot_t1, 'C36-1.png', 'C36-1 Pressure',
+             yleg='Time Needed [hours]')
+do_pre_plots(ra2b, used2b, tot_t2, 'C36-2.png', 'C36-2 Pressure',
+             lab=True)
+do_pre_plots(ra3b, used3b, tot_t3, 'C36-3.png', 'C36-3 Pressure',
+             yleg='Time Needed [hours]')
 do_pre_plots(ra4b, used4b, tot_t4, 'C36-4.png', 'C36-4 Pressure')
-do_pre_plots(ra5b, used5b, tot_t5, 'C36-5.png', 'C36-5 Pressure', yleg='Time Needed [hours]')
+do_pre_plots(ra5b, used5b, tot_t5, 'C36-5.png', 'C36-5 Pressure',
+             yleg='Time Needed [hours]')
 do_pre_plots(ra6b, used6b, tot_t6, 'C36-6.png', 'C36-6 Pressure')
-do_pre_plots(ra7b, used7b, tot_t7, 'C36-7.png', 'C36-7 Pressure', yleg='Time Needed [hours]', xleg='RA [hours]')
-do_pre_plots(ra8b, used8b, tot_t8, 'C36-8.png', 'C36-8 Pressure', xleg='RA [hours]')
+do_pre_plots(ra7b, used7b, tot_t7, 'C36-7.png', 'C36-7 Pressure',
+             yleg='Time Needed [hours]', xleg='RA [hours]')
+do_pre_plots(ra8b, used8b, tot_t8, 'C36-8.png', 'C36-8 Pressure',
+             xleg='RA [hours]')
 
 ra1b, used1b = av_arrays(c361b, minlst=-3., maxlst=3.)
 ra2b, used2b = av_arrays(c362b, minlst=-3., maxlst=3.)
@@ -804,12 +810,14 @@ ra7bf, used7bf = av_arrays_grade(c367bf)
 ra8bf, used8bf = av_arrays_grade(c368bf)
 
 
-def do_pre_plots_fill(ra, used, tot_t, filename, title, lab=False, xleg='', yleg=''):
+def do_pre_plots_fill(ra, used, tot_t, filename, title, lab=False, xleg='',
+                      yleg=''):
     py.close()
     py.figure(figsize=(11.69, 8.27))
     if title != 'C36-7 Pressure' and title != 'C36-8 Pressure':
         py.bar(ra, used[0] + used[1],
-               width=1.66666667e-02, ec='#e41a1c', fc='#e41a1c', label='Grade C')
+               width=1.66666667e-02, ec='#e41a1c', fc='#e41a1c',
+               label='Grade C')
     else:
         print used[1]
 
@@ -828,14 +836,20 @@ def do_pre_plots_fill(ra, used, tot_t, filename, title, lab=False, xleg='', yleg
         py.legend(framealpha=0.5)
     py.savefig('/home/itoledo/Documents/' + filename, dpi=300)
 
-do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade.png', 'C36-1 Pressure', yleg='Time Needed [hours]')
-do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade.png', 'C36-2 Pressure', lab=True)
-do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade.png', 'C36-3 Pressure', yleg='Time Needed [hours]')
+do_pre_plots_fill(ra1bf, used1bf, tot_t1, 'C36-1_grade.png', 'C36-1 Pressure',
+                  yleg='Time Needed [hours]')
+do_pre_plots_fill(ra2bf, used2bf, tot_t2, 'C36-2_grade.png', 'C36-2 Pressure',
+                  lab=True)
+do_pre_plots_fill(ra3bf, used3bf, tot_t3, 'C36-3_grade.png', 'C36-3 Pressure',
+                  yleg='Time Needed [hours]')
 do_pre_plots_fill(ra4bf, used4bf, tot_t4, 'C36-4_grade.png', 'C36-4 Pressure')
-do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade.png', 'C36-5 Pressure', yleg='Time Needed [hours]')
+do_pre_plots_fill(ra5bf, used5bf, tot_t5, 'C36-5_grade.png', 'C36-5 Pressure',
+                  yleg='Time Needed [hours]')
 do_pre_plots_fill(ra6bf, used6bf, tot_t6, 'C36-6_grade.png', 'C36-6 Pressure')
-do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade.png', 'C36-7 Pressure', yleg='Time Needed [hours]', xleg='RA [hours]')
-do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade.png', 'C36-8 Pressure', xleg='RA [hours]')
+do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade.png', 'C36-7 Pressure',
+                  yleg='Time Needed [hours]', xleg='RA [hours]')
+do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade.png', 'C36-8 Pressure',
+                  xleg='RA [hours]')
 
 ra1bf, used1bf = av_arrays_grade(c361bf, minlst=-3., maxlst=3.)
 ra2bf, used2bf = av_arrays_grade(c362bf, minlst=-3., maxlst=3.)
@@ -862,3 +876,27 @@ do_pre_plots_fill(ra7bf, used7bf, tot_t7, 'C36-7_grade_relax.png',
                   'C36-7 Pressure')
 do_pre_plots_fill(ra8bf, used8bf, tot_t8, 'C36-8_grade_relax.png',
                   'C36-8 Pressure')
+
+spinfo = pd.merge(
+    pd.merge(
+        pd.merge(
+            pd.merge(datas.target, datas.scienceparam,
+                     on=['SB_UID', 'paramRef']),
+            datas.spectralconf, on=['SB_UID', 'specRef']),
+        datas.baseband, left_on=['SB_UID', 'specRef'],
+        right_on=['SB_UID', 'spectralConf']),
+    datas.spectralwindow, on=['SB_UID', 'basebandRef'])
+
+lbl_res = pd.merge(
+    schedblocks.query('BestConf in ["C36-7", "C36-8"]'),
+    spinfo, on='SB_UID').groupby(
+    'SB_UID').agg({'EffectiveBandwidth': max}).query(
+    'EffectiveBandwidth < 2').index.values
+
+pd.merge(
+    schedblocks,
+    pd.merge(schedblocks.query('BestConf in ["C36-7", "C36-8"]'),
+             spinfo, on='SB_UID').groupby('SB_UID').agg(
+        {'EffectiveBandwidth': max}).query('EffectiveBandwidth < 2'),
+    left_on='SB_UID', right_index=True).to_excel(
+    '/home/itoledo/Downloads/not_2ghz.xls')
